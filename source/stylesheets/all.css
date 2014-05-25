@@ -31,25 +31,20 @@ h1 {
     .doc a:hover {
       color: #666; }
 
-.welcome {
-  -webkit-animation-name: welcome;
-  -webkit-animation-duration: .9s; }
+.programmes {
+  width: 100%;
+}
 
-@-webkit-keyframes welcome {
-  from {
-    -webkit-transform: scale(0);
-    opacity: 0;
-  }
-  50% {
-   -webkit-transform: scale(0);
-   opacity: 0;
-  }
-  82.5% {
-    -webkit-transform: scale(1.03);
-    -webkit-animation-timing-function: ease-out;
-    opacity: 1;
-  }
-  to {
-    -webkit-transform: scale(1);
-  }
+.programmes > li {
+  margin-bottom: 5px;
+  list-style: none;
+}
+
+.programmes button {
+  width: 400px;
+}
+
+.error {
+  display: none;
+  background-color: #ff0;
 }

@@ -2,9 +2,13 @@
 title: Welcome to Middleman
 ---
 
-<div class="welcome">
-  <h1>Middleman is Watching</h1>
-  <p class="doc">
-    <%= link_to "Read Online Documentation", "http://middlemanapp.com/" %>
-  </p><!-- .doc -->
-</div><!-- .welcome -->
+<ul class="programmes">
+<% %w[off regular dimmed night morning].each do |programme| %>
+  <li>
+    <button type="button" class="selectProgramme btn btn-lg btn-default" data-programme-name="<%= programme %>"><%= programme.capitalize %></button>
+  </li>
+<% end%>
+</ul>
+
+
+<div class="error"></div>
