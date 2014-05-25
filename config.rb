@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'redis'
 
 ###
 # Compass
@@ -74,28 +73,8 @@ configure :build do
   # set :http_prefix, "/Content/images/"
 end
 
-class MyZWave < Sinatra::Base
-  get '/light/:name/level/:level' do
-    recipient_count = redis.publish( "MyZWave", "dim #{params[:name]} #{params[:level]}" )
+require 'my_zwave'
 
-    "Recipients: #{recipient_count}"
-  end
-
-  get '/programme/:name/start' do
-    sanitized_name = params[:name].match(/[a-z]+/)[0]
-    recipient_count = redis.publish( "MyZWave", "programme #{sanitized_name}" )
-
-    "Recipients: #{recipient_count}"
-  end
-
-  get '/' do
-    "Hello world!"
-  end
-
-  def redis
-    @@redis ||= Redis.new
-  end
-end
 map "/my_zwave" do
   run MyZWave
 end
