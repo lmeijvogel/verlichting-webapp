@@ -40,10 +40,6 @@ h1 {
   list-style: none;
 }
 
-.programmes button {
-  width: 400px;
-}
-
 .error {
   display: none;
   background-color: #ff0;
