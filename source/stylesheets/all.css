@@ -44,3 +44,7 @@ h1 {
   display: none;
   background-color: #ff0;
 }
+
+.loginDialog {
+  display: none;
+}

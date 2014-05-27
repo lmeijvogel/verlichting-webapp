@@ -9,11 +9,24 @@ $(function() {
       console.log("programmeName", programmeName);
       clearError();
     }).catch(function(jqXHR) {
-      jQuery(self).removeClass("btn-default").addClass("btn-danger");
-      console.log("Error! "+jqXHR.status);
+      if (jqXHR.status == 401) {
+        showLogin();
+      } else {
+        jQuery(self).removeClass("btn-default").addClass("btn-danger");
 
-      setError(jqXHR.responseText);
+        setError(jqXHR.responseText);
+      }
     });
+  });
+
+  $("body").on("click", ".loginDialog .submit", function() {
+    var username = $("#username").val();
+    var password = $("#password").val();
+    var request = $.post("/my_zwave/login/create", { username: username, password: password });
+    RSVP.Promise.cast(request)
+      .then( function() {
+        hideLogin();
+      });
   });
 });
 
@@ -27,4 +40,12 @@ function setError(error) {
 
 function clearError() {
   $(".error").fadeOut().text("");
+}
+
+function showLogin() {
+  $(".loginDialog").fadeIn();
+}
+
+function hideLogin() {
+  $(".loginDialog").fadeOut();
 }
