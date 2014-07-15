@@ -1,5 +1,7 @@
 require 'redis'
 require 'bcrypt'
+require 'at_queue'
+require 'json'
 
 class MyZWave < Sinatra::Base
   configure do
@@ -29,8 +31,27 @@ class MyZWave < Sinatra::Base
     end
   end
 
+  put '/scheduled_tasks' do
+    sanitized_name = params[:name].match(/[a-z]+/)[0]
+
+    datetime = DateTime.parse(params[:datetime])
+
+    job = AtQueue.new.add(datetime, "ruby /home/lennaert/my-zwave/bin/zwave.rb programme #{sanitized_name}")
+    job.to_json
+  end
+
+  get '/scheduled_tasks/list' do
+    output = ""
+
+    entries = AtQueue.new.jobs_for(/zwave.rb (.*)/) do |id, entry|
+      output << "#{id}: #{entry}\n"
+    end
+
+    entries.to_json
+  end
+
   post "/login/create" do
-    username = params["username"]
+    username = params["username"].gsub(/[^a-zA-Z_]/, "")
     password = params["password"]
 
     stored_password_hash = redis.get("password_#{username}")

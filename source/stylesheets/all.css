@@ -45,6 +45,11 @@ h1 {
   background-color: #ff0;
 }
 
+.notice {
+  display: none;
+  background-color: #6e6;
+}
+
 .loginDialog {
   display: none;
 }
