@@ -1,12 +1,14 @@
 require 'redis'
 require 'bcrypt'
-require 'at_queue'
+require File.join(File.dirname(__FILE__), 'at_queue')
 require 'json'
 
 class MyZWave < Sinatra::Base
   configure do
     # Storing login information in cookies is good enough for our purposes
-    enable :sessions
+    one_year = 60*60*24*365
+    secret = File.read('session_secret.txt')
+    use Rack::Session::Cookie, :expire_after => one_year, :secret => secret
   end
 
   before do
