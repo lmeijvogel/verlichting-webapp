@@ -33,7 +33,7 @@ class MyZWave < Sinatra::Base
     end
   end
 
-  put '/scheduled_tasks' do
+  post '/scheduled_tasks/new' do
     sanitized_name = params[:name].match(/[a-z]+/)[0]
 
     datetime = DateTime.parse(params[:datetime])

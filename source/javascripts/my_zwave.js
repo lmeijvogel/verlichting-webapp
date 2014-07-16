@@ -14,9 +14,9 @@ $(function() {
         date.add('minutes', (Math.random()*60)-30);
 
         RSVP.Promise.cast(jQuery.ajax({
-          url: "/my_zwave/scheduled_tasks",
+          url: "/my_zwave/scheduled_tasks/new",
           data: { name: "off", datetime: date.toJSON() },
-          type: "PUT"
+          type: "POST"
         }))
         .then(function(jqXHR) {
           var json = JSON.parse(jqXHR);
