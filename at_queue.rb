@@ -33,7 +33,7 @@ class AtQueue
     formatted_time = (datetime + (Float(utc_offset)/86400)).strftime("%Y%m%d%H%M")
     command = "echo '#{job}' | at -t #{formatted_time}"
 
-    Open4.popen3(command) do |_, _, stderr, _|
+    Open3.popen3(command) do |_, _, stderr, _|
       # For some reason, 'at' writes to stderr
       output = stderr.read
 
