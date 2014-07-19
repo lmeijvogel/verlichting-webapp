@@ -73,6 +73,14 @@ configure :build do
   # set :http_prefix, "/Content/images/"
 end
 
+activate :deploy do |deploy|
+  deploy.method = :sftp
+  deploy.host = "192.168.2.1"
+  deploy.path = "/var/www/verlichting/build"
+  deploy.user = ENV['user']
+  deploy.password = ENV['password']
+end
+
 require 'my_zwave'
 
 map "/my_zwave" do
