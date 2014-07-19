@@ -25,6 +25,7 @@ $(function() {
           var displayableTime = date.format("HH:mm");
 
           setNotice("Scheduled off at "+ displayableTime);
+          printScheduledProgrammes();
         });
       }
     }).catch(function(jqXHR) {
@@ -38,6 +39,16 @@ $(function() {
     });
   });
 
+  $("body").on("click", ".schedule .click", function() {
+    var $row = jQuery(this).closest("tr");
+    var id = $row.data('job-id');
+
+    RSVP.Promise.cast(jQuery.post("/my_zwave/schedule/"+id+"/destroy"))
+      .then(function() {
+        $row.fadeOut();
+      });
+  });
+
   $("body").on("click", ".loginDialog .submit", function() {
     var username = $("#username").val();
     var password = $("#password").val();
@@ -47,6 +58,8 @@ $(function() {
         hideLogin();
       });
   });
+
+  printScheduledProgrammes();
 });
 
 function selectProgramme(programmeName) {
@@ -75,4 +88,29 @@ function showLogin() {
 
 function hideLogin() {
   $(".loginDialog").fadeOut();
+}
+
+function printScheduledProgrammes() {
+  RSVP.Promise.cast(jQuery.get("/my_zwave/scheduled_tasks/list"))
+    .then(function(data) {
+      var $scheduleTable = jQuery("<table class='schedule table'></table>");
+      jQuery("#schedule").html($scheduleTable);
+
+      var template = _.template("<tr data-job-id='${id}'><td>${job}</td><td>${date}</td><td class='click'><a>click</a></td></tr>");
+
+      var jsonData = _.sortBy(JSON.parse(data), function(element) {
+        return moment(element.date).unix();
+      });
+
+      _.each(jsonData, function(row) {
+        console.log(row);
+        var templateRow = template({'id': row.id, 'job': row.job, 'date': moment(row.date).format("dddd D MMMM HH:mm")});
+
+        var $templateRow =jQuery(templateRow);
+
+        $scheduleTable.append($templateRow);
+      });
+    })
+    .catch(function(data) {
+    });
 }

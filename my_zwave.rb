@@ -52,6 +52,14 @@ class MyZWave < Sinatra::Base
     entries.to_json
   end
 
+  post '/schedule/:id/destroy' do
+    id = Integer(params[:id])
+
+    AtQueue.new.destroy(id)
+
+    "OK"
+  end
+
   post "/login/create" do
     username = params["username"].gsub(/[^a-zA-Z_]/, "")
     password = params["password"]

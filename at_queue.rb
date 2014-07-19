@@ -1,6 +1,13 @@
 require 'open3'
+require 'date'
+require 'pathname'
 
-require File.join(File.dirname(__FILE__), 'at_job.rb')
+require_relative 'at_job.rb'
+require_relative 'current_timezone_converter.rb'
+
+class DateTime
+  include CurrentTimeZoneConverter
+end
 
 class AtQueue
   def add(datetime, job)
@@ -9,11 +16,15 @@ class AtQueue
     AtJob.new(job_id, datetime, job)
   end
 
+  def destroy(id)
+    `atrm #{Integer(id)}`
+  end
+
   def jobs_for(pattern)
     atq.lines.map do |job_line|
       tokenized_line = job_line.match(/^(\d+)\s+(.+) [a-z] [a-zA-Z]+$/)
       job_id = Integer(tokenized_line[1])
-      date = DateTime.parse(tokenized_line[2])
+      date = DateTime.parse(tokenized_line[2]).with_current_timezone_offset
 
       cli_output = at_c job_id
       value = parse(cli_output, pattern)
@@ -29,8 +40,7 @@ class AtQueue
   end
 
   def at(datetime, job)
-    utc_offset = Time.now.utc_offset
-    formatted_time = (datetime + (Float(utc_offset)/86400)).strftime("%Y%m%d%H%M")
+    formatted_time = datetime.in_current_timezone.strftime("%Y%m%d%H%M")
     command = "echo '#{job}' | at -t #{formatted_time}"
 
     Open3.popen3(command) do |_, _, stderr, _|
