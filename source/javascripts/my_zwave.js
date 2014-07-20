@@ -39,7 +39,7 @@ $(function() {
     });
   });
 
-  $("body").on("click", ".schedule .click", function() {
+  $("body").on("click", ".schedule .delete", function() {
     var $row = jQuery(this).closest("tr");
     var id = $row.data('job-id');
 
@@ -93,10 +93,10 @@ function hideLogin() {
 function printScheduledProgrammes() {
   RSVP.Promise.cast(jQuery.get("/my_zwave/scheduled_tasks/list"))
     .then(function(data) {
-      var $scheduleTable = jQuery("<table class='schedule table'></table>");
+      var $scheduleTable = jQuery("<table class='schedule table-striped col-lg-offset-3 col-lg-6'></table>");
       jQuery("#schedule").html($scheduleTable);
 
-      var template = _.template("<tr data-job-id='${id}'><td>${job}</td><td>${date}</td><td class='click'><a>click</a></td></tr>");
+      var template = _.template("<tr data-job-id='${id}'><td class='col-lg-2'>${job}</td><td class='col-lg-2'>${date}</td><td class='col-lg-2'><button class='delete btn btn-default'>Delete</button></td></tr>");
 
       var jsonData = _.sortBy(JSON.parse(data), function(element) {
         return moment(element.date).unix();
