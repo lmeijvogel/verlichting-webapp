@@ -130,4 +130,12 @@ cd /home/user || {
     OUTPUT
   }
 
+  # Regression
+  context "when a Raspbian-style at job exists" do
+    let(:atq_output) { "5       Sun Jul 20 22:47:00 2014 a thin\n" }
+
+    it "returns the correct id" do
+      expect(subject.send(:job_id_from_atq_line, atq_output)).to eq 5
+    end
+  end
 end

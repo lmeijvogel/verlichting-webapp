@@ -22,9 +22,8 @@ class AtQueue
 
   def jobs_for(pattern)
     atq.lines.map do |job_line|
-      tokenized_line = job_line.match(/^(\d+)\s+(.+) [a-z] [a-zA-Z]+$/)
-      job_id = Integer(tokenized_line[1])
-      date = DateTime.parse(tokenized_line[2]).with_current_timezone_offset
+      job_id = job_id_from_atq_line(job_line)
+      date = time_from_atq_line(job_line)
 
       cli_output = at_c job_id
       value = parse(cli_output, pattern)
@@ -37,6 +36,16 @@ class AtQueue
   def parse(cli_output, pattern)
     matches = cli_output.match(pattern)
     matches[1] if matches
+  end
+
+  def job_id_from_atq_line(line)
+    tokenized_line = line.match(/^(\d+)\s+.+ [a-z] [a-zA-Z]+$/)
+    Integer(tokenized_line[1])
+  end
+
+  def time_from_atq_line(line)
+    tokenized_line = line.match(/^\d+\s+(.+) [a-z] [a-zA-Z]+$/)
+    DateTime.parse(tokenized_line[1]).with_current_timezone_offset
   end
 
   def at(datetime, job)
