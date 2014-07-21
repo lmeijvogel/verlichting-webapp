@@ -4,8 +4,7 @@ $(function() {
     var programmeName = jQuery(this).data('programme-name');
 
     selectProgramme(programmeName).then(function() {
-      jQuery(".selectProgramme").removeClass("btn-danger").removeClass("btn-primary").addClass("btn-default");
-      jQuery(self).removeClass("btn-default").addClass("btn-primary");
+      activateButton(programmeName);
       clearError();
     }).then(function() {
       if (jQuery("#auto_off").is(":checked")) {
@@ -60,6 +59,7 @@ $(function() {
   });
 
   printScheduledProgrammes();
+  highlightCurrentProgramme();
 });
 
 function selectProgramme(programmeName) {
@@ -113,4 +113,18 @@ function printScheduledProgrammes() {
     })
     .catch(function(data) {
     });
+}
+
+function highlightCurrentProgramme() {
+  RSVP.Promise.cast(jQuery.get("/my_zwave/programmes/current"))
+    .then(function(data) {
+      activateButton(data);
+    });
+}
+
+function activateButton(programmeName) {
+  var button = jQuery(".selectProgramme[data-programme-name="+programmeName);
+
+  jQuery(".selectProgramme").removeClass("btn-danger").removeClass("btn-primary").addClass("btn-default");
+  jQuery(button).removeClass("btn-default").addClass("btn-primary");
 }

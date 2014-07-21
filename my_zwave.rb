@@ -33,6 +33,10 @@ class MyZWave < Sinatra::Base
     end
   end
 
+  get '/programmes/current' do
+    redis.get 'zwave_programme'
+  end
+
   post '/scheduled_tasks/new' do
     sanitized_name = params[:name].match(/[a-z]+/)[0]
 
