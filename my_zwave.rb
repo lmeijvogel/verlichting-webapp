@@ -33,8 +33,25 @@ class MyZWave < Sinatra::Base
     end
   end
 
-  get '/programmes/current' do
-    redis.get 'zwave_programme'
+  get '/current' do
+    result = {programme: redis.get('zwave_programme')}
+
+    keys = redis.keys("node_*")
+
+    light_values = keys.inject({}) do |acc, key|
+      value_37 = redis.hget(key, "class_37")
+      value_38 = redis.hget(key, "class_38")
+
+      if value_37.nil?
+        acc[key] = {type: "dim", value: value_38}
+      else
+        acc[key] = {type: "switch", value: value_37}
+      end
+
+      acc
+    end
+
+      result.merge({lights: light_values}).to_json
   end
 
   post '/scheduled_tasks/new' do

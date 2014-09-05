@@ -116,9 +116,10 @@ function printScheduledProgrammes() {
 }
 
 function highlightCurrentProgramme() {
-  RSVP.Promise.cast(jQuery.get("/my_zwave/programmes/current"))
+  RSVP.Promise.cast(jQuery.getJSON("/my_zwave/current"))
     .then(function(data) {
-      activateButton(data);
+      activateButton(data.programme);
+      showLightValues(data.lights);
     });
 }
 
@@ -127,4 +128,30 @@ function activateButton(programmeName) {
 
   jQuery(".selectProgramme").removeClass("btn-danger").removeClass("btn-primary").addClass("btn-default");
   jQuery(button).removeClass("btn-default").addClass("btn-primary");
+}
+
+function showLightValues(lights) {
+  var $lights = jQuery("#lights");
+  $lights.html("");
+
+  var table = jQuery("<table class='table table-striped'>");
+  _.each(_.keys(lights), function(key) {
+    var light = lights[key];
+
+    var value = lightValueToString(light.value);
+    table.append(jQuery("<tr><td>"+key.substr(5)+"</td><td>"+value+"</td></tr>"));
+  });
+
+  $lights.append(table);
+}
+
+function lightValueToString(value) {
+  if (value === "false" || value === "0") {
+    return "-";
+  }
+  if (value === "true") {
+    return "on";
+  }
+
+  return value;
 }
