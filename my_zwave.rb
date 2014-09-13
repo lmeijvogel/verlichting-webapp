@@ -64,13 +64,7 @@ class MyZWave < Sinatra::Base
   end
 
   get '/scheduled_tasks/list' do
-    output = ""
-
-    entries = AtQueue.new.jobs_for(/zwave.rb (.*)/) do |id, entry|
-      output << "#{id}: #{entry}\n"
-    end
-
-    entries.to_json
+    AtQueue.new.jobs_for(/zwave.rb (.*)/).to_json
   end
 
   post '/schedule/:id/destroy' do
