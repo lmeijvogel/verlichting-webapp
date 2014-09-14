@@ -58,8 +58,13 @@ $(function() {
       });
   });
 
+  $("h1.lights").on("click", function() {
+    self.showLightValues();
+  });
+
   printScheduledProgrammes();
   highlightCurrentProgramme();
+  showLightValues();
 });
 
 function selectProgramme(programmeName) {
@@ -116,10 +121,9 @@ function printScheduledProgrammes() {
 }
 
 function highlightCurrentProgramme() {
-  RSVP.Promise.cast(jQuery.getJSON("/my_zwave/current"))
+  RSVP.Promise.cast(jQuery.getJSON("/my_zwave/current_programme"))
     .then(function(data) {
       activateButton(data.programme);
-      showLightValues(data.lights);
     });
 }
 
@@ -130,19 +134,24 @@ function activateButton(programmeName) {
   jQuery(button).removeClass("btn-default").addClass("btn-primary");
 }
 
-function showLightValues(lights) {
+function showLightValues() {
   var $lights = jQuery("#lights");
   $lights.html("");
 
-  var table = jQuery("<table class='table table-striped'>");
-  _.each(_.keys(lights), function(key) {
-    var light = lights[key];
+  RSVP.Promise.cast(jQuery.getJSON("/my_zwave/current_lights"))
+    .then(function(data) {
+      var lights = data.lights;
+      var table = jQuery("<table class='table table-striped'>");
 
-    var value = lightValueToString(light.value);
-    table.append(jQuery("<tr><td>"+key.substr(5)+"</td><td>"+value+"</td></tr>"));
-  });
+      _.each(_.keys(lights), function(key) {
+        var light = lights[key];
 
-  $lights.append(table);
+        var value = lightValueToString(light.value);
+        table.append(jQuery("<tr><td>"+key.substr(5)+"</td><td>"+value+"</td></tr>"));
+      });
+
+      $lights.append(table);
+    });
 }
 
 function lightValueToString(value) {
