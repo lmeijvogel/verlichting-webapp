@@ -4,7 +4,7 @@ title: Welcome to Middleman
 
 <div class="container-fluid">
   <ul class="programmes">
-  <% %w[off evening dimmed night morning].each do |programme| %>
+  <% %w[off evening evening_tv dimmed night morning].each do |programme| %>
     <li class="row">
       <button type="button" class="col-xs-12 col-sm-12 col-lg-offset-4 col-lg-4 selectProgramme btn btn-lg btn-default" data-programme-name="<%= programme %>"><%= programme.capitalize %></button>
     </li>
