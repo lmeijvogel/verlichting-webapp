@@ -9,6 +9,9 @@ gem "sinatra"
 gem "redis"
 gem 'bcrypt'
 
+# Needed for silencing echo of deploy passphrase
+gem "highline"
+
 # Live-reloading plugin
 gem "middleman-livereload", "~> 3.1.0"
 

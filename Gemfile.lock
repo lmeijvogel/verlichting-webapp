@@ -29,6 +29,7 @@ GEM
     fssm (0.2.10)
     haml (4.0.5)
       tilt
+    highline (1.6.21)
     hike (1.2.3)
     hooks (0.4.0)
       uber (~> 0.0.4)
@@ -131,6 +132,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
+  highline
   middleman (~> 3.3.2)
   middleman-deploy
   middleman-livereload (~> 3.1.0)

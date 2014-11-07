@@ -74,11 +74,12 @@ configure :build do
 end
 
 activate :deploy do |deploy|
+  deploy.build_before = true
+
   deploy.method = :sftp
   deploy.host = "192.168.2.1"
+  deploy.user = "lennaert"
   deploy.path = "/var/www/verlichting/build"
-  deploy.user = ENV.fetch("user") { puts "ERROR: Please export $user and $password." ; exit 1 }
-  deploy.password = ENV.fetch("password")
 end
 
 require 'my_zwave'
