@@ -8,7 +8,7 @@ class MyZWave < Sinatra::Base
     # Storing login information in cookies is good enough for our purposes
     one_year = 60*60*24*365
     secret = File.read('session_secret.txt')
-    use Rack::Session::Cookie, :expire_after => one_year, :secret => secret
+    use Rack::Session::Cookie, :expire_after => one_year, :secret => secret, :secure => true, :httponly => true
   end
 
   before do
