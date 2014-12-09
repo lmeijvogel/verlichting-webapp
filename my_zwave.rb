@@ -22,7 +22,7 @@ class MyZWave < Sinatra::Base
   end
 
   post '/programme/:name/start' do
-    sanitized_name = params[:name].match(/[a-z]+/)[0]
+    sanitized_name = params[:name].match(/[a-z_]+/)[0]
     recipient_count = redis.publish( "MyZWave", "programme #{sanitized_name}" )
 
     if recipient_count > 0
