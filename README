@@ -1,0 +1,28 @@
+The app itself is hosted by thin, but this is a working configuration
+for nginx. It should be hosted ssl-only (except for maybe a redirect from http to https).
+
+http://verlichting_cluster is configured elsewhere.
+
+server {
+  listen 443;
+  server_name ~^lights.*\.host\.com$;
+
+  ssl on;
+  ssl_certificate /usr/local/nginx/conf/lights.host.com.crt;
+  ssl_certificate_key /etc/ssl/private/lights.host.com.key;
+
+  allow all;
+
+  location / {
+    root /var/www/verlichting/build;
+  }
+
+  location /my_zwave {
+    proxy_pass http://verlichting_cluster;
+    proxy_pass_header Server;
+    proxy_set_header Host $http_host;
+
+    # This is necessary for secure cookies.
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
