@@ -82,6 +82,9 @@ activate :deploy do |deploy|
   deploy.path = "/var/www/verlichting/build"
 end
 
+require 'dotenv'
+Dotenv.load
+
 require 'my_zwave'
 
 map "/my_zwave" do

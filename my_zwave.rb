@@ -5,10 +5,11 @@ require 'json'
 
 class MyZWave < Sinatra::Base
   configure do
+    secure = ENV['SECURE'] == "true"
+    secret = ENV['SESSION_SECRET']
     # Storing login information in cookies is good enough for our purposes
     one_year = 60*60*24*365
-    secret = File.read('session_secret.txt')
-    use Rack::Session::Cookie, :expire_after => one_year, :secret => secret, :secure => true, :httponly => true
+    use Rack::Session::Cookie, :expire_after => one_year, :secret => secret, :secure => secure, :httponly => true
   end
 
   before do

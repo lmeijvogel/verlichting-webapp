@@ -1,6 +1,9 @@
 require 'rubygems'
 require 'sinatra'
 
+require 'dotenv'
+Dotenv.load
+
 disable :run
 
 require File.dirname(__FILE__)+'/my_zwave'

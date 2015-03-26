@@ -8,6 +8,7 @@ gem "middleman-deploy"
 gem "sinatra"
 gem "redis"
 gem 'bcrypt'
+gem 'dotenv'
 
 # Needed for silencing echo of deploy passphrase
 gem "highline"
