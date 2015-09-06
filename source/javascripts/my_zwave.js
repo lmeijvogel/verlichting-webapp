@@ -1,4 +1,14 @@
 $(function() {
+  function randomDate(mean) {
+    // Pick a random time around the given mean hour.
+    // E.g. if mean=23, the time will be chosen between
+    // 22:30 and 23:30.
+    var date = moment({hours: mean, minutes: 0});
+    date.add('minutes', (Math.random()*60)-30);
+
+    return date;
+  }
+
   $(".selectProgramme").click(function() {
     var self = this;
     var programmeName = jQuery(this).data('programme-name');
@@ -8,13 +18,9 @@ $(function() {
       clearError();
     }).then(function() {
       if (jQuery("#auto_off").is(":checked")) {
-        // Pick a random time around 23:00
-        var date = moment({hours: 23, minutes: 0});
-        date.add('minutes', (Math.random()*60)-30);
-
         RSVP.Promise.cast(jQuery.ajax({
           url: "/my_zwave/scheduled_tasks/new",
-          data: { name: "off", datetime: date.toJSON() },
+          data: { name: "off", datetime: randomDate(23).toJSON() },
           type: "POST"
         }))
         .then(function(jqXHR) {
