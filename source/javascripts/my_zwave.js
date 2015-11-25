@@ -109,17 +109,12 @@ function printScheduledProgrammes() {
 
       var template = _.template("<tr data-job-id='${id}'><td class='col-lg-2'>${job}</td><td class='col-lg-2'>${date}</td><td class='col-lg-2'><button class='delete btn btn-default'>Delete</button></td></tr>");
 
-      var jsonData = _.sortBy(JSON.parse(data), function(element) {
+      _.chain(JSON.parse(data)).sortBy(function(element) {
         return moment(element.date).unix();
-      });
-
-      _.each(jsonData, function(row) {
-        console.log(row);
-        var templateRow = template({'id': row.id, 'job': row.job, 'date': moment(row.date).format("dddd D MMMM HH:mm")});
-
-        var $templateRow =jQuery(templateRow);
-
-        $scheduleTable.append($templateRow);
+      }).map(function(row) {
+        return template({'id': row.id, 'job': row.job, 'date': moment(row.date).format("dddd D MMMM HH:mm")});
+      }).each(function(templateRow) {
+        $scheduleTable.append($(templateRow));
       });
     })
     .catch(function(data) {
@@ -149,11 +144,13 @@ function showLightValues() {
       var lights = data.lights;
       var table = jQuery("<table class='table table-striped'>");
 
-      _.each(_.keys(lights), function(key) {
+      _.chain(lights).keys().map( function(key) {
         var light = lights[key];
 
         var value = lightValueToString(light.value);
-        table.append(jQuery("<tr><td>"+key.substr(5)+"</td><td>"+value+"</td></tr>"));
+        return "<tr><td>"+key.substr(5)+"</td><td>"+value+"</td></tr>";
+      }).each(function(rowHtml) {
+        table.append(jQuery(rowHtml));
       });
 
       $lights.append(table);
