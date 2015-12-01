@@ -1,27 +1,24 @@
 ---
-title: Welcome to Middleman
+title: Verlichting
 ---
 
 <div class="container-fluid">
-  <ul class="programmes">
-  <% %w[off evening evening_tv dimmed night morning].each do |programme| %>
-    <li class="row">
-      <button type="button" class="col-xs-12 col-sm-12 col-lg-offset-4 col-lg-4 selectProgramme btn btn-lg btn-default" data-programme-name="<%= programme %>"><%= programme.capitalize %></button>
-    </li>
-  <% end%>
-  </ul>
+  <div class="error  col-xs-12 col-lg-offset-4 col-lg-4"></div>
+  <div class="notice col-xs-12 col-lg-offset-4 col-lg-4"></div>
 
-  <label>
-    <input type="checkbox" id="auto_off">Auto off
-  </label>
-
-  <h1>Scheduled jobs</h1>
-  <div id="schedule">
+  <div id="programmeButtons" class="col-xs-12 col-lg-offset-4 col-lg-4">
   </div>
-  <div class="error"></div>
-  <div class="notice"></div>
 
-  <h1 class="lights">Lights</h1>
-  <div id="lights" class="col-xs-12 col-sm-12 col-lg-offset-4 col-lg-4">
+  <div class="col-xs-12">
+    <label>
+      <input type="checkbox" id="auto_off">Auto off
+    </label>
+  </div>
+
+  <h1 class="col-xs-12">Scheduled jobs</h1>
+  <div id="schedule" class="col-xs-12"></div>
+
+  <h1 id="lightsTitle" class="col-xs-12 col-lg-offset-4 col-lg-4">Lights</h1>
+  <div id="lights" class="col-xs-12 col-lg-offset-4 col-lg-4">
   </div>
 </div>

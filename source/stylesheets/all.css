@@ -32,6 +32,10 @@ h1 {
   width: 100%;
 }
 
+.selectProgrammeButton {
+  width: 100%;
+}
+
 .programmes > li {
   margin-bottom: 5px;
   list-style: none;
@@ -49,4 +53,8 @@ h1 {
 
 .loginDialog {
   display: none;
+}
+
+#lightsTitle {
+  cursor: pointer;
 }
