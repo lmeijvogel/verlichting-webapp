@@ -27,6 +27,12 @@ h1 {
     color: rgba(0, 0, 0, 0.3); }
     .doc a:hover {
       color: #666; }
+ul {
+  /* Apparently, there's a user stylesheet that sets this padding to 40px.
+   * (maybe for li-icons?)
+   */
+  padding-left: 0;
+}
 
 .programmes {
   width: 100%;
