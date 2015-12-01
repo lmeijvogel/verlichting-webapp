@@ -216,41 +216,52 @@
       '</tr>');
 
     function generateTable() {
-      var $scheduleTable = jQuery('<table class="schedule table-striped col-lg-offset-3 col-lg-6"></table>');
-
       return RSVP.Promise.cast(jQuery.get('/my_zwave/scheduled_tasks/list'))
         .then(function (data) {
-          _.chain(JSON.parse(data)).sortBy(function (element) {
-            return moment(element.date).unix();
-          }).map(function (row) {
-            var templateRow = $(template({
-              id:   row.id,
-              job:  row.job,
-              date: moment(row.date).format('dddd D MMMM HH:mm')
-            }));
+          var parsedData = JSON.parse(data);
 
-            templateRow.on('click', '.delete', function () {
-              RSVP.Promise.cast(jQuery.post('/my_zwave/schedule/' + row.id + '/destroy'))
-              .then(function () {
-                templateRow.fadeOut().promise().then(function () {
-                  $(this).detach();
-
-                  restripeRows($scheduleTable);
-                });
-              });
-            });
-
-            return templateRow;
-          }).each(function (templateRow) {
-            $scheduleTable.append(templateRow);
-          }).run();
-
-          return $scheduleTable;
+          if (parsedData.length === 0) {
+            return $('<div class="center-block">(none)</div>');
+          } else {
+            return createTableFromData(parsedData);
+          }
         })
         .catch(function () {
           //TODO
         });
     };
+
+    function createTableFromData(parsedData) {
+      var $scheduleTable = jQuery('<table class="schedule table-striped col-lg-offset-3 col-lg-6"></table>');
+
+      _.chain(parsedData).sortBy(function (element) {
+        return moment(element.date).unix();
+      }).map(function (row) {
+        var templateRow = $(template({
+          id:   row.id,
+          job:  row.job,
+          date: moment(row.date).format('dddd D MMMM HH:mm')
+        }));
+
+        templateRow.on('click', '.delete', function () {
+          RSVP.Promise.cast(jQuery.post('/my_zwave/schedule/' + row.id + '/destroy'))
+          .then(function () {
+            templateRow.fadeOut().promise().then(function () {
+              $(this).detach();
+
+              restripeRows($scheduleTable);
+            });
+          });
+        });
+
+        return templateRow;
+      }).each(function (templateRow) {
+        $scheduleTable.append(templateRow);
+      }).run();
+
+      return $scheduleTable;
+
+    }
 
     function scheduleAutoOff() {
       return RSVP.Promise.cast(jQuery.ajax({
