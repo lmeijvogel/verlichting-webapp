@@ -21,10 +21,11 @@ var programmesList = function (userFeedback) {
     return {
       'off':        'Off',
       'evening':    'Evening',
-      'evening_tv': 'Evening_tv',
+      'evening_tv': 'Evening (TV off)',
       'dimmed':     'Dimmed',
       'night':      'Night',
-      'morning':    'Morning'
+      'morning':    'Morning',
+      'full':       'Full'
     };
   }
 
