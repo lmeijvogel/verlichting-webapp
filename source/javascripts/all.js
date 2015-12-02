@@ -2,4 +2,4 @@
 //= require ./rsvp-latest.js
 //= require ./bootstrap.min.js
 //= require ./moment.min.js
-//= require ./my_zwave.js
+//= require ./my_zwave
