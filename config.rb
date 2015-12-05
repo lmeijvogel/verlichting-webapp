@@ -71,6 +71,7 @@ configure :build do
 
   # Or use a different image path
   # set :http_prefix, "/Content/images/"
+  ignore(/node_modules/)
 end
 
 activate :deploy do |deploy|
