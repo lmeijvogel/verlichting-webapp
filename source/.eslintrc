@@ -8,8 +8,5 @@ rules:
   dot-location: [2, "property"]
   key-spacing: [2, {"beforeColon": false, "afterColon": true, "mode": "minimum"}]
 globals:
-  jQuery: true
-  $:      true
-  moment: true
-  RSVP:   true
-  _:      true
+  require: false
+  module: false

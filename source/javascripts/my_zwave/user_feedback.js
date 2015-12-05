@@ -1,4 +1,4 @@
-function userFeedback(noticeElement, errorElement) {
+module.exports = function (noticeElement, errorElement) {
   function setError(error) {
     errorElement.text(error).slideDown();
   }
@@ -21,4 +21,4 @@ function userFeedback(noticeElement, errorElement) {
     setNotice:   setNotice,
     clearNotice: clearNotice
   };
-}
+};

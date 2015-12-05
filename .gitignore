@@ -18,3 +18,4 @@
 .DS_Store
 
 /source/javascripts/node_modules
+/source/javascripts/my_zwave.js

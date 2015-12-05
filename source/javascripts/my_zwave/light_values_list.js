@@ -1,5 +1,9 @@
-function lightValuesList() {
-  var $lights = jQuery('#lights');
+var RSVP = require('rsvp');
+var $ = require('jquery');
+var _ = require('lodash');
+
+module.exports = function () {
+  var $lights = $('#lights');
 
   function lightValueToString(value) {
     if (value === 'false' || value === '0') {
@@ -15,10 +19,10 @@ function lightValuesList() {
   function show() {
     $lights.html('');
 
-    RSVP.Promise.cast(jQuery.getJSON('/my_zwave/current_lights'))
+    RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
       .then(function (data) {
         var lights = data.lights;
-        var table = jQuery('<table class="table table-striped">');
+        var table = $('<table class="table table-striped">');
 
         _.chain(lights).keys().map(function (key) {
           var light = lights[key];
@@ -26,7 +30,7 @@ function lightValuesList() {
 
           return '<tr><td>' + key.substr(5) + '</td><td>' + value + '</td></tr>';
         }).each(function (rowHtml) {
-          table.append(jQuery(rowHtml));
+          table.append($(rowHtml));
         }).run();
 
         $lights.append(table);
@@ -38,4 +42,4 @@ function lightValuesList() {
   };
 
   return publicMethods;
-}
+};

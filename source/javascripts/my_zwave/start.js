@@ -1,17 +1,27 @@
-/*global programmesList, scheduledProgrammesList, lightValuesList, showLoginDialog, userFeedback */
+var programmesList = require('./programmes_list');
+var lightValuesList = require('./light_values_list');
+var showLoginDialog = require('./show_login_dialog');
+var userFeedback    = require('./user_feedback');
+var scheduledProgrammesList = require('./scheduled_programmes_list');
+
+var _ = require('lodash');
+var RSVP = require('rsvp');
+
+var $ = require('jquery');
+
 $(function () {
-  (function (programmesList, scheduledProgrammesList, lightValuesList, showLoginDialog, userFeedback) {
+  (function () {
     var feedback = userFeedback($('.notice'), $('.error'));
     var programmesListInterface = programmesList(feedback);
     var scheduledProgrammes     = scheduledProgrammesList(feedback);
     var currentValues           = lightValuesList();
 
     programmesListInterface.subscribeProgrammeChanged(function () {
-      if (jQuery('#auto_off').is(':checked')) {
+      if ($('#auto_off').is(':checked')) {
         scheduledProgrammes.scheduleAutoOff().then(function () {
           scheduledProgrammes.generateTable().then(function ($table) {
-            jQuery('#schedule').html('');
-            jQuery('#schedule').append($table);
+            $('#schedule').html('');
+            $('#schedule').append($table);
           });
         });
       }
@@ -20,14 +30,14 @@ $(function () {
     $('#programmeButtons').html('');
     $('#programmeButtons').append(programmesListInterface.makeButtonsList());
     scheduledProgrammes.generateTable().then(function ($table) {
-      jQuery('#schedule').html('');
-      jQuery('#schedule').append($table);
+      $('#schedule').html('');
+      $('#schedule').append($table);
     });
 
     $('#lightsTitle').on('click', currentValues.show);
 
     function showData() {
-      RSVP.Promise.cast(jQuery.getJSON('/my_zwave/current_programme'))
+      RSVP.Promise.cast($.getJSON('/my_zwave/current_programme'))
         .then(function (data) {
           programmesListInterface.selectProgramme(data.programme);
         })
@@ -43,5 +53,5 @@ $(function () {
     }
 
     showData();
-  })(programmesList, scheduledProgrammesList, lightValuesList, showLoginDialog, userFeedback);
+  })();
 });

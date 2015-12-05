@@ -1,4 +1,9 @@
-function scheduledProgrammesList(userFeedback) {
+var moment = require('moment');
+var RSVP = require('rsvp');
+var $ = require('jquery');
+var _ = require('lodash');
+
+module.exports = function (userFeedback) {
   function randomDate(mean) {
     // Pick a random time around the given mean hour.
     // E.g. if mean=23, the time will be chosen between
@@ -23,7 +28,7 @@ function scheduledProgrammesList(userFeedback) {
     '</tr>');
 
   function generateTable() {
-    return RSVP.Promise.cast(jQuery.get('/my_zwave/scheduled_tasks/list'))
+    return RSVP.Promise.cast($.get('/my_zwave/scheduled_tasks/list'))
       .then(function (data) {
         var parsedData = JSON.parse(data);
 
@@ -39,7 +44,7 @@ function scheduledProgrammesList(userFeedback) {
   };
 
   function createTableFromData(parsedData) {
-    var $scheduleTable = jQuery('<table class="schedule table-striped col-lg-offset-3 col-lg-6"></table>');
+    var $scheduleTable = $('<table class="schedule table-striped col-lg-offset-3 col-lg-6"></table>');
 
     _.chain(parsedData).sortBy(function (element) {
       return moment(element.date).unix();
@@ -51,7 +56,7 @@ function scheduledProgrammesList(userFeedback) {
       }));
 
       templateRow.on('click', '.delete', function () {
-        RSVP.Promise.cast(jQuery.post('/my_zwave/schedule/' + row.id + '/destroy'))
+        RSVP.Promise.cast($.post('/my_zwave/schedule/' + row.id + '/destroy'))
         .then(function () {
           templateRow.fadeOut().promise().then(function () {
             $(this).detach();
@@ -71,7 +76,7 @@ function scheduledProgrammesList(userFeedback) {
   }
 
   function scheduleAutoOff() {
-    return RSVP.Promise.cast(jQuery.ajax({
+    return RSVP.Promise.cast($.ajax({
       url: '/my_zwave/scheduled_tasks/new',
       data: {name: 'off', datetime: randomDate(23).toJSON()},
       type: 'POST'
@@ -92,4 +97,4 @@ function scheduledProgrammesList(userFeedback) {
   };
 
   return publicMethods;
-}
+};

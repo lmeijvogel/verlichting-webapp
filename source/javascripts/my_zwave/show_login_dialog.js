@@ -1,4 +1,8 @@
-function showLoginDialog() {
+var RSVP = require('rsvp');
+var $ = require('jquery');
+var _ = require('lodash');
+
+module.exports = function () {
   return new RSVP.Promise(function (resolve) {
     $('body').on('keyup', '.loginDialog input', function (data) {
       if (data.keyCode == 13) {
@@ -30,4 +34,4 @@ function showLoginDialog() {
 
     $('.loginDialog').fadeIn();
   });
-}
+};

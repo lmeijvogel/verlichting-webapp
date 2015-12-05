@@ -1,4 +1,8 @@
-var programmesList = function (userFeedback) {
+var RSVP = require('rsvp');
+var $ = require('jquery');
+var _ = require('lodash');
+
+module.exports = function (userFeedback) {
   var programmeChosenHandlers = (function () {
     var programmeChangedListeners = [];
 
@@ -30,7 +34,7 @@ var programmesList = function (userFeedback) {
   }
 
   function selectProgramme(programmeName) {
-    return RSVP.Promise.cast(jQuery.post('/my_zwave/programme/' + programmeName + '/start'));
+    return RSVP.Promise.cast($.post('/my_zwave/programme/' + programmeName + '/start'));
   }
 
   var programmeButtonTemplate = (function () {
