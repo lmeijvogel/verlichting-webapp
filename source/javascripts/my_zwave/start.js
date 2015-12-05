@@ -21,15 +21,14 @@ $(function () {
     if ($('#auto_off').is(':checked')) {
       scheduledProgrammes.scheduleAutoOff().then(function () {
         scheduledProgrammes.generateTable().then(function ($table) {
-          $('#schedule').html('');
-          $('#schedule').append($table);
+          $('#schedule').html($table);
         });
       });
     }
   });
 
-  $('#programmeButtons').html('');
-  $('#programmeButtons').append(programmesListInterface.makeButtonsList());
+  $('#programmeButtons').html(programmesListInterface.makeButtonsList());
+
   scheduledProgrammes.generateTable().then(function ($table) {
     $('#schedule').html('');
     $('#schedule').append($table);
