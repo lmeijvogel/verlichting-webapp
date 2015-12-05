@@ -87,7 +87,7 @@ module.exports = function (userFeedback) {
 
       var displayableTime = date.format('HH:mm');
 
-      userFeedback.setNotice('Scheduled off at ' + displayableTime);
+      userFeedback.addMessage('Scheduled off at ' + displayableTime);
     });
   }
 

@@ -10,9 +10,11 @@ var RSVP = require('rsvp');
 var $ = require('jquery');
 
 $(function () {
-  var feedback = userFeedback($('.notice'), $('.error'));
-  var programmesListInterface = programmesList(feedback);
-  var scheduledProgrammes     = scheduledProgrammesList(feedback);
+  var errorFeedback = userFeedback($('.error'));
+  var noticeFeedback = userFeedback($('.notice'));
+
+  var programmesListInterface = programmesList(errorFeedback);
+  var scheduledProgrammes     = scheduledProgrammesList(noticeFeedback);
   var currentValues           = lightValuesList();
 
   programmesListInterface.subscribeProgrammeChanged(function () {

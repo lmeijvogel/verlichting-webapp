@@ -10,3 +10,4 @@ rules:
 globals:
   require: false
   module: false
+  setTimeout: false

@@ -69,11 +69,10 @@ module.exports = function (userFeedback) {
     button.click(function () {
       selectProgramme(programmeId).then(function () {
         programmeChosenHandlers.notify(programmeId);
-        userFeedback.clearError();
       }).catch(function (jqXHR) {
         button.removeClass('btn-default').addClass('btn-danger');
 
-        userFeedback.setError(jqXHR.responseText);
+        userFeedback.addMessage(jqXHR.responseText);
       });
     });
 

@@ -1,24 +1,59 @@
-module.exports = function (noticeElement, errorElement) {
-  function setError(error) {
-    errorElement.text(error).slideDown();
+var userFeedback = function (element) {
+  var messages   = [];
+  var displaying = false;
+
+  function addMessage(message) {
+    messages.push(message);
+
+    startDisplaying();
   }
 
-  function setNotice(notice) {
-    noticeElement.text(notice).slideDown();
+  function startDisplaying() {
+    if (displaying) {
+      return;
+    }
+
+    displaying = true;
+
+    showNextMessage();
   }
 
-  function clearError() {
-    errorElement.slideUp().text('');
+  function stopDisplaying() {
+    displaying = false;
+    hideMessage();
   }
 
-  function clearNotice() {
-    noticeElement.slideUp().text('');
+  function showNextMessage() {
+    var message = messages.shift();
+
+    if (message) {
+      showMessageAndScheduleNext(message);
+    } else {
+      stopDisplaying();
+    }
+  }
+
+  function showMessageAndScheduleNext(message) {
+    element.text(message).slideDown();
+
+    setTimeout(hideAndShowNextMessage, 3000);
+  }
+
+  function hideAndShowNextMessage() {
+    return hideMessage().then(function () {
+      showNextMessage();
+    });
+  }
+
+  function hideMessage() {
+    return element.slideUp().promise().then(function () {
+      element.text('');
+    });
   }
 
   return {
-    setError:    setError,
-    clearError:  clearError,
-    setNotice:   setNotice,
-    clearNotice: clearNotice
+    addMessage: addMessage
   };
 };
+
+module.exports = userFeedback;
