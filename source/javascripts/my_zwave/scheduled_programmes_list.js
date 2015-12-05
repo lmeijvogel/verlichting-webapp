@@ -11,7 +11,7 @@ module.exports = function (userFeedback) {
     var date = moment({hours: mean, minutes: 0});
     var random0to60 = Math.random() * 60;
 
-    date.add('minutes', random0to60 - 30);
+    date.add(random0to60 - 30, 'minutes');
 
     return date;
   }
