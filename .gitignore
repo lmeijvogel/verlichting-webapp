@@ -17,5 +17,5 @@
 # Ignore .DS_store file
 .DS_Store
 
-/source/javascripts/node_modules
+node_modules
 /source/javascripts/my_zwave.js
