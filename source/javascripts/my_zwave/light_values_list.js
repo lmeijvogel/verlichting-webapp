@@ -17,24 +17,44 @@ module.exports = function () {
   }
 
   function show() {
-    $lights.html('');
+    var rowTemplate = _.template('<tr data-name="${displayName}">' +
+      '<td class="key">${displayName}</td>' +
+      '<td class="value">${value}</td>' +
+      '</tr>');
+
+    $lights.find('tr .value').text('?');
 
     RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
       .then(function (data) {
-        var lights = data.lights;
-        var table = $('<table class="table table-striped">');
+        var lightValues = _.chain(data.lights).keys().map(function (key) {
+          var light = data.lights[key];
 
-        _.chain(lights).keys().map(function (key) {
-          var light = lights[key];
-          var value = lightValueToString(light.value);
+          return {
+            displayName: key.substr(5),
+            value:       lightValueToString(light.value)
+          };
+        });
 
-          return '<tr><td>' + key.substr(5) + '</td><td>' + value + '</td></tr>';
-        }).each(function (rowHtml) {
-          table.append($(rowHtml));
-        }).run();
+        if ($lights.find('tr').length > 0) {
+          lightValues.each(function (value) {
+            updateLightValue(value.displayName, value.value);
+          }).run();
+        } else {
+          var table = $('<table class="table table-striped">');
 
-        $lights.append(table);
+          lightValues.each(function (value) {
+            var rowHtml = rowTemplate(value);
+
+            table.append($(rowHtml));
+          }).run();
+
+          $lights.append(table);
+        }
       });
+  }
+
+  function updateLightValue(displayName, value) {
+    $lights.find('[data-name="' + displayName + '"] .value').text(value);
   }
 
   var publicMethods = {
