@@ -10,6 +10,12 @@ module.exports = function (grunt) {
           {cwd: 'source/', src: ['stylesheets/*.css'], dest: 'site/', nonull: true, expand: true },
           {cwd: 'source/', src: ['images/*'], dest: 'site/', nonull: true, expand: true },
         ]
+      },
+
+      nonUglified: {
+        files: [
+          {cwd: 'tmp/', src: ['my_zwave.js'], dest: 'site/javascripts', expand: true}
+        ]
       }
     },
     eslint: {
@@ -23,7 +29,7 @@ module.exports = function (grunt) {
         banner: '/* <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       },
       my_target: {
-        files: {  'site/javascripts/my_zwave.min.js': ['tmp/my_zwave.js'] }
+        files: {  'site/javascripts/my_zwave.js': ['tmp/my_zwave.js'] }
       }
     },
 
@@ -37,4 +43,5 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.registerTask('default', ['eslint', 'browserify', 'uglify', 'copy']);
+  grunt.registerTask('dev',     ['eslint', 'browserify', 'copy:nonUglified', 'copy']);
 };
