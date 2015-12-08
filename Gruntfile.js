@@ -33,6 +33,14 @@ module.exports = function (grunt) {
       }
     },
 
+    watch: {
+      files:
+        [
+          'source/**/*'
+        ],
+      tasks: ['default']
+    },
+
     clean: ['site/']
   });
 
@@ -41,7 +49,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', ['eslint', 'browserify', 'uglify', 'copy']);
-  grunt.registerTask('dev',     ['eslint', 'browserify', 'copy:nonUglified', 'copy']);
+  grunt.registerTask('build',   ['clean', 'copy', 'eslint', 'browserify', 'uglify']);
+  grunt.registerTask('default', [         'copy', 'eslint', 'browserify', 'copy:nonUglified']);
 };
