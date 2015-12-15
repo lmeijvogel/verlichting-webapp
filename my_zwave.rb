@@ -34,6 +34,12 @@ class MyZWave < Sinatra::Base
     end
   end
 
+  get '/available_programmes' do
+    result = {availableProgrammes: redis.hgetall('zwave_available_programmes')}
+
+    result.to_json
+  end
+
   get '/current_programme' do
     result = {programme: redis.get('zwave_programme')}
 
