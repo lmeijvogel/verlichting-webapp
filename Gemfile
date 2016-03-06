@@ -6,6 +6,7 @@ gem "middleman", "~>3.3.2"
 gem "middleman-deploy"
 
 gem "sinatra"
+gem "thin"
 gem "redis"
 gem 'bcrypt'
 gem 'dotenv'
