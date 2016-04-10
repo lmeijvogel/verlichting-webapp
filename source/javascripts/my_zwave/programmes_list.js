@@ -22,15 +22,9 @@ module.exports = function (userFeedback) {
   })();
 
   function getProgrammes() {
-    return {
-      'off':        'Off',
-      'evening':    'Evening',
-      'evening_tv': 'Evening (TV off)',
-      'dimmed':     'Dimmed',
-      'night':      'Night',
-      'morning':    'Morning',
-      'full':       'Full'
-    };
+    return RSVP.Promise.cast($.getJSON('/my_zwave/available_programmes')).then(function (json) {
+      return json.availableProgrammes;
+    });
   }
 
   function selectProgramme(programmeName) {
@@ -83,13 +77,14 @@ module.exports = function (userFeedback) {
   }
 
   var makeButtonsList = function () {
-    var programmes = getProgrammes();
-    var buttons = makeButtons(programmes);
-    var $ul = $('<ul class="programmes"></ul>');
+    return getProgrammes().then(function (programmes) {
+      var buttons = makeButtons(programmes);
+      var $ul = $('<ul class="programmes"></ul>');
 
-    $ul.append(buttons);
+      $ul.append(buttons);
 
-    return $ul;
+      return $ul;
+    });
   };
 
   var publicMethods = {

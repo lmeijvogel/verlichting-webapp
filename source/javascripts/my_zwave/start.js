@@ -26,8 +26,9 @@ $(function () {
       });
     }
   });
-
-  $('#programmeButtons').html(programmesListInterface.makeButtonsList());
+  programmesListInterface.makeButtonsList().then(function (buttonsHtml) {
+    $('#programmeButtons').html(buttonsHtml);
+  });
 
   scheduledProgrammes.generateTable().then(function ($table) {
     $('#schedule').html('');
