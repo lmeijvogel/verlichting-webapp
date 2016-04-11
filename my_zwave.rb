@@ -70,7 +70,7 @@ class MyZWave < Sinatra::Base
 
     datetime = DateTime.parse(params[:datetime])
 
-    job = AtQueue.new.add(datetime, "ruby /home/lennaert/my-zwave/bin/zwave.rb programme #{sanitized_name}")
+    job = AtQueue.new.add(datetime, "ruby #{ENV['ZWAVE_COMMAND_EXECUTABLE_PATH']} programme #{sanitized_name}")
     job.to_json
   end
 
