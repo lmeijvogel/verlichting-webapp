@@ -4,7 +4,7 @@ var $ = require('jquery');
 var _ = require('lodash');
 
 module.exports = function (userFeedback) {
-  function randomDate(mean) {
+  function randomTime(mean) {
     // Pick a random time around the given mean hour.
     // E.g. if mean=23, the time will be chosen between
     // 22:30 and 23:30.
@@ -78,7 +78,7 @@ module.exports = function (userFeedback) {
   function scheduleAutoOff() {
     return RSVP.Promise.cast($.ajax({
       url: '/my_zwave/scheduled_tasks/new',
-      data: {name: 'off', datetime: randomDate(23).toJSON()},
+      data: {name: 'off', datetime: randomTime(23).toJSON()},
       type: 'POST'
     }))
     .then(function (jqXHR) {
