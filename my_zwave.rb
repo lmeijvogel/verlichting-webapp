@@ -68,6 +68,38 @@ class MyZWave < Sinatra::Base
     {lights: light_values}.to_json
   end
 
+  get '/vacation_mode' do
+    result = redis.hgetall("zwave_vacation_mode")
+
+    result.to_json
+  end
+
+  post '/vacation_mode' do
+    time_regex = %r[\d\d:\d\d]
+    state = params.fetch("state")
+
+    if state == 'on'
+      start_time = params.fetch("start_time")
+      end_time   = params.fetch("end_time")
+
+      unless time_regex.match(start_time) && time_regex.match(end_time)
+        status 400
+        return "Invalid start or end time"
+      end
+
+      recipient_count = redis.publish( "MyZWave", "vacationMode on start:#{start_time} end:#{end_time}" )
+    else
+      recipient_count = redis.publish( "MyZWave", "vacationMode off" )
+    end
+
+    if recipient_count > 0
+      "OK: #{recipient_count} recipients"
+    else
+      status 503
+      "No listening services"
+    end
+  end
+
   post '/scheduled_tasks/new' do
     sanitized_name = params[:name].match(/[a-z]+/)[0]
 
