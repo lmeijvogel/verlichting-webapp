@@ -11,3 +11,4 @@ globals:
   require: false
   module: false
   setTimeout: false
+  document: false
