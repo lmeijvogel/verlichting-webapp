@@ -18,5 +18,7 @@
 .DS_Store
 
 node_modules
-/source/javascripts/my_zwave.js
 /tmp
+site/
+log/
+.env
