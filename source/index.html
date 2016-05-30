@@ -35,6 +35,25 @@
         </label>
       </div>
 
+      <div class="vacation-mode col-xs-12">
+        <h1 class="col-xs-12">Vacation mode</h1>
+        <div class="vacation-mode--off col-xs-12" style="display: none">
+          <p>Vacation mode is <em>OFF</em></p>
+          <div id="plan-vacation">
+            <p>Average on-time: <input id="start-time" type="time" value="18:30" data-target="vacation-mode__start-time">
+            <p>Average off-time: <input id="end-time" type="time" value="22:30" data-target="vacation-mode__end-time">
+            <p><button class="add-day" data-behavior="start-vacation">Start</button>
+          </div>
+        </div>
+        <div class="vacation-mode--on col-xs-12" style="display: none">
+          <p>Vacation mode is <em>ON</em></p>
+          <p>Average on-time: <span data-target="vacation-mode__start-time"></span>
+          <p>Average off-time: <span data-target="vacation-mode__end-time"></span>
+
+          <p><button class="vacation-mode__stop-button" data-behavior="stop-vacation">Stop vacation mode</button>
+        </div>
+      </div>
+
       <h1 class="col-xs-12">Scheduled jobs</h1>
       <div id="schedule" class="col-xs-12"></div>
 
