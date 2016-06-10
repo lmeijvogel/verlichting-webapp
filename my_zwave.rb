@@ -100,6 +100,14 @@ class MyZWave < Sinatra::Base
     end
   end
 
+  get '/last_actions' do
+    [
+      { time: Time.now,
+        description: "programme evening"
+      }
+    ].to_json
+  end
+
   post '/scheduled_tasks/new' do
     sanitized_name = params[:name].match(/[a-z]+/)[0]
 

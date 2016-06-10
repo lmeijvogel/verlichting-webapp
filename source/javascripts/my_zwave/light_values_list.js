@@ -17,40 +17,44 @@ module.exports = function () {
   }
 
   function show() {
+    $lights.find('tr .value').text('?');
+
+    RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
+      .then(function (data) {
+        fillTable(data);
+      });
+  }
+
+  function fillTable(data) {
     var rowTemplate = _.template('<tr data-name="${displayName}">' +
       '<td class="key">${displayName}</td>' +
       '<td class="value">${value}</td>' +
       '</tr>');
 
-    $lights.find('tr .value').text('?');
+    var lightValues = _.chain(data.lights).keys().map(function (key) {
+      var light = data.lights[key];
 
-    RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
-      .then(function (data) {
-        var lightValues = _.chain(data.lights).keys().map(function (key) {
-          var light = data.lights[key];
+      return {
+        displayName: key.substr(5),
+        value:       lightValueToString(light.value)
+      };
+    });
 
-          return {
-            displayName: key.substr(5),
-            value:       lightValueToString(light.value)
-          };
-        });
+    if ($lights.find('tr').length > 0) {
+      lightValues.each(function (value) {
+        updateLightValue(value.displayName, value.value);
+      }).run();
+    } else {
+      var table = $('<table class="table table-striped">');
 
-        if ($lights.find('tr').length > 0) {
-          lightValues.each(function (value) {
-            updateLightValue(value.displayName, value.value);
-          }).run();
-        } else {
-          var table = $('<table class="table table-striped">');
+      lightValues.each(function (value) {
+        var rowHtml = rowTemplate(value);
 
-          lightValues.each(function (value) {
-            var rowHtml = rowTemplate(value);
+        table.append($(rowHtml));
+      }).run();
 
-            table.append($(rowHtml));
-          }).run();
-
-          $lights.append(table);
-        }
-      });
+      $lights.append(table);
+    }
   }
 
   function updateLightValue(displayName, value) {

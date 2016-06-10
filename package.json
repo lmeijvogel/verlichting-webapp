@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:lmeijvogel/verlichting-webapp.git"
+    "url": "git+ssh://git@github.com/lmeijvogel/verlichting-webapp.git"
   },
   "author": "Lennaert Meijvogel <lmeijvogel@yahoo.co.uk>",
   "license": "MIT",
