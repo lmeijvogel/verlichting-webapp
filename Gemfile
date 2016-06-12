@@ -8,3 +8,8 @@ gem "thin"
 gem "redis"
 gem 'bcrypt'
 gem 'dotenv'
+
+group 'development' do
+  gem 'guard'
+  gem 'guard-shell'
+end
