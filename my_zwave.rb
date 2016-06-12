@@ -100,6 +100,10 @@ class MyZWave < Sinatra::Base
     end
   end
 
+  get '/latest_events' do
+    redis.lrange("zwave_recent_events", 0, -1).to_json
+  end
+
   post '/scheduled_tasks/new' do
     sanitized_name = params[:name].match(/[a-z]+/)[0]
 

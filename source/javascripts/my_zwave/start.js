@@ -5,6 +5,7 @@ var showLoginDialog = require('./show_login_dialog');
 var userFeedback    = require('./user_feedback');
 var scheduledProgrammesList = require('./scheduled_programmes_list');
 var VacationMode    = require('./vacation_mode');
+var latestEvents    = require('./latest_events');
 
 var _ = require('lodash');
 var RSVP = require('rsvp');
@@ -20,6 +21,8 @@ $(function () {
   var currentValues           = lightValuesList();
 
   var vacationMode = new VacationMode($('.vacation-mode'));
+
+  latestEvents($('#latest-events')).start();
 
   vacationMode.on('error', function (message) {
     errorFeedback.addMessage(message);
