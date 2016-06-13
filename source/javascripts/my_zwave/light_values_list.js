@@ -40,21 +40,15 @@ module.exports = function () {
       };
     });
 
-    if ($lights.find('tr').length > 0) {
-      lightValues.each(function (value) {
-        updateLightValue(value.displayName, value.value);
-      }).run();
-    } else {
-      var table = $('<table class="table table-striped">');
+    var table = $('<table class="table table-striped">');
 
-      lightValues.each(function (value) {
-        var rowHtml = rowTemplate(value);
+    lightValues.each(function (value) {
+      var rowHtml = rowTemplate(value);
 
-        table.append($(rowHtml));
-      }).run();
+      table.append($(rowHtml));
+    }).value();
 
-      $lights.append(table);
-    }
+    $lights.html(table);
   }
 
   function updateLightValue(displayName, value) {
