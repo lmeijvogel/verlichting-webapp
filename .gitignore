@@ -19,6 +19,7 @@
 
 node_modules
 /tmp
-site/
+work/
+dist/
 log/
 .env

@@ -19,7 +19,7 @@ if is_production_environment
 else
   class Slash < Sinatra::Base
     configure do
-      set :public_folder, File.dirname(__FILE__) + "/site"
+      set :public_folder, File.dirname(__FILE__) + "/work"
     end
 
     get "/" do

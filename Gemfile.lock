@@ -19,6 +19,9 @@ GEM
       shellany (~> 0.0)
       thor (>= 0.18.1)
     guard-compat (1.2.1)
+    guard-rake (1.0.0)
+      guard
+      rake
     guard-shell (0.7.1)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
@@ -41,6 +44,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rake (10.4.2)
     rb-fsevent (0.9.7)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
@@ -73,7 +77,9 @@ DEPENDENCIES
   bcrypt
   dotenv
   guard
+  guard-rake
   guard-shell
+  rake
   redis
   sinatra
   sinatra-contrib
