@@ -3,7 +3,6 @@ var programmesList = require('./programmes_list');
 var lightValuesList = require('./light_values_list');
 var showLoginDialog = require('./show_login_dialog');
 var userFeedback    = require('./user_feedback');
-var scheduledProgrammesList = require('./scheduled_programmes_list');
 var VacationMode    = require('./vacation_mode');
 var latestEvents    = require('./latest_events');
 
@@ -17,7 +16,6 @@ $(function () {
   var noticeFeedback = userFeedback($('.notice'));
 
   var programmesListInterface = programmesList(errorFeedback);
-  var scheduledProgrammes     = scheduledProgrammesList(noticeFeedback);
   var currentValues           = lightValuesList();
 
   var vacationMode = new VacationMode($('.vacation-mode'));
@@ -34,22 +32,8 @@ $(function () {
 
   vacationMode.start();
 
-  programmesListInterface.subscribeProgrammeChanged(function () {
-    if ($('#auto_off').is(':checked')) {
-      scheduledProgrammes.scheduleAutoOff().then(function () {
-        scheduledProgrammes.generateTable().then(function ($table) {
-          $('#schedule').html($table);
-        });
-      });
-    }
-  });
   programmesListInterface.makeButtonsList().then(function (buttonsHtml) {
     $('#programmeButtons').html(buttonsHtml);
-  });
-
-  scheduledProgrammes.generateTable().then(function ($table) {
-    $('#schedule').html('');
-    $('#schedule').append($table);
   });
 
   $('#lightsTitle').on('click', currentValues.show);
