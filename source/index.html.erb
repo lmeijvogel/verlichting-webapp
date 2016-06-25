@@ -10,18 +10,22 @@
     <title>Verlichting</title>
 
     <!-- Bootstrap -->
-    <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css" />
-
-    <link href="/stylesheets/normalize.css" rel="stylesheet" type="text/css" /><link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <% bootstrap = is_production ? fingerprinted_file("source/stylesheets/bootstrap.min.css") : 'bootstrap.min.css' %>
+    <% normalize = is_production ? fingerprinted_file("source/stylesheets/normalize.css") : 'normalize.css' %>
+    <% all = is_production ? fingerprinted_file("source/stylesheets/all.css") : 'all.css' %>
+    <link href="/stylesheets/<%= bootstrap %>" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/<%= normalize %>" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/<%= all %>" rel="stylesheet" type="text/css" />
   </head>
 
   <body role="document" class="index">
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
-    <% my_zwave = is_production ? 'my_zwave.min.js' : 'my_zwave.js' %>
+    <% my_zwave = is_production ? fingerprinted_file("tmp/javascripts/my_zwave.min.js") : 'my_zwave.js' %>
+    <% bootstrap = is_production ? fingerprinted_file("source/javascripts/bootstrap.min.js") : 'bootstrap.min.js' %>
     <script src="/javascripts/<%= my_zwave %>" type="text/javascript"></script>
-    <script src="/javascripts/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/javascripts/<%= bootstrap %>" type="text/javascript"></script>
 
     <div class="container-fluid">
       <div class="error  col-xs-12 col-lg-offset-4 col-lg-4"></div>

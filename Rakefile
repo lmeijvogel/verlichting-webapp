@@ -5,11 +5,14 @@ require 'erb'
 
 CLEAN.include(%w[tmp/**/* work/**/* dist/**/*])
 
-task :default => :build
-task :build => :work
+desc "Build the development version"
+task :default => :work
 
+desc "Build the development version"
 task :work => %w[css_work image_work work/index.html work/javascripts/my_zwave.js work/javascripts/bootstrap.min.js]
-task :dist => %w[css_dist image_dist dist/index.html dist/javascripts/my_zwave.min.js dist/javascripts/bootstrap.min.js]
+
+desc "Build the production version"
+task :dist => %w[fingerprinted_css image_dist fingerprinted_js dist/index.html]
 
 JS_SOURCE_FILES = FileList['source/javascripts/my_zwave/*']
 CSS_SOURCE_FILES = FileList["source/stylesheets/*.css"]
@@ -23,35 +26,59 @@ file MY_ZWAVE_JS_TMP => JS_SOURCE_FILES do |task|
   `browserify source/javascripts/my_zwave/start.js -o #{task.name}`
 end
 
+# For the fingerprinted files, no rule can be written since the
+# filename is only known when it is run and a hash is calculated
+task :fingerprinted_js => %w[fingerprinted_myzwave_js fingerprinted_bootstrap_js]
+
+task :fingerprinted_myzwave_js => "tmp/javascripts/my_zwave.min.js" do |task|
+  copy_fingerprinted_file(task.source, to: "dist/javascripts")
+end
+
+task :fingerprinted_bootstrap_js => "source/javascripts/bootstrap.min.js" do |task|
+  copy_fingerprinted_file(task.source, to: "dist/javascripts")
+end
+
+task :fingerprinted_css => %w[fingerprinted_bootstrap_css fingerprinted_normalize_css fingerprinted_all_css]
+
+task :fingerprinted_bootstrap_css => "source/stylesheets/bootstrap.min.css" do |task|
+  copy_fingerprinted_file(task.source, to: "dist/stylesheets")
+end
+
+task :fingerprinted_normalize_css => "source/stylesheets/normalize.css" do |task|
+  copy_fingerprinted_file(task.source, to: "dist/stylesheets")
+end
+
+task :fingerprinted_all_css => "source/stylesheets/all.css" do |task|
+  copy_fingerprinted_file(task.source, to: "dist/stylesheets")
+end
+
 file "work/javascripts/my_zwave.js" => MY_ZWAVE_JS_TMP do |task|
   mkdir_p("work/javascripts")
 
   cp task.source, task.name
 end
 
-file "dist/javascripts/my_zwave.min.js" => MY_ZWAVE_JS_TMP do |task|
-  mkdir_p("dist/javascripts")
-
+file "tmp/javascripts/my_zwave.min.js" => MY_ZWAVE_JS_TMP do |task|
   `uglifyjs #{task.source} --screw-ie8 --mangle --wrap --output #{task.name}`
 end
 
-%w[work dist].each do |build_target|
-  CSS_SOURCE_FILES.each do |source|
-    name = source.pathmap("%{^source/,#{build_target}/}p")
-    file name => source do |task|
-      mkdir_p(task.name.pathmap("%d"))
-
-      cp task.source, task.name
-    end
-  end
-
-  file "#{build_target}/javascripts/bootstrap.min.js" => "source/javascripts/bootstrap.min.js" do |task|
-    mkdir_p("#{build_target}/javascripts")
+CSS_SOURCE_FILES.each do |source|
+  name = source.pathmap("%{^source/,work/}p")
+  file name => source do |task|
+    mkdir_p(task.name.pathmap("%d"))
 
     cp task.source, task.name
   end
+end
 
-  file "#{build_target}/images/*" => "source/javascripts/bootstrap.min.js" do |task|
+file "work/javascripts/bootstrap.min.js" => "source/javascripts/bootstrap.min.js" do |task|
+  mkdir_p("work/javascripts")
+
+  cp task.source, task.name
+end
+
+%w[work dist].each do |build_target|
+  file "#{build_target}/images/*" => "source/images/*" do |task|
     mkdir_p("#{build_target}/images")
 
     cp task.source, task.name
@@ -69,7 +96,6 @@ end
 end
 
 task "css_work" => CSS_SOURCE_FILES.pathmap("%{source,work}p")
-task "css_dist" => CSS_SOURCE_FILES.pathmap("%{source,dist}p")
 
 task "image_work" => IMAGE_SOURCE_FILES.pathmap("%{source,work}p")
 task "image_dist" => IMAGE_SOURCE_FILES.pathmap("%{source,dist}p")
@@ -91,4 +117,17 @@ def write_index(output_path:, is_production:)
       output.write(template.result(binding))
     end
   end
+end
+
+def fingerprinted_file(path)
+  source_fingerprint = Digest::SHA256.hexdigest(File.read(path))
+
+  path.pathmap("%n-#{source_fingerprint}%x")
+end
+
+def copy_fingerprinted_file(source, to:)
+  mkdir_p(to) unless File.exists?(to)
+
+  dest = File.join(to, fingerprinted_file(source))
+  cp source, dest unless File.exists?(dest)
 end
