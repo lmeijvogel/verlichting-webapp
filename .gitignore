@@ -23,3 +23,5 @@ work/
 dist/
 log/
 .env
+
+deploy.yml

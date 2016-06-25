@@ -3,6 +3,8 @@ Rake.application.options.trace_rules = true
 require 'rake/clean'
 require 'erb'
 
+require './static_files_uploader.rb'
+
 CLEAN.include(%w[tmp/**/* work/**/* dist/**/*])
 
 desc "Build the development version"
@@ -13,6 +15,11 @@ task :work => %w[css_work image_work work/index.html work/javascripts/my_zwave.j
 
 desc "Build the production version"
 task :dist => %w[fingerprinted_css image_dist fingerprinted_js dist/index.html]
+
+# TODO: This clears the work directory as well
+task :deploy => %w[clean dist] do
+  StaticFilesUploader.new('./deploy.yml').call
+end
 
 JS_SOURCE_FILES = FileList['source/javascripts/my_zwave/*']
 CSS_SOURCE_FILES = FileList["source/stylesheets/*.css"]

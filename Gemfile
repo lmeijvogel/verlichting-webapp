@@ -11,6 +11,7 @@ gem 'bcrypt'
 gem 'dotenv'
 
 group 'development' do
+  gem 'sshkit'
   gem 'guard'
   gem 'guard-shell'
   gem 'guard-rake'
