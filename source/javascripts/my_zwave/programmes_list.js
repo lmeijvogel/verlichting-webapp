@@ -89,7 +89,6 @@ module.exports = function (userFeedback) {
 
   var publicMethods = {
     makeButtonsList:           makeButtonsList,
-    subscribeProgrammeChanged: programmeChosenHandlers.subscribe,
     selectProgramme:           programmeChosenHandlers.notify
   };
 
