@@ -42,7 +42,7 @@ module.exports = function ($selector) {
       return rowTemplate(parsedRowData);
     });
 
-    return '<table class="table">' + rows.join() + '</table>';
+    return '<table class="table">' + rows.join('') + '</table>';
   }
 
   function pad(str) {
