@@ -9,6 +9,7 @@ gem "thin"
 gem "redis"
 gem 'bcrypt'
 gem 'dotenv'
+gem 'highline'
 
 group 'development' do
   gem 'sshkit'
