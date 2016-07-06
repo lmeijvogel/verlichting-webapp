@@ -153,10 +153,7 @@ class MyZWave < Sinatra::Base
   end
 
   def check_login_or_redirect
-    if session[:username].nil?
-      session.clear
-      halt 401, "Please login"
-    else
+    if session.has_key?(:username)
       redis_key = "password_#{session[:username]}"
       user_exists = redis.exists(redis_key)
 
@@ -166,6 +163,9 @@ class MyZWave < Sinatra::Base
         session.clear
         halt 401, "Please login"
       end
+    else
+      session.clear
+      halt 401, "Please login"
     end
   end
 end
