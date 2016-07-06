@@ -163,9 +163,27 @@ class MyZWave < Sinatra::Base
         session.clear
         halt 401, "Please login"
       end
+    elsif request_has_valid_auth_token?
+      pass
     else
       session.clear
       halt 401, "Please login"
     end
+  end
+
+  def request_has_valid_auth_token?
+    provided_key = request.env["HTTP_AUTHORIZATION"]
+
+    return false if provided_key.nil?
+
+    auth_key_is_safe = contains_only_hex?(provided_key)
+
+    return false unless auth_key_is_safe
+
+    return redis.exists("auth_key_#{provided_key}")
+  end
+
+  def contains_only_hex?(key)
+    key.downcase =~ %r|\A[0-9a-f]+\z|
   end
 end
