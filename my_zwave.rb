@@ -7,7 +7,8 @@ require 'sinatra/reloader'
 class MyZWave < Sinatra::Base
   configure do
     secure = ENV['SECURE'] == "true"
-    secret = ENV['SESSION_SECRET']
+    secret = ENV.fetch('SESSION_SECRET')
+    raise "No session secret set!" if secret.nil? || secret.strip.empty?
     # Storing login information in cookies is good enough for our purposes
     one_year = 60*60*24*365
     use Rack::Session::Cookie, :expire_after => one_year, :secret => secret, :secure => secure, :httponly => true
