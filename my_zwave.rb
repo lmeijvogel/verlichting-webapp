@@ -172,18 +172,18 @@ class MyZWave < Sinatra::Base
   end
 
   def request_has_valid_auth_token?
-    provided_key = request.env["HTTP_AUTHORIZATION"] || params["authorization"]
+    user = params["user"]
+    authorization_key = params["authorization_key"]
 
-    return false unless provided_key
+    return false unless user && authorization_key
+    return false unless contains_only_alpha?(user)
 
-    auth_key_is_safe = contains_only_hex?(provided_key)
+    stored_key = redis.get("auth_key_#{user}")
 
-    return false unless auth_key_is_safe
-
-    return redis.exists("auth_key_#{provided_key}")
+    return BCrypt::Password.new(stored_key) == authorization_key
   end
 
-  def contains_only_hex?(key)
-    key.downcase =~ %r|\A[0-9a-f]+\z|
+  def contains_only_alpha?(key)
+    key.downcase =~ %r|\A[a-z]+\z|
   end
 end

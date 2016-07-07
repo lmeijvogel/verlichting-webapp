@@ -6,7 +6,7 @@ require 'securerandom'
 
 cli = HighLine.new
 
-user = cli.ask("Username? (only used for description)")
+user = cli.ask("Username?")
 
 auth_key = SecureRandom.hex
 
@@ -15,5 +15,6 @@ puts "Authorization_key: #{auth_key}"
 puts "Include it in an HTTP request in the Authorization header. (https only!)"
 
 begin
-  Redis.new.set("auth_key_#{auth_key}", user)
+  hashed_key = BCrypt::Password.create(auth_key)
+  Redis.new.set("auth_key_#{user}", hashed_key)
 end
