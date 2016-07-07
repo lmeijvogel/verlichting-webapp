@@ -172,9 +172,9 @@ class MyZWave < Sinatra::Base
   end
 
   def request_has_valid_auth_token?
-    provided_key = request.env["HTTP_AUTHORIZATION"]
+    provided_key = request.env["HTTP_AUTHORIZATION"] || params["authorization"]
 
-    return false if provided_key.nil?
+    return false unless provided_key
 
     auth_key_is_safe = contains_only_hex?(provided_key)
 
