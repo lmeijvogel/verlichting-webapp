@@ -1,3 +1,4 @@
+var createButton = require('./button');
 var RSVP = require('rsvp');
 var $ = require('jquery');
 var _ = require('lodash');
@@ -31,12 +32,23 @@ module.exports = function (userFeedback) {
     return RSVP.Promise.cast($.post('/my_zwave/programme/' + programmeName + '/start'));
   }
 
-  var programmeButtonTemplate = (function () {
-    var buttonClasses = 'selectProgrammeButton btn btn-lg btn-default';
-    var template = '<button type="button" class="' + buttonClasses + '">${programmeName}</button>';
+  function makeButton(programmeId, programmeName) {
+    var button = createButton(programmeId, programmeName);
 
-    return _.template(template);
-  })();
+    programmeChosenHandlers.subscribe(button.newProgrammeChosen);
+
+    button.onClick(function () {
+      selectProgramme(programmeId).then(function () {
+        programmeChosenHandlers.notify(programmeId);
+      }).catch(function (jqXHR) {
+        button.element.removeClass('btn-default').addClass('btn-danger');
+
+        userFeedback.addMessage(jqXHR.responseText);
+      });
+    });
+
+    return button;
+  }
 
   function makeButtons(programmes) {
     return _.chain(programmes).keys().map(function (programmeId) {
@@ -46,42 +58,14 @@ module.exports = function (userFeedback) {
     }).value();
   }
 
-  function makeButton(programmeId, programmeName) {
-    var button = $(programmeButtonTemplate({programmeId: programmeId, programmeName: programmeName}));
-
-    var buttonChanged = function (newProgrammeId) {
-      button.removeClass('btn-danger');
-      if (newProgrammeId == programmeId) {
-        button.removeClass('btn-default').addClass('btn-primary');
-      } else {
-        button.removeClass('btn-primary').addClass('btn-default');
-      }
-    };
-
-    programmeChosenHandlers.subscribe(buttonChanged);
-
-    button.click(function () {
-      selectProgramme(programmeId).then(function () {
-        programmeChosenHandlers.notify(programmeId);
-      }).catch(function (jqXHR) {
-        button.removeClass('btn-default').addClass('btn-danger');
-
-        userFeedback.addMessage(jqXHR.responseText);
-      });
-    });
-
-    var $li = $('<li class="row"></li>');
-
-    $li.append(button);
-    return $li;
-  }
-
   var makeButtonsList = function () {
     return getProgrammes().then(function (programmes) {
       var buttons = makeButtons(programmes);
       var $ul = $('<ul class="programmes"></ul>');
 
-      $ul.append(buttons);
+      $ul.append(_.map(buttons, function (button) {
+        return button.element;
+      }));
 
       return $ul;
     });
