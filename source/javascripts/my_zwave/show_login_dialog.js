@@ -1,6 +1,5 @@
 var RSVP = require('rsvp');
 var $ = require('jquery');
-var _ = require('lodash');
 
 module.exports = function () {
   return new RSVP.Promise(function (resolve) {

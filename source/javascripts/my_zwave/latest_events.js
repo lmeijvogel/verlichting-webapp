@@ -1,21 +1,27 @@
-var _ = require('lodash');
+var map = require('lodash.map');
+var times = require('lodash.times');
 var RSVP = require('rsvp');
 
 var $post = require('jquery').post;
 var $getJSON = require('jquery').getJSON;
 
 module.exports = function ($selector) {
-  var rowTemplate = _.template('<tr>' +
-    '<td class="col-xs-6 col-sm-3">${time}</td>' +
-    '<td class="hidden-xs col-sm-4">${initiator}</td>' +
-    '<td class="hidden-xs col-sm-4">${event}</td>' +
-    '<td class="col-xs-6 col-sm-1">${data}</td>' +
-  '</tr>');
+  var rowTemplate = function (value) {
+    return '<tr>' +
+             '<td class="col-xs-6 col-sm-3">' + value.time + '</td>' +
+             '<td class="hidden-xs col-sm-4">' + value.initiator + '</td>' +
+             '<td class="hidden-xs col-sm-4">' + value.event + '</td>' +
+             '<td class="col-xs-6 col-sm-1">' + value.data + '</td>' +
+           '</tr>';
+  };
 
   var months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
                 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
-  var dateTemplate = _.template('${date} ${month} ${hour}:${minute}');
+  var dateTemplate = function (value) {
+    return '' + value.date + ' ' + value.month +
+          ' ' + value.hour + ':' + value.minute;
+  };
 
   function start() {
     RSVP.Promise.cast($getJSON('/my_zwave/latest_events')).then(function (data) {
@@ -26,7 +32,7 @@ module.exports = function ($selector) {
   }
 
   function makeTable(data) {
-    var rows = _.map(data, function (rowData) {
+    var rows = map(data, function (rowData) {
       var parsedRowData = JSON.parse(rowData);
 
       var time = new Date(parsedRowData.time);
@@ -48,7 +54,7 @@ module.exports = function ($selector) {
   function pad(str) {
     var numberOfZeroes = 2 - str.toString().length;
 
-    var zeroes = _.map(_.times(numberOfZeroes), function () {
+    var zeroes = map(times(numberOfZeroes), function () {
       return '0';
     });
 

@@ -1,7 +1,9 @@
 var createButton = require('./button');
 var RSVP = require('rsvp');
 var $ = require('jquery');
-var _ = require('lodash');
+var foreach = require('lodash.foreach');
+var keys = require('lodash.keys');
+var map = require('lodash.map');
 
 module.exports = function (userFeedback) {
   var programmeChosenHandlers = (function () {
@@ -13,7 +15,7 @@ module.exports = function (userFeedback) {
       },
 
       notify: function (newProgrammeId) {
-        _.each(programmeChangedListeners, function (handler) {
+        foreach(programmeChangedListeners, function (handler) {
           handler(newProgrammeId);
         });
       }
@@ -51,11 +53,11 @@ module.exports = function (userFeedback) {
   }
 
   function makeButtons(programmes) {
-    return _.chain(programmes).keys().map(function (programmeId) {
+    return map(keys(programmes), function (programmeId) {
       var programmeName = programmes[programmeId];
 
       return makeButton(programmeId, programmeName);
-    }).value();
+    });
   }
 
   var makeButtonsList = function () {
@@ -63,7 +65,7 @@ module.exports = function (userFeedback) {
       var buttons = makeButtons(programmes);
       var $ul = $('<ul class="programmes"></ul>');
 
-      $ul.append(_.map(buttons, function (button) {
+      $ul.append(map(buttons, function (button) {
         return button.element;
       }));
 

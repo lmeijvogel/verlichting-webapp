@@ -1,15 +1,14 @@
 var $ = require('jquery');
-var _ = require('lodash');
 
-var programmeButtonTemplate = (function () {
+var programmeButtonTemplate = function (programmeName) {
   var buttonClasses = 'selectProgrammeButton btn btn-lg btn-default';
-  var template = '<button type="button" class="' + buttonClasses + '">${programmeName}</button>';
+  var template = '<button type="button" class="' + buttonClasses + '">' + programmeName + '</button>';
 
-  return _.template(template);
-})();
+  return template;
+};
 
 module.exports = function (programmeId, programmeName) {
-  var button = $(programmeButtonTemplate({programmeName: programmeName}));
+  var button = $(programmeButtonTemplate(programmeName));
   var clickHandler = function () {};
 
   function newProgrammeChosen(newProgrammeId) {

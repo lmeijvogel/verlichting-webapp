@@ -1,4 +1,4 @@
-var _ = require('lodash');
+var foreach = require('lodash.foreach');
 var RSVP = require('rsvp');
 
 var $post = require('jquery').post;
@@ -60,7 +60,7 @@ module.exports = function ($selector) {
   }
 
   function trigger(event, arg) {
-    _.each(callbacks[event], function (callback) {
+    foreach(callbacks[event], function (callback) {
       callback(arg);
     });
   }

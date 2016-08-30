@@ -6,7 +6,6 @@ var userFeedback    = require('./user_feedback');
 var VacationMode    = require('./vacation_mode');
 var latestEvents    = require('./latest_events');
 
-var _ = require('lodash');
 var RSVP = require('rsvp');
 
 var $ = require('jquery');

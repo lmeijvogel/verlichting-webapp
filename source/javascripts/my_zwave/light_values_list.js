@@ -1,6 +1,8 @@
 var RSVP = require('rsvp');
 var $ = require('jquery');
-var _ = require('lodash');
+var foreach = require('lodash.foreach');
+var map = require('lodash.map');
+var keys = require('lodash.keys');
 
 module.exports = function () {
   var $lights = $('#lights');
@@ -26,12 +28,7 @@ module.exports = function () {
   }
 
   function fillTable(data) {
-    var rowTemplate = _.template('<tr data-name="${displayName}">' +
-      '<td class="key">${displayName}</td>' +
-      '<td class="value">${value}</td>' +
-      '</tr>');
-
-    var lightValues = _.chain(data.lights).keys().map(function (key) {
+    var lightValues = map(keys(data.lights), function (key) {
       var light = data.lights[key];
 
       return {
@@ -42,11 +39,14 @@ module.exports = function () {
 
     var table = $('<table class="table table-striped">');
 
-    lightValues.each(function (value) {
-      var rowHtml = rowTemplate(value);
+    foreach(lightValues, function (value) {
+      var rowHtml = '<tr data-name="' + value.displayName + '">' +
+      '<td class="key">' + value.displayName + '</td>' +
+      '<td class="value">' + value.value + '</td>' +
+      '</tr>';
 
       table.append($(rowHtml));
-    }).value();
+    });
 
     $lights.html(table);
   }
