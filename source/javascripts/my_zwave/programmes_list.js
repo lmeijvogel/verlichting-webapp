@@ -1,6 +1,6 @@
 var createButton = require('./button');
 var RSVP = require('rsvp');
-var $ = require('jquery');
+var $ = window.jQuery;
 var foreach = require('lodash.foreach');
 var keys = require('lodash.keys');
 var map = require('lodash.map');

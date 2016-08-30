@@ -1,4 +1,4 @@
-var $ = require('jquery');
+var $ = window.jQuery;
 
 var programmeButtonTemplate = function (programmeName) {
   var buttonClasses = 'selectProgrammeButton btn btn-lg btn-default';

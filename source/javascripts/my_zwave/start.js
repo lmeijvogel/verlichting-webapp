@@ -8,7 +8,7 @@ var latestEvents    = require('./latest_events');
 
 var RSVP = require('rsvp');
 
-var $ = require('jquery');
+var $ = window.jQuery;
 
 $(function () {
   var errorFeedback = userFeedback($('.error'));

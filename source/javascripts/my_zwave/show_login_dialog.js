@@ -1,5 +1,5 @@
 var RSVP = require('rsvp');
-var $ = require('jquery');
+var $ = window.jQuery;
 
 module.exports = function () {
   return new RSVP.Promise(function (resolve) {

@@ -1,8 +1,8 @@
 var foreach = require('lodash.foreach');
 var RSVP = require('rsvp');
 
-var $post = require('jquery').post;
-var $getJSON = require('jquery').getJSON;
+var $post = window.jQuery.post;
+var $getJSON = window.jQuery.getJSON;
 
 module.exports = function ($selector) {
   var callbacks = {};

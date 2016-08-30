@@ -1,5 +1,5 @@
 var RSVP = require('rsvp');
-var $ = require('jquery');
+var $ = window.jQuery;
 var foreach = require('lodash.foreach');
 var map = require('lodash.map');
 var keys = require('lodash.keys');
