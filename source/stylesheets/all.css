@@ -64,3 +64,8 @@ ul {
 #lightsTitle {
   cursor: pointer;
 }
+
+.vacation-mode--on,
+.vacation-mode--off {
+  display: none;
+}
