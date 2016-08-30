@@ -1,5 +1,5 @@
 require 'fileutils'
 
-guard 'rake', :task => 'build' do
+guard 'rake', :task => 'default' do
   watch(%r{^source/})
 end
