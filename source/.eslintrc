@@ -13,3 +13,4 @@ globals:
   setTimeout: false
   console: false
   document: false
+  window: false
