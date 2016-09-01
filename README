@@ -1,3 +1,16 @@
+Installation
+
+Make sure that the correct Ruby version is installed (see .ruby-version or use e.g. `rbenv install`).
+`gem install bundler`
+`bundle install`
+
+Make sure that node and npm are installed,
+`npm install`
+
+You should now be able to perform a `rake` for generating the work files or `rake dist` for generating minified distributeable files.
+
+There is a `rake deploy` task that deploys to a web server. Create a `deploy.yml` with the correct connection data. See `deploy.yml.example`.
+
 The app itself is hosted by thin, but this is a working configuration
 for nginx. It should be hosted ssl-only (except for maybe a redirect from http to https).
 
