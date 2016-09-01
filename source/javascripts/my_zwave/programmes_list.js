@@ -43,7 +43,7 @@ module.exports = function (userFeedback) {
       selectProgramme(programmeId).then(function () {
         programmeChosenHandlers.notify(programmeId);
       }).catch(function (jqXHR) {
-        button.element.removeClass('btn-default').addClass('btn-danger');
+        button.element.addClass('mdl-button--accent');
 
         userFeedback.addMessage(jqXHR.responseText);
       });
@@ -63,13 +63,13 @@ module.exports = function (userFeedback) {
   var makeButtonsList = function () {
     return getProgrammes().then(function (programmes) {
       var buttons = makeButtons(programmes);
-      var $ul = $('<ul class="programmes"></ul>');
+      var $container = $('<div class="programmes mdl-grid"></div>');
 
-      $ul.append(map(buttons, function (button) {
+      $container.append(map(buttons, function (button) {
         return button.element;
       }));
 
-      return $ul;
+      return $container;
     });
   };
 

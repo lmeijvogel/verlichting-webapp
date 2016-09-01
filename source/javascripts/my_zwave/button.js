@@ -1,7 +1,7 @@
 var $ = window.jQuery;
 
 var programmeButtonTemplate = function (programmeName) {
-  var buttonClasses = 'selectProgrammeButton btn btn-lg btn-default';
+  var buttonClasses = 'selectProgrammeButton mdl-button mdl-cell--4-col mdl-cell--4-offset mdl-js-button mdl-button--raised mdl-js-ripple-effect';
   var template = '<button type="button" class="' + buttonClasses + '">' + programmeName + '</button>';
 
   return template;
@@ -12,11 +12,11 @@ module.exports = function (programmeId, programmeName) {
   var clickHandler = function () {};
 
   function newProgrammeChosen(newProgrammeId) {
-    button.removeClass('btn-danger');
+    button.removeClass('mdl-button--accent');
     if (newProgrammeId == programmeId) {
-      button.removeClass('btn-default').addClass('btn-primary');
+      button.removeClass('btn-default').addClass('mdl-button--primary');
     } else {
-      button.removeClass('btn-primary').addClass('btn-default');
+      button.removeClass('mdl-button--primary').addClass('btn-default');
     }
   };
 
@@ -28,12 +28,8 @@ module.exports = function (programmeId, programmeName) {
     clickHandler(e);
   });
 
-  var $li = $('<li class="row"></li>');
-
-  $li.append(button);
-
   return {
-    element: $li,
+    element: button,
     onClick: onClick,
     newProgrammeChosen: newProgrammeChosen
   };
