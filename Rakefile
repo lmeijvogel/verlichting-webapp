@@ -36,7 +36,7 @@ directory "dist/javascripts"
 directory "tmp/javascripts"
 
 file MY_ZWAVE_JS_TMP => [JS_SOURCE_FILES, "tmp/javascripts"].flatten do |task|
-  `browserify source/javascripts/my_zwave/start.js -o #{task.name}`
+  `node_modules/browserify/bin/cmd.js source/javascripts/my_zwave/start.js -o #{task.name}`
 end
 
 # For the fingerprinted files, no rule can be written since the
@@ -74,7 +74,7 @@ file "work/javascripts/jquery.min.js" => ["source/javascripts/jquery.min.js", "w
 end
 
 file "tmp/javascripts/my_zwave.min.js" => MY_ZWAVE_JS_TMP do |task|
-  `uglifyjs #{task.source} --screw-ie8 --mangle --wrap --output #{task.name}`
+  `node_modules/uglify-js/bin/uglifyjs #{task.source} --screw-ie8 --mangle --wrap --output #{task.name}`
 end
 
 CSS_SOURCE_FILES.each do |source|
