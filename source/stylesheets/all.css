@@ -37,6 +37,10 @@ em {
   margin-bottom: 15px;
 }
 
+.light-button {
+  margin-bottom: 15px;
+}
+
 .current-light-values {
   width: 100%;
 }

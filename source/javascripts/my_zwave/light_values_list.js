@@ -23,11 +23,11 @@ module.exports = function () {
 
     RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
       .then(function (data) {
-        fillTable(data);
+        createButtons(data);
       });
   }
 
-  function fillTable(data) {
+  function createButtons(data) {
     var lightValues = map(keys(data.lights), function (key) {
       var light = data.lights[key];
 
@@ -37,18 +37,27 @@ module.exports = function () {
       };
     });
 
-    var table = $('<table class="mdl-data-table mdl-js-data-table current-light-values">');
+    var list = $('<div>');
 
     foreach(lightValues, function (value) {
-      var rowHtml = '<tr data-name="' + value.displayName + '">' +
-      '<td class="key mdl-data-table__cell--non-numeric">' + value.displayName + '</td>' +
-      '<td class="value mdl-data-table__cell--numeric">' + value.value + '</td>' +
-      '</tr>';
+      var activeClass = ' mdl-button--colored';
 
-      table.append($(rowHtml));
+      var buttonClasses = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
+                          ' mdl-js-button mdl-button--raised mdl-js-ripple-effect light-button';
+
+      if (value.value > 0) {
+        buttonClasses = buttonClasses + activeClass;
+      }
+
+      var button = '<span class="' + buttonClasses + '">' +
+        '<span class="mdl-chip__contact">' + value.value + '</span>' +
+        '<span class="mdl-chip__text">' + value.displayName + '</span>' +
+      '</span>';
+
+      list.append($(button));
     });
 
-    $lights.html(table);
+    $lights.html(list);
   }
 
   function updateLightValue(displayName, value) {
