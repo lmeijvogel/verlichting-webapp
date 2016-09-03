@@ -11,47 +11,50 @@ var RSVP = require('rsvp');
 var $ = window.jQuery;
 
 $(function () {
-  var errorFeedback = userFeedback($('.error'));
-  var noticeFeedback = userFeedback($('.notice'));
+  function start() {
+    var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
-  var programmesListInterface = programmesList(errorFeedback);
-  var currentValues           = lightValuesList();
+    var programmesListInterface = programmesList(feedback);
 
-  var vacationMode = new VacationMode($('.vacation-mode'));
+    programmesListInterface.makeButtonsList().then(function (buttonsHtml) {
+      $('.programme-button-list').html(buttonsHtml);
 
-  latestEvents($('#latest-events')).start();
+      var currentValues           = lightValuesList();
 
-  vacationMode.on('error', function (message) {
-    errorFeedback.addMessage(message);
-  });
+      var vacationMode = new VacationMode($('.js-vacation-mode--off'), $('.js-vacation-mode--on'));
 
-  vacationMode.on('notice', function (message) {
-    noticeFeedback.addMessage(message);
-  });
+      latestEvents($('.js-latest-events')).start();
 
-  vacationMode.start();
+      vacationMode.on('error', function (message) {
+        feedback.addMessage(message);
+      });
 
-  programmesListInterface.makeButtonsList().then(function (buttonsHtml) {
-    $('#programmeButtons').html(buttonsHtml);
-  });
+      vacationMode.on('notice', function (message) {
+        feedback.addMessage(message);
+      });
 
-  $('#lightsTitle').on('click', currentValues.show);
+      vacationMode.start();
 
-  function showData() {
-    RSVP.Promise.cast($.getJSON('/my_zwave/current_programme'))
-      .then(function (data) {
-        programmesListInterface.selectProgramme(data.programme);
-      })
-    .catch(function (jqXHR) {
+      $('#lightsTitle').on('click', currentValues.show);
+
+      currentValues.show();
+
+      showData();
+    }).catch(function (jqXHR) {
       if (jqXHR.status == 401) {
         showLoginDialog().then(function () {
-          showData();
+          start();
         });
       }
     });
 
-    currentValues.show();
+    function showData() {
+      RSVP.Promise.cast($.getJSON('/my_zwave/current_programme'))
+        .then(function (data) {
+          programmesListInterface.selectProgramme(data.programme);
+        });
+    }
   }
 
-  showData();
+  start();
 });

@@ -8,10 +8,10 @@ var $getJSON = window.jQuery.getJSON;
 module.exports = function ($selector) {
   var rowTemplate = function (value) {
     return '<tr>' +
-             '<td class="col-xs-6 col-sm-3">' + value.time + '</td>' +
-             '<td class="hidden-xs col-sm-4">' + value.initiator + '</td>' +
-             '<td class="hidden-xs col-sm-4">' + value.event + '</td>' +
-             '<td class="col-xs-6 col-sm-1">' + value.data + '</td>' +
+             '<td class="mdl-data-table__cell--non-numeric">' + value.time + '</td>' +
+             '<td class="mdl-data-table__cell--non-numeric">' + value.initiator + '</td>' +
+             '<td class="mdl-data-table__cell--non-numeric">' + value.event + '</td>' +
+             '<td class="mdl-data-table__cell--non-numeric">' + value.data + '</td>' +
            '</tr>';
   };
 
@@ -48,7 +48,16 @@ module.exports = function ($selector) {
       return rowTemplate(parsedRowData);
     });
 
-    return '<table class="table">' + rows.join('') + '</table>';
+    return '<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">' + header() + rows.join('') + '</table>';
+  }
+
+  function header() {
+    return '<thead><tr>' +
+      '<th class="mdl-data-table__cell--non-numeric">Time</th>' +
+      '<th class="mdl-data-table__cell--non-numeric">Source</th>' +
+      '<th class="mdl-data-table__cell--non-numeric">Event</th>' +
+      '<th class="mdl-data-table__cell--non-numeric">Data</th>' +
+      '</tr></thead>';
   }
 
   function pad(str) {

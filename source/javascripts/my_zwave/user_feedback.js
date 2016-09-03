@@ -20,7 +20,6 @@ var userFeedback = function (element) {
 
   function stopDisplaying() {
     displaying = false;
-    hideMessage();
   }
 
   function showNextMessage() {
@@ -34,21 +33,12 @@ var userFeedback = function (element) {
   }
 
   function showMessageAndScheduleNext(message) {
-    element.text(message).slideDown();
-
-    setTimeout(hideAndShowNextMessage, 3000);
-  }
-
-  function hideAndShowNextMessage() {
-    return hideMessage().then(function () {
-      showNextMessage();
+    element.MaterialSnackbar.showSnackbar({
+      message: message,
+      timeout: 3000
     });
-  }
 
-  function hideMessage() {
-    return element.slideUp().promise().then(function () {
-      element.text('');
-    });
+    setTimeout(showNextMessage, 3000);
   }
 
   return {

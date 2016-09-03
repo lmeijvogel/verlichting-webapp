@@ -1,88 +1,114 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
+<head>
+  <meta charset="utf-8">
 
-    <!-- Always force latest IE rendering engine or request Chrome Frame -->
-    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Always force latest IE rendering engine or request Chrome Frame -->
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Verlichting</title>
 
-    <title>Verlichting</title>
+  <% material_css = is_production ? fingerprinted_file("source/stylesheets/material.indigo-pink.min.css") : 'material.indigo-pink.min.css' %>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="/stylesheets/<%= material_css %>">
 
-    <!-- Bootstrap -->
-    <% bootstrap = is_production ? fingerprinted_file("source/stylesheets/bootstrap.min.css") : 'bootstrap.min.css' %>
-    <% normalize = is_production ? fingerprinted_file("source/stylesheets/normalize.css") : 'normalize.css' %>
-    <% all = is_production ? fingerprinted_file("source/stylesheets/all.css") : 'all.css' %>
-    <link href="/stylesheets/<%= bootstrap %>" rel="stylesheet" type="text/css" />
-    <link href="/stylesheets/<%= normalize %>" rel="stylesheet" type="text/css" />
-    <link href="/stylesheets/<%= all %>" rel="stylesheet" type="text/css" />
-  </head>
+  <% all = is_production ? fingerprinted_file("source/stylesheets/all.css") : 'all.css' %>
+  <link href="/stylesheets/<%= all %>" rel="stylesheet" type="text/css" />
 
-  <body role="document" class="index">
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <% if ENV['LOCAL_JQUERY'] %>
-      <script src="javascripts/jquery.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-    <% else %>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-    <% end %>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <% if ENV['LOCAL_JQUERY'] %>
+    <script src="javascripts/jquery.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
+  <% else %>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
+  <% end %>
 
-    <% my_zwave = is_production ? fingerprinted_file("tmp/javascripts/my_zwave.min.js") : 'my_zwave.js' %>
-    <% bootstrap = is_production ? fingerprinted_file("source/javascripts/bootstrap.min.js") : 'bootstrap.min.js' %>
-    <script src="/javascripts/<%= my_zwave %>" type="text/javascript"></script>
-    <script src="/javascripts/<%= bootstrap %>" type="text/javascript"></script>
+  <% my_zwave = is_production ? fingerprinted_file("tmp/javascripts/my_zwave.min.js") : 'my_zwave.js' %>
+  <%# Inline the material script since it's not possible to set an SRI hash - getmdl.io doesn't set the correct CORS header %>
+  <% material_js = is_production ? fingerprinted_file("tmp/javascripts/material.min.js") : 'material.min.js' %>
 
-    <div class="container-fluid">
-      <div class="error  col-xs-12 col-lg-offset-4 col-lg-4"></div>
-      <div class="notice col-xs-12 col-lg-offset-4 col-lg-4"></div>
+  <script defer src="/javascripts/<%= material_js %>"></script>
+  <script src="/javascripts/<%= my_zwave %>" type="text/javascript"></script>
+</head>
+<body role="document" class="index">
 
-      <div id="programmeButtons" class="col-xs-12 col-lg-offset-4 col-lg-4">
-      </div>
+<div class="mdl-grid">
+  <div class="mdl-snackbar mdl-js-snackbar js-snackbar">
+    <div class="mdl-snackbar__text"></div>
+    <button class="mdl-snackbar__action"></button>
+  </div>
 
-      <div class="vacation-mode col-xs-12">
-        <h1 class="col-xs-12">Vacation mode</h1>
-        <div class="vacation-mode--off col-xs-12">
-          <p>Vacation mode is <em>OFF</em></p>
-          <div id="plan-vacation">
-            <p>Average on-time: <input id="start-time" type="time" value="18:30" data-target="vacation-mode__start-time">
-            <p>Average off-time: <input id="end-time" type="time" value="22:30" data-target="vacation-mode__end-time">
-            <p><button class="add-day" data-behavior="start-vacation">Start</button>
-          </div>
-        </div>
-        <div class="vacation-mode--on col-xs-12">
-          <p>Vacation mode is <em>ON</em></p>
-          <p>Average on-time: <span data-target="vacation-mode__start-time"></span>
-          <p>Average off-time: <span data-target="vacation-mode__end-time"></span>
-
-          <p><button class="vacation-mode__stop-button" data-behavior="stop-vacation">Stop vacation mode</button>
-        </div>
-      </div>
-
-      <h1 id="lightsTitle" class="col-xs-12 col-lg-offset-4 col-lg-4">Lights</h1>
-      <div id="lights" class="col-xs-12 col-lg-offset-4 col-lg-4">
-      </div>
-
-      <h1 id="latestEventsTitle" class="col-xs-12 col-lg-offset-4 col-lg-4">Latest events</h1>
-      <div id="latest-events" class="col-xs-12">
+  <div class="mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp programme-buttons-list">
+    <div class="mdl-card__title">
+      <h3 class="mdl-card__title-text">Programma's</h3>
+    </div>
+    <div class="mdl-card__supporting-text programme-button-list">
+      <div class="loading-spinner-container">
+        <div class="loading-spinner mdl-spinner mdl-js-spinner is-active"></div>
       </div>
     </div>
+  </div>
 
-    <!-- Modal -->
-    <div class="loginDialog" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title">Please login</h4>
-          </div>
-          <div class="modal-body">
-            <input type="text" id="username" name="username" />
-            <input type="password" id="password" name="password" />
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary submit">Submit</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+  <div class="vacation-mode mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp js-vacation-mode--off vacation-mode--hidden">
+    <div class="mdl-card__title">
+      <h3 class="mdl-card__title-text">Vacation mode is <em>OFF</em></h3>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <div id="plan-vacation">
+        <p>Average on-time: <input id="start-time" type="time" value="18:30" data-target="vacation-mode__start-time">
+        <p>Average off-time: <input id="end-time" type="time" value="22:30" data-target="vacation-mode__end-time">
+      </div>
+    </div>
+    <div class="mdl-card__actions mdl-card__border">
+      <button class="vacation-mode__start-button mdl-button mdl-js-button mdl-js-ripple-effect" data-behavior="start-vacation">Start</button>
+    </div>
+  </div>
+  <div class="vacation-mode mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp js-vacation-mode--on vacation-mode--hidden">
+    <div class="mdl-card__title vacation-mode__on-title--active">
+      <h3 class="mdl-card__title-text">Vacation mode is <em>ON</em></h3>
+    </div>
+    <div class="mdl-card__supporting-text">
+      <p>Average on-time: <span data-target="vacation-mode__start-time"></span>
+      <p>Average off-time: <span data-target="vacation-mode__end-time"></span>
+    </div>
+    <div class="mdl-card__actions mdl-card__border">
+      <button class="vacation-mode__stop-button mdl-button mdl-js-button mdl-js-ripple-effect" data-behavior="stop-vacation">Stop</button>
+    </div>
+  </div>
 
-  </body>
+  <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">
+    <div class="mdl-card__title">
+      <h3 class="mdl-card__title-text">Lights</h3>
+    </div>
+    <div id="lights" class="mdl-card__supporting-text">
+    </div>
+  </div>
+
+  <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col">
+    <div class="mdl-card__title">
+      <h3 class="mdl-card__title-text">Latest events</h3>
+    </div>
+    <div class="js-latest-events mdl-card__supporting-text">
+    </div>
+  </div
+</div>
+
+<!-- Modal -->
+<dialog class="mdl-dialog login-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="mdl-dialog__title">Please login</div>
+  <div class="mdl-dialog__content">
+    <div class="mdl-textfield mdl-js-textfield">
+      <input type="text" id="username" name="username" class="mdl-textfield__input" value="lennaert"/>
+      <label for="username" class="mdl-textfield__label">Username</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield">
+      <input type="password" id="password" name="password" class="mdl-textfield__input" value="jajadus"/>
+      <label for="password" class="mdl-textfield__label">Password</label>
+    </div>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button mdl-js-button submit">Submit</button>
+  </div>
+</dialog>
+
+</body>
 </html>

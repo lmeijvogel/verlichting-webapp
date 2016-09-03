@@ -4,7 +4,7 @@ var RSVP = require('rsvp');
 var $post = window.jQuery.post;
 var $getJSON = window.jQuery.getJSON;
 
-module.exports = function ($selector) {
+module.exports = function ($offSelector, $onSelector) {
   var callbacks = {};
 
   function start() {
@@ -19,9 +19,9 @@ module.exports = function ($selector) {
         }
       });
 
-    $selector.find('[data-behavior=start-vacation]').click(function () {
-      var startTime = $selector.find('#start-time')[0].value;
-      var endTime = $selector.find('#end-time')[0].value;
+    $offSelector.find('[data-behavior=start-vacation]').click(function () {
+      var startTime = $offSelector.find('#start-time')[0].value;
+      var endTime = $offSelector.find('#end-time')[0].value;
 
       RSVP.Promise.cast($post('/my_zwave/vacation_mode', {
         state: 'on',
@@ -37,7 +37,7 @@ module.exports = function ($selector) {
       });
     });
 
-    $selector.find('[data-behavior=stop-vacation]').click(function () {
+    $onSelector.find('[data-behavior=stop-vacation]').click(function () {
       RSVP.Promise.cast($post('/my_zwave/vacation_mode', {
         state: 'off'
       }))
@@ -66,16 +66,16 @@ module.exports = function ($selector) {
   }
 
   function showVacationMode(startTime, endTime) {
-    $selector.find('[data-target=vacation-mode__start-time]').text(startTime);
-    $selector.find('[data-target=vacation-mode__end-time]').text(endTime);
+    $onSelector.find('[data-target=vacation-mode__start-time]').text(startTime);
+    $onSelector.find('[data-target=vacation-mode__end-time]').text(endTime);
 
-    $selector.find('.vacation-mode--on').slideDown();
-    $selector.find('.vacation-mode--off').slideUp();
+    $offSelector.addClass('vacation-mode--hidden');
+    $onSelector.removeClass('vacation-mode--hidden');
   }
 
   function hideVacationMode() {
-    $selector.find('.vacation-mode--on').slideUp();
-    $selector.find('.vacation-mode--off').slideDown();
+    $onSelector.addClass('vacation-mode--hidden');
+    $offSelector.removeClass('vacation-mode--hidden');
   }
 
   return {

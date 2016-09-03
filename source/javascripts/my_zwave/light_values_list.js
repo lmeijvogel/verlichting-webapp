@@ -37,12 +37,12 @@ module.exports = function () {
       };
     });
 
-    var table = $('<table class="table table-striped">');
+    var table = $('<table class="mdl-data-table mdl-js-data-table current-light-values">');
 
     foreach(lightValues, function (value) {
       var rowHtml = '<tr data-name="' + value.displayName + '">' +
-      '<td class="key">' + value.displayName + '</td>' +
-      '<td class="value">' + value.value + '</td>' +
+      '<td class="key mdl-data-table__cell--non-numeric">' + value.displayName + '</td>' +
+      '<td class="value mdl-data-table__cell--numeric">' + value.value + '</td>' +
       '</tr>';
 
       table.append($(rowHtml));

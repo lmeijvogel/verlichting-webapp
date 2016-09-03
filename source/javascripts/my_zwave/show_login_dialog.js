@@ -3,34 +3,37 @@ var $ = window.jQuery;
 
 module.exports = function () {
   return new RSVP.Promise(function (resolve) {
-    $('body').on('keyup', '.loginDialog input', function (data) {
-      if (data.keyCode == 13) {
-        tryPassword();
-      }
+    var dialog = document.querySelector('.login-dialog');
+
+    var inputs = dialog.querySelectorAll('input');
+
+    inputs.forEach(function (input) {
+      input.addEventListener('keyup', function (data) {
+        if (data.keyCode == 13) {
+          tryPassword().then(resolve);
+        }
+      });
     });
 
-    $('body').on('click', '.loginDialog .submit', function () {
-      tryPassword();
+    dialog.querySelector('.submit').addEventListener('click', function () {
+      tryPassword().then(resolve);
     });
 
     function tryPassword() {
-      var username = $('.loginDialog #username').val();
-      var password = $('.loginDialog #password').val();
+      var username = $('.login-dialog #username').val();
+      var password = $('.login-dialog #password').val();
       var request = $.post('/my_zwave/login/create', {username: username, password: password});
 
-      RSVP.Promise.cast(request).then(function () {
-        return hide();
-      }).then(function () {
-        resolve();
+      return RSVP.Promise.cast(request).then(function () {
+        hide();
+        return resolve();
       });
     }
 
     function hide() {
-      return new RSVP.Promise(function (resolve) {
-        $('.loginDialog').fadeOut({complete: resolve});
-      });
+      dialog.close();
     }
 
-    $('.loginDialog').fadeIn();
+    dialog.showModal();
   });
 };
