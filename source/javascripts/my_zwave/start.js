@@ -35,7 +35,7 @@ $(function () {
 
       vacationMode.start();
 
-      $('#lightsTitle').on('click', currentValues.show);
+      document.querySelector('.js-reload-lights').addEventListener('click', currentValues.show);
 
       currentValues.show();
 
