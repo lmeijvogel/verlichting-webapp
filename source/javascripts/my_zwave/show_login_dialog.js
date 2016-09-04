@@ -1,5 +1,5 @@
 var RSVP = require('rsvp');
-var $ = window.jQuery;
+var post = window.jQuery.post;
 
 module.exports = function () {
   return new RSVP.Promise(function (resolve) {
@@ -20,9 +20,9 @@ module.exports = function () {
     });
 
     function tryPassword() {
-      var username = $('.login-dialog #username').val();
-      var password = $('.login-dialog #password').val();
-      var request = $.post('/my_zwave/login/create', {username: username, password: password});
+      var username = dialog.querySelector('#username').value;
+      var password = dialog.querySelector('#password').value;
+      var request = post('/my_zwave/login/create', {username: username, password: password});
 
       return RSVP.Promise.cast(request).then(function () {
         hide();
