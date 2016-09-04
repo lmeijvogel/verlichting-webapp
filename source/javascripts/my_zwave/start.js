@@ -30,7 +30,10 @@ ready(function () {
 
       var currentValues           = lightValuesList();
 
-      var vacationMode = new VacationMode($('.js-vacation-mode--off'), $('.js-vacation-mode--on'));
+      var vacationMode = new VacationMode(
+        document.querySelector('.js-vacation-mode--off'),
+        document.querySelector('.js-vacation-mode--on')
+      );
 
       latestEvents(document.querySelector('.js-latest-events')).start();
 

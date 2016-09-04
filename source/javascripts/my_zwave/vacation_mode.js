@@ -3,7 +3,7 @@ var foreach = require('lodash.foreach');
 var post = require('./post');
 var getJSON = require('./get_json');
 
-module.exports = function ($offSelector, $onSelector) {
+module.exports = function (offElement, onElement) {
   var callbacks = {};
 
   function start() {
@@ -18,9 +18,11 @@ module.exports = function ($offSelector, $onSelector) {
         }
       });
 
-    $offSelector.find('[data-behavior=start-vacation]').click(function () {
-      var startTime = $offSelector.find('#start-time')[0].value;
-      var endTime = $offSelector.find('#end-time')[0].value;
+    var startButton = offElement.querySelector('[data-behavior=start-vacation]');
+
+    startButton.addEventListener('click', function () {
+      var startTime = offElement.querySelector('#start-time').value;
+      var endTime = offElement.querySelector('#end-time').value;
 
       post('/my_zwave/vacation_mode', {
         state: 'on',
@@ -36,7 +38,9 @@ module.exports = function ($offSelector, $onSelector) {
       });
     });
 
-    $onSelector.find('[data-behavior=stop-vacation]').click(function () {
+    var stopButton = onElement.querySelector('[data-behavior=stop-vacation]');
+
+    stopButton.addEventListener('click', function () {
       post('/my_zwave/vacation_mode', {
         state: 'off'
       })
@@ -65,16 +69,16 @@ module.exports = function ($offSelector, $onSelector) {
   }
 
   function showVacationMode(startTime, endTime) {
-    $onSelector.find('[data-target=vacation-mode__start-time]').text(startTime);
-    $onSelector.find('[data-target=vacation-mode__end-time]').text(endTime);
+    onElement.querySelector('[data-target=vacation-mode__start-time]').innerText = startTime;
+    onElement.querySelector('[data-target=vacation-mode__end-time]').innerText = endTime;
 
-    $offSelector.addClass('vacation-mode--hidden');
-    $onSelector.removeClass('vacation-mode--hidden');
+    offElement.classList.add('vacation-mode--hidden');
+    onElement.classList.remove('vacation-mode--hidden');
   }
 
   function hideVacationMode() {
-    $onSelector.addClass('vacation-mode--hidden');
-    $offSelector.removeClass('vacation-mode--hidden');
+    onElement.classList.add('vacation-mode--hidden');
+    offElement.classList.remove('vacation-mode--hidden');
   }
 
   return {
