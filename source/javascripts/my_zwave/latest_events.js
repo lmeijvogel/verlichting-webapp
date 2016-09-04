@@ -3,7 +3,7 @@ var times = require('lodash.times');
 var RSVP = require('rsvp');
 
 var $post = window.jQuery.post;
-var $getJSON = window.jQuery.getJSON;
+var getJSON = require('./get_json');
 
 module.exports = function ($selector) {
   var rowTemplate = function (value) {
@@ -24,7 +24,7 @@ module.exports = function ($selector) {
   };
 
   function start() {
-    RSVP.Promise.cast($getJSON('/my_zwave/latest_events')).then(function (data) {
+    getJSON('/my_zwave/latest_events').then(function (data) {
       var html = makeTable(data);
 
       $selector.html(html);
