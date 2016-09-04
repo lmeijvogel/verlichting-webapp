@@ -1,6 +1,6 @@
 var createButton = function (programmeName) {
   var buttonClasses = 'selectProgrammeButton' +
-                      ' mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect' +
+                      ' mdl-button mdl-js-button mdl-js-ripple-effect' +
                       ' mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop';
 
   var button = document.createElement('button');
@@ -19,8 +19,10 @@ module.exports = function (programmeId, programmeName) {
   function newProgrammeChosen(newProgrammeId) {
     button.classList.remove('mdl-button--accent');
     if (newProgrammeId == programmeId) {
+      button.classList.add('mdl-button--raised');
       button.classList.add('mdl-button--colored');
     } else {
+      button.classList.remove('mdl-button--raised');
       button.classList.remove('mdl-button--colored');
     }
   };

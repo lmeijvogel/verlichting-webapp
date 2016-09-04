@@ -1,11 +1,12 @@
 var RSVP = require('rsvp');
-var $ = window.jQuery;
 var foreach = require('lodash.foreach');
 var map = require('lodash.map');
 var keys = require('lodash.keys');
 
+var getJSON = window.jQuery.getJSON;
+
 module.exports = function () {
-  var $lights = $('#lights');
+  var lights = document.querySelector('#lights');
 
   function lightValueToString(value) {
     if (value === 'false' || value === '0') {
@@ -19,9 +20,11 @@ module.exports = function () {
   }
 
   function show() {
-    $lights.find('tr .value').text('?');
+    foreach(lights.querySelectorAll('.light-value'), function (element) {
+      element.innerText = '?';
+    });
 
-    RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
+    RSVP.Promise.cast(getJSON('/my_zwave/current_lights'))
       .then(function (data) {
         createButtons(data);
       });
@@ -37,31 +40,42 @@ module.exports = function () {
       };
     });
 
-    var list = $('<div>');
-
-    foreach(lightValues, function (value) {
-      var activeClass = ' mdl-button--colored';
-
+    var buttons = map(lightValues, function (value) {
       var buttonClasses = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
-                          ' mdl-js-button mdl-button--raised mdl-js-ripple-effect light-button';
+                          ' mdl-js-ripple-effect light-button';
 
-      if (value.value > 0) {
-        buttonClasses = buttonClasses + activeClass;
+      var button = document.createElement('span');
+      var valueDisplay = document.createElement('span');
+      var nameDisplay = document.createElement('span');
+
+      button.classList = buttonClasses;
+      valueDisplay.classList = 'mdl-chip__contact light-value';
+
+      valueDisplay.innerText = value.value;
+      if (value.value != '-' ) {
+        valueDisplay.classList.add('mdl-color--yellow');
       }
 
-      var button = '<span class="' + buttonClasses + '">' +
-        '<span class="mdl-chip__contact">' + value.value + '</span>' +
-        '<span class="mdl-chip__text">' + value.displayName + '</span>' +
-      '</span>';
+      nameDisplay.classList = 'mdl-chip__text';
+      nameDisplay.innerText = value.displayName;
 
-      list.append($(button));
+      button.appendChild(valueDisplay);
+      button.appendChild(nameDisplay);
+
+      return button;
     });
 
-    $lights.html(list);
+    while(lights.firstChild) {
+      lights.removeChild(lights.firstChild);
+    }
+
+    foreach(buttons, function (button) {
+      lights.appendChild(button);
+    });
   }
 
   function updateLightValue(displayName, value) {
-    $lights.find('[data-name="' + displayName + '"] .value').text(value);
+    lights.querySelector('[data-name="' + displayName + '"] .value').innerText(value);
   }
 
   var publicMethods = {
