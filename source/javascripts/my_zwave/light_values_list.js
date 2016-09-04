@@ -41,18 +41,21 @@ module.exports = function () {
     });
 
     var buttons = map(lightValues, function (value) {
-      var buttonClasses = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
-                          ' mdl-js-ripple-effect light-button';
-
       var button = document.createElement('span');
       var valueDisplay = document.createElement('span');
       var nameDisplay = document.createElement('span');
 
-      button.classList = buttonClasses;
+      button.classList = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
+                         ' light-button';
       valueDisplay.classList = 'mdl-chip__contact light-value';
 
       valueDisplay.innerText = value.value;
-      if (value.value != '-' ) {
+      if (value.value == '-') {
+        button.classList.add('mdl-color--blue-100');
+      } else {
+        button.classList.add('mdl-color--amber-600');
+
+        valueDisplay.classList.add('mdl-color--yellow');
         valueDisplay.classList.add('mdl-color--yellow');
       }
 
