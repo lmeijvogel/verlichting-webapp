@@ -1,14 +1,13 @@
 var foreach = require('lodash.foreach');
-var RSVP = require('rsvp');
 
-var $post = window.jQuery.post;
-var $getJSON = window.jQuery.getJSON;
+var post = require('./post');
+var getJSON = require('./get_json');
 
 module.exports = function ($offSelector, $onSelector) {
   var callbacks = {};
 
   function start() {
-    RSVP.Promise.cast($getJSON('/my_zwave/vacation_mode'))
+    getJSON('/my_zwave/vacation_mode')
       .then(function (data) {
         var vacationMode = data.state == 'on';
 
@@ -23,11 +22,11 @@ module.exports = function ($offSelector, $onSelector) {
       var startTime = $offSelector.find('#start-time')[0].value;
       var endTime = $offSelector.find('#end-time')[0].value;
 
-      RSVP.Promise.cast($post('/my_zwave/vacation_mode', {
+      post('/my_zwave/vacation_mode', {
         state: 'on',
         'start_time': startTime,
         'end_time': endTime
-      }))
+      })
       .then(function () {
         trigger('notice', 'Started vacation mode');
         showVacationMode(startTime, endTime);
@@ -38,9 +37,9 @@ module.exports = function ($offSelector, $onSelector) {
     });
 
     $onSelector.find('[data-behavior=stop-vacation]').click(function () {
-      RSVP.Promise.cast($post('/my_zwave/vacation_mode', {
+      post('/my_zwave/vacation_mode', {
         state: 'off'
-      }))
+      })
       .then(function () {
         trigger('notice', 'Stopped vacation mode');
 

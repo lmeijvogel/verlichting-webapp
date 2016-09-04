@@ -1,9 +1,11 @@
 var createButton = require('./button');
-var RSVP = require('rsvp');
 var $ = window.jQuery;
 var foreach = require('lodash.foreach');
 var keys = require('lodash.keys');
 var map = require('lodash.map');
+
+var getJSON = require('./get_json');
+var post = require('./post');
 
 module.exports = function (userFeedback) {
   var programmeChosenHandlers = (function () {
@@ -25,13 +27,13 @@ module.exports = function (userFeedback) {
   })();
 
   function getProgrammes() {
-    return RSVP.Promise.cast($.getJSON('/my_zwave/available_programmes')).then(function (json) {
+    return getJSON('/my_zwave/available_programmes').then(function (json) {
       return json.availableProgrammes;
     });
   }
 
   function selectProgramme(programmeName) {
-    return RSVP.Promise.cast($.post('/my_zwave/programme/' + programmeName + '/start'));
+    return post('/my_zwave/programme/' + programmeName + '/start');
   }
 
   function makeButton(programmeId, programmeName) {

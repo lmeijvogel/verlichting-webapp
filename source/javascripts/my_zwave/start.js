@@ -8,6 +8,7 @@ var latestEvents    = require('./latest_events');
 
 var RSVP = require('rsvp');
 
+var getJSON = require('./get_json');
 var $ = window.jQuery;
 
 $(function () {
@@ -49,7 +50,7 @@ $(function () {
     });
 
     function showData() {
-      RSVP.Promise.cast($.getJSON('/my_zwave/current_programme'))
+      getJSON('/my_zwave/current_programme')
         .then(function (data) {
           programmesListInterface.selectProgramme(data.programme);
         });

@@ -77,11 +77,13 @@ class MyZWave < Sinatra::Base
 
   post '/vacation_mode' do
     time_regex = %r[\d\d:\d\d]
-    state = params.fetch("state")
+
+    payload = JSON.parse(request.body.read)
+    state = payload.fetch("state")
 
     if state == 'on'
-      start_time = params.fetch("start_time")
-      end_time   = params.fetch("end_time")
+      start_time = payload.fetch("start_time")
+      end_time   = payload.fetch("end_time")
 
       unless time_regex.match(start_time) && time_regex.match(end_time)
         status 400

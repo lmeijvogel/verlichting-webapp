@@ -3,7 +3,7 @@ var foreach = require('lodash.foreach');
 var map = require('lodash.map');
 var keys = require('lodash.keys');
 
-var getJSON = window.jQuery.getJSON;
+var getJSON = require('./get_json');
 
 module.exports = function () {
   var lights = document.querySelector('#lights');
@@ -24,7 +24,7 @@ module.exports = function () {
       element.innerText = '?';
     });
 
-    RSVP.Promise.cast(getJSON('/my_zwave/current_lights'))
+    getJSON('/my_zwave/current_lights')
       .then(function (data) {
         createButtons(data);
       });
