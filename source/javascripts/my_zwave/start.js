@@ -11,7 +11,15 @@ var RSVP = require('rsvp');
 var getJSON = require('./get_json');
 var $ = window.jQuery;
 
-$(function () {
+function ready(fn) {
+  if (document.readyState != 'loading') {
+    fn();
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+}
+
+ready(function () {
   function start() {
     var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
