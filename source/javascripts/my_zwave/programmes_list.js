@@ -7,7 +7,7 @@ var map = require('lodash.map');
 var getJSON = require('./get_json');
 var post = require('./post');
 
-module.exports = function (userFeedback) {
+module.exports = function (element, userFeedback) {
   var programmeChosenHandlers = (function () {
     var programmeChangedListeners = [];
 
@@ -62,21 +62,27 @@ module.exports = function (userFeedback) {
     });
   }
 
-  var makeButtonsList = function () {
+  var createButtonsList = function () {
     return getProgrammes().then(function (programmes) {
       var buttons = makeButtons(programmes);
-      var $container = $('<div class="programmes mdl-grid"></div>');
+      var container = document.createElement('div');
 
-      $container.append(map(buttons, function (button) {
-        return button.element;
-      }));
+      container.classNames = 'programmes mdl-grid';
 
-      return $container;
+      foreach(buttons, function (button) {
+        container.appendChild(button.element);
+      });
+
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+
+      element.appendChild(container);
     });
   };
 
   var publicMethods = {
-    makeButtonsList:           makeButtonsList,
+    createButtonsList:         createButtonsList,
     selectProgramme:           programmeChosenHandlers.notify
   };
 

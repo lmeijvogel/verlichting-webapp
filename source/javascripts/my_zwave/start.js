@@ -23,11 +23,9 @@ ready(function () {
   function start() {
     var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
-    var programmesListInterface = programmesList(feedback);
+    var programmesListInterface = programmesList(document.querySelector('.programme-button-list'), feedback);
 
-    programmesListInterface.makeButtonsList().then(function (buttonsHtml) {
-      $('.programme-button-list').html(buttonsHtml);
-
+    programmesListInterface.createButtonsList().then(function () {
       var currentValues           = lightValuesList();
 
       var vacationMode = new VacationMode(
