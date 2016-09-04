@@ -5,7 +5,7 @@ var RSVP = require('rsvp');
 var $post = window.jQuery.post;
 var getJSON = require('./get_json');
 
-module.exports = function ($selector) {
+module.exports = function (element) {
   var rowTemplate = function (value) {
     return '<tr>' +
              '<td class="mdl-data-table__cell--non-numeric">' + value.time + '</td>' +
@@ -27,7 +27,7 @@ module.exports = function ($selector) {
     getJSON('/my_zwave/latest_events').then(function (data) {
       var html = makeTable(data);
 
-      $selector.html(html);
+      element.innerHTML = html;
     });
   }
 

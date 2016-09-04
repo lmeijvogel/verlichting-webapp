@@ -24,7 +24,7 @@ $(function () {
 
       var vacationMode = new VacationMode($('.js-vacation-mode--off'), $('.js-vacation-mode--on'));
 
-      latestEvents($('.js-latest-events')).start();
+      latestEvents(document.querySelector('.js-latest-events')).start();
 
       vacationMode.on('error', function (message) {
         feedback.addMessage(message);
