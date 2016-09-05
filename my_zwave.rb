@@ -129,8 +129,10 @@ class MyZWave < Sinatra::Base
   end
 
   post "/login/create" do
-    username = params["username"].gsub(/[^a-zA-Z_]/, "")
-    password = params["password"]
+    data = JSON.parse(request.body.read)
+
+    username = data["username"].gsub(/[^a-zA-Z_]/, "")
+    password = data["password"]
 
     stored_password_hash = redis.get("password_#{username}")
 
