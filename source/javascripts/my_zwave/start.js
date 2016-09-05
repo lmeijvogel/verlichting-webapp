@@ -9,7 +9,6 @@ var latestEvents    = require('./latest_events');
 var RSVP = require('rsvp');
 
 var getJSON = require('./get_json');
-var $ = window.jQuery;
 
 function ready(fn) {
   if (document.readyState != 'loading') {

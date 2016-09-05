@@ -2,7 +2,6 @@ var map = require('lodash.map');
 var times = require('lodash.times');
 var RSVP = require('rsvp');
 
-var $post = window.jQuery.post;
 var getJSON = require('./get_json');
 
 module.exports = function (element) {
