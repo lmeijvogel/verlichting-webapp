@@ -17,7 +17,7 @@ class MyZWave < Sinatra::Base
   end
 
   before do
-    check_login_or_redirect unless request.path.include?("login")
+    check_login_or_redirect unless request.path =~ %r[^#{request.script_name}/login]
   end
 
   get '/light/:name/level/:level' do
