@@ -1,11 +1,12 @@
 var createButton = require('./button');
-var RSVP = require('rsvp');
-var $ = window.jQuery;
 var foreach = require('lodash.foreach');
 var keys = require('lodash.keys');
 var map = require('lodash.map');
 
-module.exports = function (userFeedback) {
+var getJSON = require('./get_json');
+var post = require('./post');
+
+module.exports = function (element, userFeedback) {
   var programmeChosenHandlers = (function () {
     var programmeChangedListeners = [];
 
@@ -25,13 +26,13 @@ module.exports = function (userFeedback) {
   })();
 
   function getProgrammes() {
-    return RSVP.Promise.cast($.getJSON('/my_zwave/available_programmes')).then(function (json) {
+    return getJSON('/my_zwave/available_programmes').then(function (json) {
       return json.availableProgrammes;
     });
   }
 
   function selectProgramme(programmeName) {
-    return RSVP.Promise.cast($.post('/my_zwave/programme/' + programmeName + '/start'));
+    return post('/my_zwave/programme/' + programmeName + '/start');
   }
 
   function makeButton(programmeId, programmeName) {
@@ -43,7 +44,7 @@ module.exports = function (userFeedback) {
       selectProgramme(programmeId).then(function () {
         programmeChosenHandlers.notify(programmeId);
       }).catch(function (jqXHR) {
-        button.element.removeClass('btn-default').addClass('btn-danger');
+        button.element.addClass('mdl-button--accent');
 
         userFeedback.addMessage(jqXHR.responseText);
       });
@@ -60,21 +61,27 @@ module.exports = function (userFeedback) {
     });
   }
 
-  var makeButtonsList = function () {
+  var createButtonsList = function () {
     return getProgrammes().then(function (programmes) {
       var buttons = makeButtons(programmes);
-      var $ul = $('<ul class="programmes"></ul>');
+      var container = document.createElement('div');
 
-      $ul.append(map(buttons, function (button) {
-        return button.element;
-      }));
+      container.classNames = 'programmes mdl-grid';
 
-      return $ul;
+      foreach(buttons, function (button) {
+        container.appendChild(button.element);
+      });
+
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
+
+      element.appendChild(container);
     });
   };
 
   var publicMethods = {
-    makeButtonsList:           makeButtonsList,
+    createButtonsList:         createButtonsList,
     selectProgramme:           programmeChosenHandlers.notify
   };
 

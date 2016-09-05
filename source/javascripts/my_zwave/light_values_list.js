@@ -1,11 +1,12 @@
 var RSVP = require('rsvp');
-var $ = window.jQuery;
 var foreach = require('lodash.foreach');
 var map = require('lodash.map');
 var keys = require('lodash.keys');
 
+var getJSON = require('./get_json');
+
 module.exports = function () {
-  var $lights = $('#lights');
+  var lights = document.querySelector('#lights');
 
   function lightValueToString(value) {
     if (value === 'false' || value === '0') {
@@ -19,15 +20,17 @@ module.exports = function () {
   }
 
   function show() {
-    $lights.find('tr .value').text('?');
+    foreach(lights.querySelectorAll('.light-value'), function (element) {
+      element.innerText = '?';
+    });
 
-    RSVP.Promise.cast($.getJSON('/my_zwave/current_lights'))
+    getJSON('/my_zwave/current_lights')
       .then(function (data) {
-        fillTable(data);
+        createButtons(data);
       });
   }
 
-  function fillTable(data) {
+  function createButtons(data) {
     var lightValues = map(keys(data.lights), function (key) {
       var light = data.lights[key];
 
@@ -37,22 +40,45 @@ module.exports = function () {
       };
     });
 
-    var table = $('<table class="table table-striped">');
+    var buttons = map(lightValues, function (value) {
+      var button = document.createElement('span');
+      var valueDisplay = document.createElement('span');
+      var nameDisplay = document.createElement('span');
 
-    foreach(lightValues, function (value) {
-      var rowHtml = '<tr data-name="' + value.displayName + '">' +
-      '<td class="key">' + value.displayName + '</td>' +
-      '<td class="value">' + value.value + '</td>' +
-      '</tr>';
+      button.classList = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
+                         ' light-button';
+      valueDisplay.classList = 'mdl-chip__contact light-value';
 
-      table.append($(rowHtml));
+      valueDisplay.innerText = value.value;
+      if (value.value == '-') {
+        button.classList.add('mdl-color--blue-100');
+      } else {
+        button.classList.add('mdl-color--amber-600');
+
+        valueDisplay.classList.add('mdl-color--yellow');
+        valueDisplay.classList.add('mdl-color--yellow');
+      }
+
+      nameDisplay.classList = 'mdl-chip__text';
+      nameDisplay.innerText = value.displayName;
+
+      button.appendChild(valueDisplay);
+      button.appendChild(nameDisplay);
+
+      return button;
     });
 
-    $lights.html(table);
+    while(lights.firstChild) {
+      lights.removeChild(lights.firstChild);
+    }
+
+    foreach(buttons, function (button) {
+      lights.appendChild(button);
+    });
   }
 
   function updateLightValue(displayName, value) {
-    $lights.find('[data-name="' + displayName + '"] .value').text(value);
+    lights.querySelector('[data-name="' + displayName + '"] .value').innerText(value);
   }
 
   var publicMethods = {

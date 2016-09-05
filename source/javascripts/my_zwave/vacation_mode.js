@@ -1,14 +1,13 @@
 var foreach = require('lodash.foreach');
-var RSVP = require('rsvp');
 
-var $post = window.jQuery.post;
-var $getJSON = window.jQuery.getJSON;
+var post = require('./post');
+var getJSON = require('./get_json');
 
-module.exports = function ($selector) {
+module.exports = function (offElement, onElement) {
   var callbacks = {};
 
   function start() {
-    RSVP.Promise.cast($getJSON('/my_zwave/vacation_mode'))
+    getJSON('/my_zwave/vacation_mode')
       .then(function (data) {
         var vacationMode = data.state == 'on';
 
@@ -19,15 +18,17 @@ module.exports = function ($selector) {
         }
       });
 
-    $selector.find('[data-behavior=start-vacation]').click(function () {
-      var startTime = $selector.find('#start-time')[0].value;
-      var endTime = $selector.find('#end-time')[0].value;
+    var startButton = offElement.querySelector('[data-behavior=start-vacation]');
 
-      RSVP.Promise.cast($post('/my_zwave/vacation_mode', {
+    startButton.addEventListener('click', function () {
+      var startTime = offElement.querySelector('#start-time').value;
+      var endTime = offElement.querySelector('#end-time').value;
+
+      post('/my_zwave/vacation_mode', {
         state: 'on',
         'start_time': startTime,
         'end_time': endTime
-      }))
+      })
       .then(function () {
         trigger('notice', 'Started vacation mode');
         showVacationMode(startTime, endTime);
@@ -37,10 +38,12 @@ module.exports = function ($selector) {
       });
     });
 
-    $selector.find('[data-behavior=stop-vacation]').click(function () {
-      RSVP.Promise.cast($post('/my_zwave/vacation_mode', {
+    var stopButton = onElement.querySelector('[data-behavior=stop-vacation]');
+
+    stopButton.addEventListener('click', function () {
+      post('/my_zwave/vacation_mode', {
         state: 'off'
-      }))
+      })
       .then(function () {
         trigger('notice', 'Stopped vacation mode');
 
@@ -66,16 +69,16 @@ module.exports = function ($selector) {
   }
 
   function showVacationMode(startTime, endTime) {
-    $selector.find('[data-target=vacation-mode__start-time]').text(startTime);
-    $selector.find('[data-target=vacation-mode__end-time]').text(endTime);
+    onElement.querySelector('[data-target=vacation-mode__start-time]').innerText = startTime;
+    onElement.querySelector('[data-target=vacation-mode__end-time]').innerText = endTime;
 
-    $selector.find('.vacation-mode--on').slideDown();
-    $selector.find('.vacation-mode--off').slideUp();
+    offElement.classList.add('vacation-mode--hidden');
+    onElement.classList.remove('vacation-mode--hidden');
   }
 
   function hideVacationMode() {
-    $selector.find('.vacation-mode--on').slideUp();
-    $selector.find('.vacation-mode--off').slideDown();
+    onElement.classList.add('vacation-mode--hidden');
+    offElement.classList.remove('vacation-mode--hidden');
   }
 
   return {
