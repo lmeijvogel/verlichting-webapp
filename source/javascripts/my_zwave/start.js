@@ -8,6 +8,7 @@ var latestEvents    = require('./latest_events');
 
 var RSVP = require('rsvp');
 
+RSVP.on('error', function (error) { console.error(error); });
 var getJSON = require('./get_json');
 
 function ready(fn) {
