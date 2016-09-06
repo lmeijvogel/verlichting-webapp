@@ -44,9 +44,9 @@ ready(function () {
 
       vacationMode.start();
 
-      document.querySelector('.js-reload-lights').addEventListener('click', currentValues.show);
+      document.querySelector('.js-reload-lights').addEventListener('click', currentValues.update);
 
-      currentValues.show();
+      currentValues.update();
 
       showData();
     }).catch(function (jqXHR) {

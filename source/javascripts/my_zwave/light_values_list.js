@@ -9,43 +9,49 @@ var getJSON = require('./get_json');
 
 module.exports = function () {
   var lights = document.querySelector('#lights');
+  var buttons = null;
 
-  function show() {
-    foreach(lights.querySelectorAll('.light-value'), function (element) {
-      element.innerText = '?';
+  function update() {
+    foreach(buttons, function (button) {
+      button.setUnknown();
     });
 
-    getJSON('/my_zwave/current_lights')
-      .then(function (data) {
+    getJSON('/my_zwave/current_lights').then(function (data) {
+      if (buttons == null) {
         createButtons(data);
-      });
+      } else {
+        updateButtons(data);
+      }
+    });
   }
 
   function createButtons(data) {
-    var lightValues = map(keys(data.lights), function (key) {
-      var light = data.lights[key];
+    buttons = {};
 
-      return {
-        displayName: key.substr(5),
-        value:       light.value
-      };
+    foreach(keys(data.lights), function (key) {
+      var value = data.lights[key];
+      var displayName = key.substr(5);
+      var light = lightValueChip(displayName, value.value);
+
+      buttons[key] = light;
     });
-
-    var buttons = map(lightValues, function (value) {
-      return lightValueChip(value);
-    });
-
-    while(lights.firstChild) {
-      lights.removeChild(lights.firstChild);
-    }
 
     foreach(buttons, function (button) {
-      lights.appendChild(button);
+      lights.appendChild(button.element);
+    });
+  }
+
+  function updateButtons(data) {
+    foreach(keys(data.lights), function (key) {
+      var value = data.lights[key].value;
+      var displayName = key.substr(5);
+
+      buttons[key].setValue(value);
     });
   }
 
   var publicMethods = {
-    show: show
+    update: update
   };
 
   return publicMethods;
