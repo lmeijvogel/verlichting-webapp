@@ -1,4 +1,4 @@
-module.exports = function (displayName, value) {
+module.exports = function (displayName, value, lightValueDialog) {
   var element = document.createElement('span');
   var valueDisplay = document.createElement('span');
   var nameDisplay = document.createElement('span');
@@ -12,6 +12,10 @@ module.exports = function (displayName, value) {
 
   element.appendChild(valueDisplay);
   element.appendChild(nameDisplay);
+
+  element.addEventListener('click', function () {
+    lightValueDialog.show(displayName, value);
+  });
 
   setValue(value);
 

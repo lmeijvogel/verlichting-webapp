@@ -20,8 +20,8 @@ class MyZWave < Sinatra::Base
     check_login_or_redirect unless request.path =~ %r[^#{request.script_name}/login]
   end
 
-  get '/light/:name/level/:level' do
-    recipient_count = redis.publish( "MyZWave", "dim #{params[:name]} #{params[:level]}" )
+  post '/light/:node_id/level/:level' do
+    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{params[:level]}")
 
     "Recipients: #{recipient_count}"
   end

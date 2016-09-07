@@ -85,7 +85,7 @@
   </div
 </div>
 
-<!-- Modal -->
+<!-- Login dialog -->
 <dialog class="mdl-dialog login-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="mdl-dialog__title">Please login</div>
   <div class="mdl-dialog__content">
@@ -100,6 +100,19 @@
   </div>
   <div class="mdl-dialog__actions">
     <button type="button" class="mdl-button mdl-js-button submit">Submit</button>
+  </div>
+</dialog>
+
+<!-- Light value dialog -->
+<dialog class="mdl-dialog light-value-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="mdl-dialog__title js-light-dialog-title">Brightness</div>
+  <div class="mdl-dialog__content">
+    <div class="mdl-textfield mdl-js-textfield">
+      <input class="mdl-slider mdl-js-slider js-light-value" type="range" min="0" max="100" value="25" tabindex="0">
+    </div>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button mdl-js-button close">Close</button>
   </div>
 </dialog>
 
