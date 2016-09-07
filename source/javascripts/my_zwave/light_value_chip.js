@@ -1,7 +1,9 @@
-module.exports = function (displayName, value, lightValueDialog) {
+module.exports = function (displayName, value) {
   var element = document.createElement('span');
   var valueDisplay = document.createElement('span');
   var nameDisplay = document.createElement('span');
+
+  var onClickHandler = function () { };
 
   element.classList = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
                      ' light-button';
@@ -14,7 +16,7 @@ module.exports = function (displayName, value, lightValueDialog) {
   element.appendChild(nameDisplay);
 
   element.addEventListener('click', function () {
-    lightValueDialog.show(displayName, value);
+    onClickHandler();
   });
 
   setValue(value);
@@ -46,6 +48,10 @@ module.exports = function (displayName, value, lightValueDialog) {
     valueDisplay.classList.remove('mdl-color--yellow');
   }
 
+  function onClick(handler) {
+    onClickHandler = handler;
+  }
+
   function lightValueToString(value) {
     if (value === 'false' || value === '0') {
       return '-';
@@ -60,6 +66,7 @@ module.exports = function (displayName, value, lightValueDialog) {
   return {
     element: element,
     setUnknown: setUnknown,
-    setValue: setValue
+    setValue: setValue,
+    onClick: onClick
   };
 };
