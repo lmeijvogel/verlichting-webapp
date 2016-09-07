@@ -3,6 +3,8 @@ module.exports = function (displayName, value) {
   var valueDisplay = document.createElement('span');
   var nameDisplay = document.createElement('span');
 
+  var onClickHandler = function () { };
+
   element.classList = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
                      ' light-button';
   valueDisplay.classList = 'mdl-chip__contact light-value';
@@ -12,6 +14,10 @@ module.exports = function (displayName, value) {
 
   element.appendChild(valueDisplay);
   element.appendChild(nameDisplay);
+
+  element.addEventListener('click', function () {
+    onClickHandler();
+  });
 
   setValue(value);
 
@@ -42,6 +48,10 @@ module.exports = function (displayName, value) {
     valueDisplay.classList.remove('mdl-color--yellow');
   }
 
+  function onClick(handler) {
+    onClickHandler = handler;
+  }
+
   function lightValueToString(value) {
     if (value === 'false' || value === '0') {
       return '-';
@@ -56,6 +66,7 @@ module.exports = function (displayName, value) {
   return {
     element: element,
     setUnknown: setUnknown,
-    setValue: setValue
+    setValue: setValue,
+    onClick: onClick
   };
 };

@@ -20,8 +20,8 @@ class MyZWave < Sinatra::Base
     check_login_or_redirect unless request.path =~ %r[^#{request.script_name}/login]
   end
 
-  get '/light/:name/level/:level' do
-    recipient_count = redis.publish( "MyZWave", "dim #{params[:name]} #{params[:level]}" )
+  post '/light/:node_id/level/:level' do
+    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{params[:level]}")
 
     "Recipients: #{recipient_count}"
   end
@@ -54,6 +54,7 @@ class MyZWave < Sinatra::Base
     keys = redis.keys("node_*")
 
     light_values = keys.inject({}) do |acc, key|
+      node_id  = Integer(redis.hget(key, "node_id"))
       value_37 = redis.hget(key, "class_37")
       value_38 = redis.hget(key, "class_38")
 
@@ -62,6 +63,8 @@ class MyZWave < Sinatra::Base
       else
         acc[key] = {type: "switch", value: value_37}
       end
+
+      acc[key][:node_id] = node_id
 
       acc
     end

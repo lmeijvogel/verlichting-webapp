@@ -30,6 +30,14 @@
     <button class="mdl-snackbar__action"></button>
   </div>
 
+  <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">
+    <div class="mdl-card__title">
+      <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>
+    </div>
+    <div id="lights" class="mdl-card__supporting-text">
+    </div>
+  </div>
+
   <div class="mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp programme-buttons-list">
     <div class="mdl-card__title">
       <h3 class="mdl-card__title-text">Programma's</h3>
@@ -68,14 +76,6 @@
     </div>
   </div>
 
-  <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">
-    <div class="mdl-card__title">
-      <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>
-    </div>
-    <div id="lights" class="mdl-card__supporting-text">
-    </div>
-  </div>
-
   <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col">
     <div class="mdl-card__title">
       <h3 class="mdl-card__title-text">Latest events</h3>
@@ -85,7 +85,7 @@
   </div
 </div>
 
-<!-- Modal -->
+<!-- Login dialog -->
 <dialog class="mdl-dialog login-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="mdl-dialog__title">Please login</div>
   <div class="mdl-dialog__content">
@@ -100,6 +100,19 @@
   </div>
   <div class="mdl-dialog__actions">
     <button type="button" class="mdl-button mdl-js-button submit">Submit</button>
+  </div>
+</dialog>
+
+<!-- Light value dialog -->
+<dialog class="mdl-dialog light-value-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="mdl-dialog__title js-light-dialog-title">Brightness</div>
+  <div class="mdl-dialog__content">
+    <div class="mdl-textfield mdl-js-textfield">
+      <input class="mdl-slider mdl-js-slider js-light-value" type="range" min="0" max="99" tabindex="0">
+    </div>
+  </div>
+  <div class="mdl-dialog__actions">
+    <button type="button" class="mdl-button mdl-js-button close">Close</button>
   </div>
 </dialog>
 
