@@ -26,6 +26,14 @@ class MyZWave < Sinatra::Base
     "Recipients: #{recipient_count}"
   end
 
+  post '/light/:node_id/switch/:state' do
+    raise "Invalid state" unless %w[on off].include?(params[:state])
+
+    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{params[:state]}")
+
+    "Recipients: #{recipient_count}"
+  end
+
   post '/programme/:name/start' do
     sanitized_name = params[:name].match(/[a-z_]+/)[0]
     recipient_count = redis.publish( "MyZWave", "programme #{sanitized_name}" )

@@ -1,4 +1,3 @@
-var RSVP = require('rsvp');
 var foreach = require('lodash.foreach');
 var map = require('lodash.map');
 var keys = require('lodash.keys');
@@ -33,20 +32,38 @@ module.exports = function () {
     buttons = {};
 
     var valueDialogElement = document.querySelector('.light-value-dialog');
-    var dialog = createLightValueDialog(valueDialogElement, 'dim');
+    var switchDialogElement = document.querySelector('.light-switch-dialog');
+    var lightValueDialog = createLightValueDialog(valueDialogElement, 'dim');
+    var lightSwitchDialog = createLightValueDialog(switchDialogElement, 'switch');
 
     foreach(keys(data.lights), function (key) {
       var node = data.lights[key];
-      var value = parseInt(node.value, 10);
+      var value;
+
+      if (node.type == 'dim') {
+        value = parseInt(node.value, 10);
+      } else {
+        value = node.value === true;
+      }
 
       var displayName = key.substr(5);
       var light = lightValueChip(displayName, value);
+
+      console.log('nodeValue at start: ', value);
 
       var changeHandler = function (newValue) {
         changeNode(light, newValue, node);
       };
 
       light.onClick(function () {
+        var dialog;
+
+        if (node.type == 'dim') {
+          dialog = lightValueDialog;
+        } else {
+          dialog = lightSwitchDialog;
+        }
+
         dialog.show(displayName, value, changeHandler).then(function (newValue) {
           changeNode(light, newValue, node);
         })
@@ -75,7 +92,13 @@ module.exports = function () {
   function changeNode(light, newValue, node) {
     light.setValue(newValue);
 
-    post('/my_zwave/light/' + node.node_id + '/level/' + newValue);
+    if (node.type == 'dim') {
+      post('/my_zwave/light/' + node.node_id + '/level/' + newValue);
+    } else {
+      var onOff = newValue ? 'on' : 'off';
+
+      post('/my_zwave/light/' + node.node_id + '/switch/' + onOff);
+    }
   }
 
 

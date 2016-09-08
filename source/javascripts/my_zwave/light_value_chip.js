@@ -26,7 +26,7 @@ module.exports = function (displayName, value) {
 
     valueDisplay.innerText = lightValueToString(value);
 
-    if (value === 'false' || value === '0') {
+    if (value === 0 || value === false) {
       element.classList.add('mdl-color--blue-100');
     } else {
       element.classList.add('mdl-color--amber-600');
@@ -53,14 +53,13 @@ module.exports = function (displayName, value) {
   }
 
   function lightValueToString(value) {
-    if (value === 'false' || value === '0') {
+    if (value === 0 || value === false) {
       return '-';
-    }
-    if (value === 'true') {
+    } else if (value === true) {
       return 'on';
+    } else {
+      return value;
     }
-
-    return value;
   }
 
   return {
