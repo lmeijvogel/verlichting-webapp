@@ -21,7 +21,7 @@ class MyZWave < Sinatra::Base
   end
 
   post '/light/:node_id/level/:level' do
-    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{params[:level]}")
+    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{Integer(params[:level])}")
 
     "Recipients: #{recipient_count}"
   end
