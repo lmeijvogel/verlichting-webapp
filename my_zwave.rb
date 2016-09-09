@@ -139,6 +139,22 @@ class MyZWave < Sinatra::Base
     "OK"
   end
 
+  post '/disable_switch' do
+    recipient_count = redis.publish("MyZWave", "disableSwitch")
+
+    "Recipients: #{recipient_count}"
+  end
+
+  post '/enable_switch' do
+    recipient_count = redis.publish("MyZWave", "enableSwitch")
+
+    "Recipients: #{recipient_count}"
+  end
+
+  get '/switch_enabled' do
+    redis.get("zwave_switch_enabled")
+  end
+
   post "/login/create" do
     data = JSON.parse(request.body.read)
 
