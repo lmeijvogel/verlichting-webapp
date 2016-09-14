@@ -49,14 +49,19 @@ module.exports = function () {
       var displayName = key.substr(5);
       var light = lightValueChip(displayName, value);
 
-      console.log('nodeValue at start: ', value);
-
       var changeHandler = function (newValue) {
         changeNode(light, newValue, node);
       };
 
       light.onClick(function () {
         var dialog;
+        var oldValue;
+
+        if (node.type == 'dim') {
+          oldValue = parseInt(node.value, 10);
+        } else {
+          oldValue = node.value === true;
+        }
 
         if (node.type == 'dim') {
           dialog = lightValueDialog;
@@ -64,7 +69,7 @@ module.exports = function () {
           dialog = lightSwitchDialog;
         }
 
-        dialog.show(displayName, value, changeHandler).then(function (newValue) {
+        dialog.show(displayName, parseInt(node.value, 10), changeHandler).then(function (newValue) {
           changeNode(light, newValue, node);
         })
         .catch(function () {
@@ -90,15 +95,20 @@ module.exports = function () {
   }
 
   function changeNode(light, newValue, node) {
-    light.setValue(newValue);
+    var promise;
 
     if (node.type == 'dim') {
-      post('/my_zwave/light/' + node.node_id + '/level/' + newValue);
+      promise = post('/my_zwave/light/' + node.node_id + '/level/' + newValue);
     } else {
       var onOff = newValue ? 'on' : 'off';
 
-      post('/my_zwave/light/' + node.node_id + '/switch/' + onOff);
+      promise = post('/my_zwave/light/' + node.node_id + '/switch/' + onOff);
     }
+
+    promise.then(function () {
+      light.setValue(newValue);
+      node.value = newValue;
+    });
   }
 
 
