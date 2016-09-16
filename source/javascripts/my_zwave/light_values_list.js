@@ -69,7 +69,7 @@ module.exports = function () {
           dialog = lightSwitchDialog;
         }
 
-        dialog.show(displayName, parseInt(node.value, 10), changeHandler).then(function (newValue) {
+        dialog.show(displayName, node.value, changeHandler).then(function (newValue) {
           changeNode(light, newValue, node);
         })
         .catch(function () {

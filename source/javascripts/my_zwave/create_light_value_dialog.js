@@ -18,29 +18,51 @@ module.exports = function (dialog, type) {
     slider.setAttribute('value', value);
 
     slider.addEventListener('change', function (e) {
-      if (type == 'dim') {
-        changeEventHandler(e.target.value, 10);
-      } else {
-        var output = e.target.checked;
-
-        changeEventHandler(output);
-      }
+      changeEventHandler(e.target.value, 10);
     });
 
     return slider;
+  }
+
+  function createSwitch(value) {
+    var switchContainer = document.createElement('label');
+
+    switchContainer.className = 'mdl-switch mdl-js-switch mdl-js-ripple-effect';
+    switchContainer.setAttribute('for', 'light-switch');
+
+    var theSwitch = document.createElement('input');
+
+    theSwitch.className = 'mdl-switch__input js-light-value';
+    theSwitch.setAttribute('id', 'light-switch');
+    theSwitch.setAttribute('type', 'checkbox');
+
+    if (value) {
+      theSwitch.setAttribute('checked', 'checked');
+    }
+
+    theSwitch.addEventListener('change', function (e) {
+      changeEventHandler(e.target.checked);
+    });
+
+    switchContainer.appendChild(theSwitch);
+    return switchContainer;
   }
 
   function show(lightName, value, onChange) {
     dialog.querySelector('.js-light-dialog-title').innerText = lightName;
 
     if (type == 'dim') {
-      var slider = createSlider(value);
+      var slider = createSlider(parseInt(value, 10));
       var sliderContainer = dialog.querySelector('.js-slider-container');
 
       sliderContainer.appendChild(slider);
       window.componentHandler.upgradeElement(slider);
     } else {
-      dialog.querySelector('.js-light-value').checked = value;
+      var theSwitch = createSwitch(value);
+      var switchContainer = dialog.querySelector('.js-switch-container');
+
+      switchContainer.appendChild(theSwitch);
+      window.componentHandler.upgradeElement(theSwitch);
     }
 
     changeEventHandler = onChange;
@@ -51,13 +73,15 @@ module.exports = function (dialog, type) {
 
         if (type == 'dim') {
           resolve(slider.value);
+          var mdlSliderContainer = sliderContainer.querySelector('.mdl-slider__container');
+
+          sliderContainer.removeChild(mdlSliderContainer);
         } else {
-          resolve(dialog.querySelector('.js-light-value').checked);
+          resolve(theSwitch.querySelector('.js-light-value').checked);
+          var mdlSwitchContainer = switchContainer.querySelector('.mdl-switch');
+
+          switchContainer.removeChild(mdlSwitchContainer);
         }
-
-        var mdlSliderContainer = sliderContainer.querySelector('.mdl-slider__container');
-
-        sliderContainer.removeChild(mdlSliderContainer);
       };
 
       cancelEventHandler = function () {
