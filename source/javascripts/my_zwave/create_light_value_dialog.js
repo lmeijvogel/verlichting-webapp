@@ -18,7 +18,7 @@ module.exports = function (dialog, type) {
     slider.setAttribute('value', value);
 
     slider.addEventListener('change', function (e) {
-      changeEventHandler(e.target.value, 10);
+      changeEventHandler(e.target.value);
     });
 
     return slider;
