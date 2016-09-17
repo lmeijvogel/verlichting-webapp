@@ -5,9 +5,9 @@ var keys = require('lodash.keys');
 var lightValueChip = require('./light_value_chip');
 
 var getJSON = require('./get_json');
-var post = require('./post');
 
 var createLightValueDialog = require('./create_light_value_dialog');
+var createNode = require('./create_node');
 
 module.exports = function () {
   var lights = document.querySelector('#lights');
@@ -37,17 +37,10 @@ module.exports = function () {
     var lightSwitchDialog = createLightValueDialog(switchDialogElement, 'switch');
 
     foreach(keys(data.lights), function (key) {
-      var node = data.lights[key];
-      var value;
-
-      if (node.type == 'dim') {
-        value = parseInt(node.value, 10);
-      } else {
-        value = node.value === true;
-      }
+      var node = createNode(data.lights[key]);
 
       var displayName = key.substr(5);
-      var light = lightValueChip(displayName, value);
+      var light = lightValueChip(displayName, node.getValue());
 
       var changeHandler = function (newValue) {
         changeNode(light, newValue, node);
@@ -55,13 +48,7 @@ module.exports = function () {
 
       light.onClick(function () {
         var dialog;
-        var oldValue;
-
-        if (node.type == 'dim') {
-          oldValue = parseInt(node.value, 10);
-        } else {
-          oldValue = node.value === true;
-        }
+        var oldValue = node.getValue();
 
         if (node.type == 'dim') {
           dialog = lightValueDialog;
@@ -69,11 +56,11 @@ module.exports = function () {
           dialog = lightSwitchDialog;
         }
 
-        dialog.show(displayName, node.value, changeHandler).then(function (newValue) {
+        dialog.show(displayName, node.getValue(), changeHandler).then(function (newValue) {
           changeNode(light, newValue, node);
         })
         .catch(function () {
-          changeNode(light, value, node);
+          changeNode(light, oldValue, node);
         });
       });
 
@@ -87,7 +74,7 @@ module.exports = function () {
 
   function updateButtons(data) {
     foreach(keys(data.lights), function (key) {
-      var value = data.lights[key].value;
+      var value = createNode(data.lights[key]).getValue();
       var displayName = key.substr(5);
 
       buttons[key].setValue(value);
@@ -95,19 +82,10 @@ module.exports = function () {
   }
 
   function changeNode(light, newValue, node) {
-    var promise;
-
-    if (node.type == 'dim') {
-      promise = post('/my_zwave/light/' + node.node_id + '/level/' + newValue);
-    } else {
-      var onOff = newValue ? 'on' : 'off';
-
-      promise = post('/my_zwave/light/' + node.node_id + '/switch/' + onOff);
-    }
+    var promise = node.updateValue(newValue);
 
     promise.then(function () {
       light.setValue(newValue);
-      node.value = newValue;
     });
   }
 
