@@ -87,9 +87,15 @@ module.exports = function (dialog, type) {
       cancelEventHandler = function () {
         dialog.close();
 
-        var mdlSliderContainer = sliderContainer.querySelector('.mdl-slider__container');
+        if (type == 'dim') {
+          var mdlSliderContainer = sliderContainer.querySelector('.mdl-slider__container');
 
-        sliderContainer.removeChild(mdlSliderContainer);
+          sliderContainer.removeChild(mdlSliderContainer);
+        } else {
+          var mdlSwitchContainer = switchContainer.querySelector('.mdl-switch');
+
+          switchContainer.removeChild(mdlSwitchContainer);
+        }
 
         reject();
       };
