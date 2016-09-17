@@ -12,6 +12,7 @@ gem 'dotenv'
 gem 'highline'
 
 group 'development' do
+  gem 'foreman'
   gem 'sshkit'
   gem 'guard'
   gem 'guard-shell'
