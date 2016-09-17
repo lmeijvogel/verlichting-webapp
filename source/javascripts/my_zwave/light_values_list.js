@@ -85,7 +85,7 @@ module.exports = function () {
     var promise = node.updateValue(newValue);
 
     promise.then(function () {
-      light.setValue(newValue);
+      light.setValue(node.getValue());
     });
   }
 
