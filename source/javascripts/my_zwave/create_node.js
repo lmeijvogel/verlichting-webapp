@@ -5,6 +5,8 @@ module.exports = function (data) {
   var type  = data.type;
   var value = sanitizeValue(data.value);
 
+  var changeHandler = function () { };
+
   function getValue() {
     return value;
   }
@@ -31,14 +33,20 @@ module.exports = function (data) {
     return promise.then(function () {
       value = sanitizeValue(newValue);
 
+      changeHandler(value);
       return value;
     });
+  }
+
+  function onChange(handler) {
+    changeHandler = handler;
   }
 
   return {
     getValue: getValue,
     type: type,
     nodeId: nodeId,
-    updateValue: updateValue
+    updateValue: updateValue,
+    onChange: onChange
   };
 };

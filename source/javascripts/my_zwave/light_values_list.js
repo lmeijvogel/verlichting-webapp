@@ -42,9 +42,9 @@ module.exports = function () {
       var displayName = key.substr(5);
       var light = lightValueChip(displayName, node.getValue());
 
-      var changeHandler = function (newValue) {
-        changeNode(light, newValue, node);
-      };
+      node.onChange(light.setValue);
+
+      var changeHandler = node.updateValue;
 
       light.onClick(function () {
         var dialog;
@@ -56,11 +56,9 @@ module.exports = function () {
           dialog = lightSwitchDialog;
         }
 
-        dialog.show(displayName, node.getValue(), changeHandler).then(function (newValue) {
-          changeNode(light, newValue, node);
-        })
+        dialog.show(displayName, node.getValue(), changeHandler).then(node.updateValue)
         .catch(function () {
-          changeNode(light, oldValue, node);
+          node.updateValue(oldValue);
         });
       });
 
@@ -80,15 +78,6 @@ module.exports = function () {
       buttons[key].setValue(value);
     });
   }
-
-  function changeNode(light, newValue, node) {
-    var promise = node.updateValue(newValue);
-
-    promise.then(function () {
-      light.setValue(node.getValue());
-    });
-  }
-
 
   var publicMethods = {
     update: update
