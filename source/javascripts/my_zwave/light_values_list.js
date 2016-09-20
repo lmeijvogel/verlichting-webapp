@@ -10,9 +10,8 @@ var createLightValueDialog = require('./create_light_value_dialog');
 var createNode = require('./create_node');
 
 module.exports = function () {
-  var lights = document.querySelector('#lights');
+  var lightsElement = document.querySelector('#lights');
   var buttons = null;
-
 
   function update() {
     foreach(buttons, function (button) {
@@ -66,7 +65,7 @@ module.exports = function () {
     });
 
     foreach(buttons, function (button) {
-      lights.appendChild(button.element);
+      lightsElement.appendChild(button.element);
     });
   }
 
