@@ -1,25 +1,33 @@
 module.exports = function (displayName, value) {
-  var element = document.createElement('span');
-  var valueDisplay = document.createElement('span');
-  var nameDisplay = document.createElement('span');
+  var element = null;
+  var valueDisplay = null;
 
   var onClickHandler = function () { };
 
-  element.classList = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
-                     ' light-button';
-  valueDisplay.classList = 'mdl-chip__contact light-value';
-
-  nameDisplay.classList = 'mdl-chip__text';
-  nameDisplay.innerText = displayName;
-
-  element.appendChild(valueDisplay);
-  element.appendChild(nameDisplay);
-
-  element.addEventListener('click', function () {
-    onClickHandler();
-  });
+  initializeElement();
 
   setValue(value);
+
+  function initializeElement() {
+    element = document.createElement('span');
+    valueDisplay = document.createElement('span');
+
+    var nameDisplay = document.createElement('span');
+
+    element.classList = 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop' +
+                       ' light-button';
+    valueDisplay.classList = 'mdl-chip__contact light-value';
+
+    nameDisplay.classList = 'mdl-chip__text';
+    nameDisplay.innerText = displayName;
+
+    element.appendChild(valueDisplay);
+    element.appendChild(nameDisplay);
+
+    element.addEventListener('click', function () {
+      onClickHandler();
+    });
+  }
 
   function setValue(value) {
     clearStyling();
