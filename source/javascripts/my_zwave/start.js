@@ -47,7 +47,7 @@ ready(function () {
 
       document.querySelector('.js-reload-lights').addEventListener('click', currentValues.update);
 
-      currentValues.update();
+      currentValues.create();
 
       showData();
     }).catch(function (jqXHR) {

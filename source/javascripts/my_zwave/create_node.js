@@ -42,11 +42,17 @@ module.exports = function (data) {
     changeHandler = handler;
   }
 
+  function setUnknown() {
+    value = '?';
+    changeHandler('?');
+  }
+
   return {
     getValue: getValue,
     type: type,
     nodeId: nodeId,
     updateValue: updateValue,
+    setUnknown: setUnknown,
     onChange: onChange
   };
 };

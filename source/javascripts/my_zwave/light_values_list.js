@@ -11,24 +11,26 @@ var createNode = require('./create_node');
 
 module.exports = function () {
   var lightsElement = document.querySelector('#lights');
-  var buttons = null;
+  var nodes;
+
+  function create() {
+    getJSON('/my_zwave/current_lights').then(function (data) {
+      createButtons(data);
+    });
+  }
 
   function update() {
-    foreach(buttons, function (button) {
-      button.setUnknown();
+    foreach(nodes, function (node) {
+      node.setUnknown();
     });
 
     getJSON('/my_zwave/current_lights').then(function (data) {
-      if (buttons == null) {
-        createButtons(data);
-      } else {
-        updateButtons(data);
-      }
+      updateNodes(data);
     });
   }
 
   function createButtons(data) {
-    buttons = {};
+    nodes = {};
 
     var valueDialogElement = document.querySelector('.light-value-dialog');
     var switchDialogElement = document.querySelector('.light-switch-dialog');
@@ -39,13 +41,13 @@ module.exports = function () {
       var node = createNode(data.lights[key]);
 
       var displayName = key.substr(5);
-      var light = lightValueChip(displayName, node.getValue());
+      var lightChip = lightValueChip(displayName, node.getValue());
 
-      node.onChange(light.setValue);
+      node.onChange(lightChip.setValue);
 
       var changeHandler = node.updateValue;
 
-      light.onClick(function () {
+      lightChip.onClick(function () {
         var dialog;
         var oldValue = node.getValue();
 
@@ -61,24 +63,22 @@ module.exports = function () {
         });
       });
 
-      buttons[key] = light;
-    });
+      nodes[key] = node;
 
-    foreach(buttons, function (button) {
-      lightsElement.appendChild(button.element);
+      lightsElement.appendChild(lightChip.element);
     });
   }
 
-  function updateButtons(data) {
+  function updateNodes(data) {
     foreach(keys(data.lights), function (key) {
       var value = createNode(data.lights[key]).getValue();
-      var displayName = key.substr(5);
 
-      buttons[key].setValue(value);
+      nodes[key].updateValue(value);
     });
   }
 
   var publicMethods = {
+    create: create,
     update: update
   };
 

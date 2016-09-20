@@ -26,19 +26,13 @@ module.exports = function (displayName, value) {
 
     valueDisplay.innerText = lightValueToString(value);
 
-    if (value === 0 || value === false) {
+    if (value === 0 || value === '?' || value === false) {
       element.classList.add('mdl-color--blue-100');
     } else {
       element.classList.add('mdl-color--amber-600');
 
       valueDisplay.classList.add('mdl-color--yellow');
     }
-  }
-
-  function setUnknown() {
-    clearStyling();
-
-    valueDisplay.innerText = '?';
   }
 
   function clearStyling() {
@@ -64,7 +58,6 @@ module.exports = function (displayName, value) {
 
   return {
     element: element,
-    setUnknown: setUnknown,
     setValue: setValue,
     onClick: onClick
   };
