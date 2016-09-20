@@ -45,7 +45,7 @@ module.exports = function () {
 
       node.onChange(lightChip.setValue);
 
-      var changeHandler = node.updateValue;
+      var changeHandler = node.setValue;
 
       lightChip.onClick(function () {
         var dialog;
@@ -57,9 +57,9 @@ module.exports = function () {
           dialog = lightSwitchDialog;
         }
 
-        dialog.show(displayName, node.getValue(), changeHandler).then(node.updateValue)
+        dialog.show(displayName, node.getValue(), changeHandler).then(node.setValue)
         .catch(function () {
-          node.updateValue(oldValue);
+          node.setValue(oldValue);
         });
       });
 
@@ -73,7 +73,7 @@ module.exports = function () {
     foreach(keys(data.lights), function (key) {
       var value = createNode(data.lights[key]).getValue();
 
-      nodes[key].updateValue(value);
+      nodes[key].setValue(value);
     });
   }
 

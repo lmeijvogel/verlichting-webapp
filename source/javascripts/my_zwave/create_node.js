@@ -19,7 +19,7 @@ module.exports = function (data) {
     }
   }
 
-  function updateValue(newValue) {
+  function setValue(newValue) {
     var promise;
 
     if (type === 'dim') {
@@ -51,7 +51,7 @@ module.exports = function (data) {
     getValue: getValue,
     type: type,
     nodeId: nodeId,
-    updateValue: updateValue,
+    setValue: setValue,
     setUnknown: setUnknown,
     onChange: onChange
   };
