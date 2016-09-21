@@ -39,6 +39,7 @@ em {
 
 .light-button {
   margin-bottom: 15px;
+  cursor: pointer;
 }
 
 .current-light-values {
