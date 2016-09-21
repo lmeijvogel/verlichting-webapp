@@ -1,9 +1,22 @@
 var post = require('./post');
 
 module.exports = function (data) {
+  var node;
+  switch (data.type) {
+    case 'dim':
+      node = createDimmableLight(data);
+      break;
+    case 'switch':
+      node = createSwitch(data);
+      break;
+    default:
+      throw("Unknown node type " + data.type + ", nodeId: " + data.node_id);
+      break;
+  }
+
   var nodeId = data.node_id;
-  var type  = data.type;
-  var value = sanitizeValue(data.value);
+  var type = data.type;
+  var value = node.sanitizeValue(data.value);
 
   var changeHandler = function () { };
 
@@ -11,27 +24,11 @@ module.exports = function (data) {
     return value;
   }
 
-  function sanitizeValue(value) {
-    if (type === 'dim') {
-      return parseInt(value, 10);
-    } else {
-      return value.toString() === 'true';
-    }
-  }
-
   function setValue(newValue) {
-    var promise;
-
-    if (type === 'dim') {
-      promise = post('/my_zwave/light/' + nodeId + '/level/' + newValue);
-    } else {
-      var onOff = newValue ? 'on' : 'off';
-
-      promise = post('/my_zwave/light/' + nodeId + '/switch/' + onOff);
-    }
+    var promise = node.postValue(newValue);
 
     return promise.then(function () {
-      value = sanitizeValue(newValue);
+      value = node.sanitizeValue(newValue);
 
       changeHandler(value);
       return value;
@@ -47,6 +44,39 @@ module.exports = function (data) {
     changeHandler('?');
   }
 
+  function createDimmableLight(data) {
+    function sanitizeValue(newValue) {
+      return parseInt(newValue, 10);
+    }
+
+    function postValue(newValue) {
+      return post('/my_zwave/light/' + nodeId + '/level/' + newValue);
+    }
+
+    return {
+      sanitizeValue: sanitizeValue,
+      postValue: postValue,
+    };
+  }
+
+  function createSwitch(data) {
+    function sanitizeValue(newValue) {
+      return newValue.toString() === 'true';
+    }
+
+    function postValue(newValue) {
+      var onOff = newValue ? 'on' : 'off';
+
+      return post('/my_zwave/light/' + nodeId + '/switch/' + onOff);
+    }
+
+    return {
+      sanitizeValue: sanitizeValue,
+      postValue: postValue,
+    };
+  };
+
+
   return {
     getValue: getValue,
     type: type,
@@ -55,4 +85,4 @@ module.exports = function (data) {
     setUnknown: setUnknown,
     onChange: onChange
   };
-};
+}
