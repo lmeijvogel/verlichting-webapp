@@ -2,6 +2,13 @@ var post = require('./post');
 
 module.exports = function (data) {
   var node;
+
+  var nodeId;
+  var type;
+  var value;
+
+  var changeHandler = function () { };
+
   switch (data.type) {
     case 'dim':
       node = createDimmableLight(data);
@@ -14,14 +21,18 @@ module.exports = function (data) {
       break;
   }
 
-  var nodeId = data.node_id;
-  var type = data.type;
-  var value = node.sanitizeValue(data.value);
-
-  var changeHandler = function () { };
+  updateFromServer(data);
 
   function getValue() {
     return value;
+  }
+
+  function updateFromServer(data) {
+    nodeId = data.node_id;
+    type = data.type;
+
+    value = node.sanitizeValue(data.value);
+    changeHandler(value);
   }
 
   function setValue(newValue) {
@@ -83,6 +94,7 @@ module.exports = function (data) {
     nodeId: nodeId,
     setValue: setValue,
     setUnknown: setUnknown,
+    updateFromServer: updateFromServer,
     onChange: onChange
   };
 }

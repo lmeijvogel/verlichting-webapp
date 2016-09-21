@@ -71,9 +71,7 @@ module.exports = function () {
 
   function updateNodes(data) {
     foreach(keys(data.lights), function (key) {
-      var value = createNode(data.lights[key]).getValue();
-
-      nodes[key].setValue(value);
+      nodes[key].updateFromServer(data.lights[key]);
     });
   }
 
