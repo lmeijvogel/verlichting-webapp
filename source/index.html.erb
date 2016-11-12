@@ -12,6 +12,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="/stylesheets/<%= material_css %>">
 
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+
   <% all = is_production ? fingerprinted_file("source/stylesheets/all.css") : 'all.css' %>
   <link href="/stylesheets/<%= all %>" rel="stylesheet" type="text/css" />
 
@@ -30,13 +32,16 @@
 </div>
 
 <div class="mdl-grid">
-  <div class="mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp programme-buttons-list">
+  <div id="programme-buttons-list" class="mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp programme-buttons-list">
     <div class="mdl-card__title">
       <h3 class="mdl-card__title-text">Programma's</h3>
     </div>
-    <div class="mdl-card__supporting-text programme-button-list">
-      <div class="loading-spinner-container">
+    <div class="mdl-card__supporting-text">
+      <div v-if="!loaded" class="loading-spinner-container">
         <div class="loading-spinner mdl-spinner mdl-js-spinner is-active"></div>
+      </div>
+      <div v-for="programme of programmes">
+        <programme-button v-bind:programme="programme" v-bind:active-programme-id="activeProgrammeId" v-on:selected="programmeSelected(programme)"></programme-button>
       </div>
     </div>
   </div>
