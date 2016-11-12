@@ -6,6 +6,8 @@ var userFeedback    = require('./user_feedback');
 var VacationMode    = require('./vacation_mode');
 var latestEvents    = require('./latest_events');
 
+var programmeButtonComponent = require('./components/programme_button');
+
 var keys = require('lodash.keys');
 var map = require('lodash.map');
 var RSVP = require('rsvp');
@@ -26,36 +28,6 @@ function ready(fn) {
 ready(function () {
   function start() {
     var programmesListInterface = programmesList();
-
-    Vue.component('programme-button', {
-      template: '<div v-on:click="click" v-bind:class="[defaultClasses, activeClasses]">{{programme.name}}</div>',
-
-      data: function () {
-        return {
-          defaultClasses: 'selectProgrammeButton' +
-                          ' mdl-button mdl-js-button mdl-js-ripple-effect' +
-                          ' mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop'
-        };
-      },
-      props: ['programme', 'activeProgrammeId'],
-      computed: {
-        active: function () {
-          return this.programme.id == this.activeProgrammeId;
-        },
-
-        activeClasses: function () {
-          if (this.active) {
-            return 'mdl-button--raised mdl-button--colored';
-          }
-        }
-      },
-
-      methods: {
-        click: function () {
-          this.$emit('selected');
-        }
-      }
-    });
 
     var programmesButtonList = new Vue({
       el: '#programme-buttons-list',
