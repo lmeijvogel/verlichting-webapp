@@ -7,6 +7,7 @@ var VacationMode    = require('./vacation_mode');
 var latestEvents    = require('./latest_events');
 
 var programmeButtonComponent = require('./components/programme_button');
+var programmeButtonsListComponent = require('./components/programme_buttons_list');
 
 var keys = require('lodash.keys');
 var map = require('lodash.map');
@@ -29,17 +30,11 @@ ready(function () {
   function start() {
     var programmesListInterface = programmesList();
 
-    var programmesButtonList = new Vue({
-      el: '#programme-buttons-list',
-      data: {
-        programmes: [],
-        activeProgrammeId: null
-      },
-      computed: {
-        loaded: function () { return this.programmes.length > 0; }
-      },
+    var App = new Vue({
+      el: '#app',
+      props: ['programmes', 'activeProgrammeId'],
       methods: {
-        programmeSelected: function (programme) {
+        programmeRequested: function (programme) {
           var self = this;
 
           programmesListInterface.selectProgramme(programme.id).then(function () {
@@ -54,11 +49,12 @@ ready(function () {
         }
       }
     });
+
     var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
     programmesListInterface.getProgrammes().then(function (programmes) {
       // TODO : Move keys.map () to programmesListInterface
-      programmesButtonList.programmes = map(keys(programmes), function (id) {
+      App.programmes = map(keys(programmes), function (id) {
         return {id: id, name: programmes[id]};
       });
     }).then(function () {
@@ -91,7 +87,7 @@ ready(function () {
     function showData() {
       getJSON('/my_zwave/current_programme')
         .then(function (data) {
-          programmesButtonList.activeProgrammeId = data.programme;
+          App.activeProgrammeId = data.programme;
         });
     }
   }
