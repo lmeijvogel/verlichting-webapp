@@ -38,38 +38,15 @@
       v-bind:active-programme-id="activeProgrammeId"
       v-on:programme-requested="programmeRequested"></programme-buttons-list>
 
-    <div class="vacation-mode mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp js-vacation-mode--off vacation-mode--hidden">
-      <div class="mdl-card__title">
-        <h3 class="mdl-card__title-text">Vacation mode is <em>OFF</em></h3>
-      </div>
-      <div class="mdl-card__supporting-text">
-        <div id="plan-vacation">
-          <p>Average on-time: <input id="start-time" type="time" value="18:30" data-target="vacation-mode__start-time">
-          <p>Average off-time: <input id="end-time" type="time" value="22:30" data-target="vacation-mode__end-time">
-        </div>
-      </div>
-      <div class="mdl-card__actions mdl-card__border">
-        <button class="vacation-mode__start-button mdl-button mdl-js-button mdl-js-ripple-effect" data-behavior="start-vacation">Start</button>
-      </div>
-    </div>
-    <div class="vacation-mode mdl-cell--12-col mdl-cell--4-col-desktop mdl-card mdl-shadow--2dp js-vacation-mode--on vacation-mode--hidden">
-      <div class="mdl-card__title vacation-mode__on-title--active">
-        <h3 class="mdl-card__title-text">Vacation mode is <em>ON</em></h3>
-      </div>
-      <div class="mdl-card__supporting-text">
-        <p>Average on-time: <span data-target="vacation-mode__start-time"></span>
-        <p>Average off-time: <span data-target="vacation-mode__end-time"></span>
-      </div>
-      <div class="mdl-card__actions mdl-card__border">
-        <button class="vacation-mode__stop-button mdl-button mdl-js-button mdl-js-ripple-effect" data-behavior="stop-vacation">Stop</button>
-      </div>
-    </div>
+    <vacation-mode></vacation-mode>
 
     <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">
       <div class="mdl-card__title">
         <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>
       </div>
       <div id="lights" class="mdl-card__supporting-text">
+        <div v-for="light of lights">
+          <light-value-chip v-bind:name="light.name" v-bind:node-id="light.nodeId" v-bind:value="light.value" v-on:click="changeLightValue(light)"></light-value-chip>
       </div>
     </div>
 
