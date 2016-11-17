@@ -70,6 +70,8 @@
         <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>
       </div>
       <div id="lights" class="mdl-card__supporting-text">
+        <div v-for="light of lights">
+          <light-value-chip v-bind:name="light.name" v-bind:node-id="light.nodeId" v-bind:value="light.value" v-on:click="changeLightValue(light)"></light-value-chip>
       </div>
     </div>
 
