@@ -2,19 +2,21 @@
 var programmesList = require('./programmes_list');
 var showLoginDialog = require('./show_login_dialog');
 var userFeedback    = require('./user_feedback');
-var VacationMode    = require('./vacation_mode');
 var latestEvents    = require('./latest_events');
 
 var createLightValueDialog = require('./create_light_value_dialog');
 
 var programmeButtonComponent = require('./components/programme_button');
 var programmeButtonsListComponent = require('./components/programme_buttons_list');
+var vacationModeComponent = require('./components/vacation_mode');
 var lightValueChip = require('./components/light_value_chip');
 
 var keys = require('lodash.keys');
 var map = require('lodash.map');
 var foreach = require('lodash.foreach');
 var RSVP = require('rsvp');
+
+var post = require('./post');
 
 var Vue = window.Vue;
 
@@ -35,7 +37,7 @@ ready(function () {
 
     var App = new Vue({
       el: '#app',
-      props: ['programmes', 'activeProgrammeId', 'lights'],
+      props: ['programmes', 'activeProgrammeId', 'lights', 'vacationModeState'],
       methods: {
         programmeRequested: function (programme) {
           var self = this;
@@ -73,6 +75,37 @@ ready(function () {
             .catch(function () {
               light.value = oldValue;
             });
+        },
+
+        vacationModeStartRequested: function (onTime, offTime) {
+          var newState = {
+            state: 'on',
+            'start_time': onTime,
+            'end_time': offTime
+          };
+
+          post('/my_zwave/vacation_mode', newState)
+          .then(function () {
+            App.vacationModeState = newState;
+
+            feedback.addMessage('Started vacation mode');
+          })
+          .catch(function () {
+            feedback.addMessage('Could not start vacation mode');
+          });
+        },
+        vacationModeStopRequested: function () {
+          post('/my_zwave/vacation_mode', {
+            state: 'off'
+          })
+          .then(function () {
+            App.vacationModeState.state = 'off';
+
+            feedback.addMessage('Stopped vacation mode');
+          })
+          .catch(function () {
+            feedback.addMessage('Could not stop vacation mode');
+          });
         }
       }
     });
@@ -96,22 +129,13 @@ ready(function () {
         App.lights = lights;
       });
 
-      var vacationMode = new VacationMode(
-        document.querySelector('.js-vacation-mode--off'),
-        document.querySelector('.js-vacation-mode--on')
-      );
+      getJSON('/my_zwave/vacation_mode')
+        .then(function (data) {
+          //data.state = 'on';
+          App.vacationModeState = data;
+        });
 
       latestEvents(document.querySelector('.js-latest-events')).start();
-
-      vacationMode.on('error', function (message) {
-        feedback.addMessage(message);
-      });
-
-      vacationMode.on('notice', function (message) {
-        feedback.addMessage(message);
-      });
-
-      vacationMode.start();
 
       //document.querySelector('.js-reload-lights').addEventListener('click', currentValues.update);
 

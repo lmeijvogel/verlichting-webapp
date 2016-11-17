@@ -24,8 +24,7 @@ em {
   color: rgb(255,255,255);
 }
 
-.vacation-mode__start-button,
-.vacation-mode__stop-button {
+.vacation-mode__start-stop-button {
   width: 100%;
 }
 
