@@ -11,7 +11,7 @@ desc "Build the development version"
 task :default => :work
 
 desc "Build the development version"
-task :work => %w[css_work work/index.html work/javascripts/jquery.min.js work/javascripts/material.min.js work/javascripts/my_zwave.js]
+task :work => %w[css_work work/index.html work/javascripts/material.min.js work/javascripts/my_zwave.js]
 
 desc "Build the production version"
 task :dist => %w[fingerprinted_js fingerprinted_css dist/index.html]
@@ -63,10 +63,6 @@ file "work/javascripts/my_zwave.js" => [MY_ZWAVE_JS_TMP, "work/javascripts"] do 
 end
 
 file "work/javascripts/material.min.js" => ["source/javascripts/material.min.js", "work/javascripts"] do |task|
-  cp task.source, task.name
-end
-
-file "work/javascripts/jquery.min.js" => ["source/javascripts/jquery.min.js", "work/javascripts"] do |task|
   cp task.source, task.name
 end
 
