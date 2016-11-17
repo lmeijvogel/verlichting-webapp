@@ -20,7 +20,8 @@
     "browserify": "^11.0.1",
     "eslint": "^1.10.3",
     "eslint-config-defaults": "^7.1.1",
-    "uglify-js": "^2.6.2"
+    "uglify-js": "^2.6.2",
+    "webpack": "^1.13.3"
   },
   "private": true,
   "dependencies": {

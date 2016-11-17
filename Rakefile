@@ -34,7 +34,7 @@ directory "dist/javascripts"
 directory "tmp/javascripts"
 
 file MY_ZWAVE_JS_TMP => [JS_SOURCE_FILES, "tmp/javascripts"].flatten do |task|
-  `node_modules/browserify/bin/cmd.js source/javascripts/my_zwave/start.js -o #{task.name}`
+  `node_modules/.bin/webpack source/javascripts/my_zwave/start.js #{task.name}`
 end
 
 file MATERIAL_JS_TMP => ["source/javascripts/material.min.js", "tmp/javascripts"].flatten do |task|
