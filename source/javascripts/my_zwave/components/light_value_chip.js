@@ -14,7 +14,7 @@ module.exports = Vue.component('light-value-chip', {
   },
   computed: {
     isOff: function () {
-      return this.value === '0' || this.value === '?' || this.value === 'false';
+      return this.value === 0 || this.value === '?' || this.value === false;
     },
     isOn: function () {
       return !this.isOff;
@@ -40,9 +40,9 @@ module.exports = Vue.component('light-value-chip', {
     },
 
     displayValue: function () {
-      if (this.value === '0' || this.value === 'false') {
+      if (this.value === 0 || this.value === false) {
         return '-';
-      } else if (this.value === 'true') {
+      } else if (this.value === true) {
         return 'on';
       } else {
         return this.value;

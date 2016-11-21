@@ -9,6 +9,8 @@ var programmeButtonsListComponent = require('./components/programme_buttons_list
 var vacationModeComponent = require('./components/vacation_mode');
 var lightsListComponent = require('./components/lights_list');
 
+var nodeValueTranslator = require('./node_value_translator')();
+
 var keys = require('lodash.keys');
 var map = require('lodash.map');
 var foreach = require('lodash.foreach');
@@ -97,8 +99,11 @@ ready(function () {
 
         lights = map(keys(data.lights), function (name) {
           var row = data.lights[name];
+          var light = {nodeId: row.node_id, name: name, type: row.type};
 
-          return {nodeId: row.node_id, name: name, value: row.value, type: row.type};
+          light.value = nodeValueTranslator.fromServer(row.value, light);
+
+          return light;
         });
         App.lights = lights;
       });

@@ -2,6 +2,7 @@ var Vue = window.Vue;
 
 var lightValueChip = require('./light_value_chip');
 var createLightValueDialog = require('../create_light_value_dialog');
+var nodeValueTranslator = require('../node_value_translator')();
 
 // Is this a smell?
 var post = require('../post');
@@ -21,37 +22,38 @@ module.exports = Vue.component('lights-list', {
 '    </div>',
   methods: {
     changeLightValue: function (light) {
-      var valueDialogElement = document.querySelector('.light-value-dialog');
-      var switchDialogElement = document.querySelector('.light-switch-dialog');
-      var lightValueDialog = createLightValueDialog(valueDialogElement, 'dim');
-      var lightSwitchDialog = createLightValueDialog(switchDialogElement, 'switch');
+      // Initialize these dialogs only once
+      this.valueDialogElement = this.valueDialogElement || document.querySelector('.light-value-dialog');
+      this.switchDialogElement = this.switchDialogElement || document.querySelector('.light-switch-dialog');
+      this.lightValueDialog = this.lightValueDialog || createLightValueDialog(this.valueDialogElement, 'dim');
+      this.lightSwitchDialog = this.lightSwitchDialog || createLightValueDialog(this.switchDialogElement, 'switch');
 
       var dialog;
-      var valueForDialog; // Should be done by the light itself
-      var oldValue = light.value;
 
       if (light.type == 'dim') {
-        dialog = lightValueDialog;
-        valueForDialog = parseInt(light.value, 10)
+        dialog = this.lightValueDialog;
       } else {
-        dialog = lightSwitchDialog;
-        valueForDialog = light.value == "true";
+        dialog = this.lightSwitchDialog;
       }
+
+      var valueForDialog = nodeValueTranslator.fromServer(light.value, light); // Should be done at light load time
+      var oldValue = light.value;
 
       dialog.show(light.name, valueForDialog, function (value) { light.value = value; })
         .then(function (newValue) {
-          if (light.type == 'dim') {
-            return post('/my_zwave/light/' + light.nodeId + '/level/' + newValue);
-          } else {
-            var onOff = newValue ? 'on' : 'off';
+          var request;
 
-            return post('/my_zwave/light/' + light.nodeId + '/switch/' + onOff).then( function () {
-              return newValue;
-            });
+          var valueAsParam = nodeValueTranslator.toServer(newValue, light);
+
+          if (light.type == 'dim') {
+            request = post('/my_zwave/light/' + light.nodeId + '/level/' + valueAsParam);
+          } else {
+            request = post('/my_zwave/light/' + light.nodeId + '/switch/' + valueAsParam);
           }
-        })
-        .then(function (newValue) {
-          light.value = newValue;
+
+          request.then(function () {
+            light.value = newValue;
+          });
         })
         .catch(function () {
           light.value = oldValue;
