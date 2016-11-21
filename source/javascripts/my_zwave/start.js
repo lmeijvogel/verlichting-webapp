@@ -4,12 +4,10 @@ var showLoginDialog = require('./show_login_dialog');
 var userFeedback    = require('./user_feedback');
 var latestEvents    = require('./latest_events');
 
-var createLightValueDialog = require('./create_light_value_dialog');
-
 var programmeButtonComponent = require('./components/programme_button');
 var programmeButtonsListComponent = require('./components/programme_buttons_list');
 var vacationModeComponent = require('./components/vacation_mode');
-var lightValueChip = require('./components/light_value_chip');
+var lightsListComponent = require('./components/lights_list');
 
 var keys = require('lodash.keys');
 var map = require('lodash.map');
@@ -51,30 +49,6 @@ ready(function () {
               feedback.addMessage('Kon programma niet selecteren.');
             }
           });
-        },
-
-        changeLightValue: function (light) {
-          var valueDialogElement = document.querySelector('.light-value-dialog');
-          var switchDialogElement = document.querySelector('.light-switch-dialog');
-          var lightValueDialog = createLightValueDialog(valueDialogElement, 'dim');
-          var lightSwitchDialog = createLightValueDialog(switchDialogElement, 'switch');
-
-          var dialog;
-          var oldValue = light.value;
-
-          if (light.type == 'dim') {
-            dialog = lightValueDialog;
-          } else {
-            dialog = lightSwitchDialog;
-          }
-
-          dialog.show(light.displayName, light.value, function (value) { light.value = value; })
-            .then(function (newValue) {
-              light.value = newValue;
-            })
-            .catch(function () {
-              light.value = oldValue;
-            });
         },
 
         vacationModeStartRequested: function (onTime, offTime) {
