@@ -6,24 +6,6 @@ var getJSON = require('./get_json');
 var post = require('./post');
 
 module.exports = function () {
-  var programmeChosenHandlers = (function () {
-    var programmeChangedListeners = [];
-
-    var publicMethods = {
-      subscribe: function (handler) {
-        programmeChangedListeners.push(handler);
-      },
-
-      notify: function (newProgrammeId) {
-        foreach(programmeChangedListeners, function (handler) {
-          handler(newProgrammeId);
-        });
-      }
-    };
-
-    return publicMethods;
-  })();
-
   function getProgrammes() {
     return getJSON('/my_zwave/available_programmes').then(function (json) {
       var programmes = json.availableProgrammes;
@@ -38,14 +20,11 @@ module.exports = function () {
   }
 
   function selectProgramme(programmeName) {
-    return post('/my_zwave/programme/' + programmeName + '/start').then(function () {
-      programmeChosenHandlers.notify(programmeName);
-    });
+    return post('/my_zwave/programme/' + programmeName + '/start');
   }
 
   var publicMethods = {
     selectProgramme:           selectProgramme,
-    displaySelectedProgramme:  programmeChosenHandlers.notify,
     getProgrammes:             getProgrammes,
   };
 
