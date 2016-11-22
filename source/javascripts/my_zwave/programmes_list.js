@@ -26,7 +26,14 @@ module.exports = function () {
 
   function getProgrammes() {
     return getJSON('/my_zwave/available_programmes').then(function (json) {
-      return json.availableProgrammes;
+      var programmes = json.availableProgrammes;
+
+      return map(keys(programmes), function (id) {
+        return {
+          id: id,
+          name: programmes[id]
+        };
+      });
     });
   }
 

@@ -89,10 +89,7 @@ ready(function () {
     var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
     programmesListInterface.getProgrammes().then(function (programmes) {
-      // TODO : Move keys.map () to programmesListInterface
-      App.programmes = map(keys(programmes), function (id) {
-        return {id: id, name: programmes[id]};
-      });
+      App.programmes = programmes;
     }).then(function () {
       getJSON('/my_zwave/current_lights').then(function (data) {
         var lights;
