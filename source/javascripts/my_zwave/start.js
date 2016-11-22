@@ -114,7 +114,6 @@ ready(function () {
 
       getJSON('/my_zwave/vacation_mode')
         .then(function (data) {
-          //data.state = 'on';
           App.vacationModeState = data;
         });
 
