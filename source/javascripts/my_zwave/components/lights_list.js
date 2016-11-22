@@ -11,7 +11,7 @@ module.exports = Vue.component('lights-list', {
   props: ['lights'],
   template: '' +
 '    <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">' +
-'      <div class="mdl-card__title">' +
+'      <div v-on:click="titleClicked" class="mdl-card__title">' +
 '        <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>' +
 '      </div>' +
 '      <div id="lights" class="mdl-card__supporting-text">' +
@@ -58,6 +58,10 @@ module.exports = Vue.component('lights-list', {
         .catch(function () {
           light.value = oldValue;
         });
+    },
+
+    titleClicked: function () {
+      this.$emit('reload-requested');
     }
   }
 });

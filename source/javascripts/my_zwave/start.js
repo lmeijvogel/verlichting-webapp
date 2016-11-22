@@ -70,6 +70,7 @@ ready(function () {
             feedback.addMessage('Could not start vacation mode');
           });
         },
+
         vacationModeStopRequested: function () {
           post('/my_zwave/vacation_mode', {
             state: 'off'
@@ -82,6 +83,24 @@ ready(function () {
           .catch(function () {
             feedback.addMessage('Could not stop vacation mode');
           });
+        },
+        reloadLights: function () {
+          this.loadLights();
+        },
+        loadLights: function () {
+          getJSON('/my_zwave/current_lights').then(function (data) {
+            var lights;
+
+            lights = map(keys(data.lights), function (name) {
+              var row = data.lights[name];
+              var light = {nodeId: row.node_id, name: name, type: row.type};
+
+              light.value = nodeValueTranslator.fromServer(row.value, light);
+
+              return light;
+            });
+            App.lights = lights;
+          });
         }
       }
     });
@@ -91,19 +110,7 @@ ready(function () {
     programmesListInterface.getProgrammes().then(function (programmes) {
       App.programmes = programmes;
     }).then(function () {
-      getJSON('/my_zwave/current_lights').then(function (data) {
-        var lights;
-
-        lights = map(keys(data.lights), function (name) {
-          var row = data.lights[name];
-          var light = {nodeId: row.node_id, name: name, type: row.type};
-
-          light.value = nodeValueTranslator.fromServer(row.value, light);
-
-          return light;
-        });
-        App.lights = lights;
-      });
+      App.loadLights();
 
       getJSON('/my_zwave/vacation_mode')
         .then(function (data) {
@@ -112,8 +119,6 @@ ready(function () {
         });
 
       latestEvents(document.querySelector('.js-latest-events')).start();
-
-      //document.querySelector('.js-reload-lights').addEventListener('click', currentValues.update);
 
       showData();
     });
