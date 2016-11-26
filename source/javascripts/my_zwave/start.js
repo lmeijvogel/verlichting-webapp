@@ -1,8 +1,8 @@
 'use strict';
 var programmesList = require('./programmes_list');
-var showLoginDialog = require('./show_login_dialog');
-var userFeedback    = require('./user_feedback');
-var latestEvents    = require('./latest_events');
+var loginDialog    = require('./show_login_dialog');
+var userFeedback   = require('./user_feedback');
+var latestEvents   = require('./latest_events');
 
 var programmeButtonComponent = require('./components/programme_button');
 var programmeButtonsListComponent = require('./components/programme_buttons_list');
@@ -120,6 +120,16 @@ ready(function () {
       latestEvents(document.querySelector('.js-latest-events')).start();
 
       showData();
+    }).catch(function (jqXHR) {
+      loginDialog.$on('login-succeeded', function () {
+        start();
+      });
+
+      loginDialog.$on('login-failed', function (message) {
+        feedback.addMessage(message);
+      });
+
+      loginDialog.visible = true;
     });
 
     function showData() {
