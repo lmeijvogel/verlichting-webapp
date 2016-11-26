@@ -1,6 +1,6 @@
 'use strict';
 var programmesList = require('./programmes_list');
-var loginDialog    = require('./show_login_dialog');
+var loginDialog    = require('./login_dialog');
 var userFeedback   = require('./user_feedback');
 var latestEvents   = require('./latest_events');
 
