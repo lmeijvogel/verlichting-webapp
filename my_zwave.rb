@@ -159,6 +159,12 @@ class MyZWave < Sinatra::Base
     data = JSON.parse(request.body.read)
 
     username = data["username"].gsub(/[^a-zA-Z_]/, "")
+
+    if username != data["username"]
+      status 401
+      return "Invalid username or password"
+    end
+
     password = data["password"]
 
     stored_password_hash = redis.get("password_#{username}")
