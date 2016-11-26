@@ -32,81 +32,81 @@ function ready(fn) {
 }
 
 ready(function () {
-  function start() {
-    var programmesListInterface = programmesList();
+  var programmesListInterface = programmesList();
 
-    var App = new Vue({
-      el: '#app',
-      props: ['programmes', 'activeProgrammeId', 'lights', 'vacationModeState'],
-      methods: {
-        programmeRequested: function (programme) {
-          var self = this;
+  var App = new Vue({
+    el: '#app',
+    props: ['programmes', 'activeProgrammeId', 'lights', 'vacationModeState'],
+    methods: {
+      programmeRequested: function (programme) {
+        var self = this;
 
-          programmesListInterface.selectProgramme(programme.id).then(function () {
-            self.activeProgrammeId = programme.id;
-          }).catch(function (error) {
-            if (error && error.responseText) {
-              feedback.addMessage(error.responseText);
-            } else {
-              feedback.addMessage('Kon programma niet selecteren.');
-            }
+        programmesListInterface.selectProgramme(programme.id).then(function () {
+          self.activeProgrammeId = programme.id;
+        }).catch(function (error) {
+          if (error && error.responseText) {
+            feedback.addMessage(error.responseText);
+          } else {
+            feedback.addMessage('Kon programma niet selecteren.');
+          }
+        });
+      },
+
+      vacationModeStartRequested: function (onTime, offTime) {
+        var newState = {
+          state: 'on',
+          'start_time': onTime,
+          'end_time': offTime
+        };
+
+        post('/my_zwave/vacation_mode', newState)
+        .then(function () {
+          App.vacationModeState = newState;
+
+          feedback.addMessage('Started vacation mode');
+        })
+        .catch(function () {
+          feedback.addMessage('Could not start vacation mode');
+        });
+      },
+
+      vacationModeStopRequested: function () {
+        post('/my_zwave/vacation_mode', {
+          state: 'off'
+        })
+        .then(function () {
+          App.vacationModeState.state = 'off';
+
+          feedback.addMessage('Stopped vacation mode');
+        })
+        .catch(function () {
+          feedback.addMessage('Could not stop vacation mode');
+        });
+      },
+      reloadLights: function () {
+        this.loadLights();
+      },
+      loadLights: function () {
+        getJSON('/my_zwave/current_lights').then(function (data) {
+          var lights;
+
+          lights = map(keys(data.lights), function (name) {
+            var row = data.lights[name];
+            var light = {nodeId: row.node_id, name: name, type: row.type};
+
+            light.value = nodeValueTranslator.fromServer(row.value, light);
+
+            return light;
           });
-        },
-
-        vacationModeStartRequested: function (onTime, offTime) {
-          var newState = {
-            state: 'on',
-            'start_time': onTime,
-            'end_time': offTime
-          };
-
-          post('/my_zwave/vacation_mode', newState)
-          .then(function () {
-            App.vacationModeState = newState;
-
-            feedback.addMessage('Started vacation mode');
-          })
-          .catch(function () {
-            feedback.addMessage('Could not start vacation mode');
-          });
-        },
-
-        vacationModeStopRequested: function () {
-          post('/my_zwave/vacation_mode', {
-            state: 'off'
-          })
-          .then(function () {
-            App.vacationModeState.state = 'off';
-
-            feedback.addMessage('Stopped vacation mode');
-          })
-          .catch(function () {
-            feedback.addMessage('Could not stop vacation mode');
-          });
-        },
-        reloadLights: function () {
-          this.loadLights();
-        },
-        loadLights: function () {
-          getJSON('/my_zwave/current_lights').then(function (data) {
-            var lights;
-
-            lights = map(keys(data.lights), function (name) {
-              var row = data.lights[name];
-              var light = {nodeId: row.node_id, name: name, type: row.type};
-
-              light.value = nodeValueTranslator.fromServer(row.value, light);
-
-              return light;
-            });
-            App.lights = lights;
-          });
-        }
+          App.lights = lights;
+        });
       }
-    });
+    }
+  });
 
-    var feedback = userFeedback(document.querySelector('.js-snackbar'));
+  var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
+  function start() {
     programmesListInterface.getProgrammes().then(function (programmes) {
       App.programmes = programmes;
     }).then(function () {
