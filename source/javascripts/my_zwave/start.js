@@ -2,12 +2,12 @@
 var programmesList = require('./programmes_list');
 var loginDialog    = require('./login_dialog');
 var userFeedback   = require('./user_feedback');
-var latestEvents   = require('./latest_events');
 
 var programmeButtonComponent = require('./components/programme_button');
 var programmeButtonsListComponent = require('./components/programme_buttons_list');
 var vacationModeComponent = require('./components/vacation_mode');
 var lightsListComponent = require('./components/lights_list');
+var latestEventsComponent = require('./components/latest_events');
 
 var nodeValueTranslator = require('./node_value_translator')();
 
@@ -27,7 +27,7 @@ var programmesListInterface = programmesList();
 
 var App = new Vue({
   el: '#app',
-  props: ['programmes', 'activeProgrammeId', 'lights', 'vacationModeState'],
+  props: ['programmes', 'activeProgrammeId', 'lights', 'vacationModeState', 'latestEvents'],
   methods: {
     programmeRequested: function (programme) {
       var self = this;
@@ -108,7 +108,11 @@ function start() {
         App.vacationModeState = data;
       });
 
-    latestEvents(document.querySelector('.js-latest-events')).start();
+    getJSON('/my_zwave/latest_events').then(function (data) {
+      App.latestEvents = map(data, function (row) {
+        return JSON.parse(row);
+      });
+    });
 
     showData();
   }).catch(function (jqXHR) {

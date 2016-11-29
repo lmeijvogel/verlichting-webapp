@@ -41,13 +41,7 @@
                    v-on:stop="vacationModeStopRequested"></vacation-mode>
     <lights-list v-on:reload-requested="reloadLights" v-bind:lights="lights"></lights-list>
 
-    <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col">
-      <div class="mdl-card__title">
-        <h3 class="mdl-card__title-text">Latest events</h3>
-      </div>
-      <div class="js-latest-events mdl-card__supporting-text">
-      </div>
-    </div>
+    <latest-events v-bind:events="latestEvents"></latest-events>
   </div>
 </div>
 
