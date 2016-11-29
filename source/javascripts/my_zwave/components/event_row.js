@@ -7,7 +7,7 @@ var months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
               'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
 
 function dateTemplate(value) {
-  return '' + value.date + ' ' + value.month +
+  return '' + value.dateString +
         ' ' + value.hour + ':' + value.minute;
 };
 
@@ -27,9 +27,20 @@ module.exports = Vue.component('event-row', {
     formattedDate: function () {
       var time = new Date(this.data.time);
 
+      var today = new Date();
+
+      var dateString;
+
+      if (time.getDate() == today.getDate() &&
+          time.getMonth() == today.getMonth() &&
+          time.getYear() == today.getYear()) {
+        dateString = 'Today';
+      } else {
+        dateString = '' + time.getDate() + ' ' + months[time.getMonth()];
+      }
+
       return dateTemplate({
-        date: time.getDate(),
-        month: months[time.getMonth()],
+        dateString: dateString,
         hour: pad(time.getHours()),
         minute: pad(time.getMinutes())
       });
