@@ -3,11 +3,10 @@ var programmesList = require('./programmes_list');
 var loginDialog    = require('./login_dialog');
 var userFeedback   = require('./user_feedback');
 
-var programmeButtonComponent = require('./components/programme_button');
-var programmeButtonsListComponent = require('./components/programme_buttons_list');
-var vacationModeComponent = require('./components/vacation_mode');
-var lightsListComponent = require('./components/lights_list');
-var latestEventsComponent = require('./components/latest_events');
+var programmeButtonsListComponent = require('./components/programme_buttons_list.vue');
+var vacationModeComponent = require('./components/vacation_mode.vue');
+var lightsListComponent = require('./components/lights_list.vue');
+var latestEventsComponent = require('./components/latest_events.vue');
 
 var nodeValueTranslator = require('./node_value_translator')();
 
