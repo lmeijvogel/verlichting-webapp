@@ -32,16 +32,16 @@
 
   <div class="mdl-grid">
     <programme-buttons-list
-      v-bind:programmes="programmes"
-      v-bind:active-programme-id="activeProgrammeId"
+      :programmes="programmes"
+      :active-programme-id="activeProgrammeId"
       v-on:programme-requested="programmeRequested"></programme-buttons-list>
 
-    <vacation-mode v-bind:state="vacationModeState"
+    <vacation-mode :state="vacationModeState"
                    v-on:start="vacationModeStartRequested"
                    v-on:stop="vacationModeStopRequested"></vacation-mode>
-    <lights-list v-on:reload-requested="reloadLights" v-bind:lights="lights"></lights-list>
+    <lights-list v-on:reload-requested="reloadLights" :lights="lights"></lights-list>
 
-    <latest-events v-bind:events="latestEvents"></latest-events>
+    <latest-events :events="latestEvents"></latest-events>
   </div>
 </div>
 

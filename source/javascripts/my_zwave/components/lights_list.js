@@ -16,8 +16,8 @@ module.exports = Vue.component('lights-list', {
 '      </div>' +
 '      <div id="lights" class="mdl-card__supporting-text">' +
 '        <div v-for="light of lights">' +
-'          <light-value-chip v-bind:name="light.name" v-bind:node-id="light.nodeId"' +
-                           ' v-bind:value="light.value" v-on:click="changeLightValue(light)"></light-value-chip>' +
+'          <light-value-chip :name="light.name" :node-id="light.nodeId"' +
+                           ' :value="light.value" v-on:click="changeLightValue(light)"></light-value-chip>' +
 '      </div>' +
 '    </div>',
   methods: {

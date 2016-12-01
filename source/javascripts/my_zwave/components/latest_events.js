@@ -19,7 +19,7 @@ module.exports = Vue.component('latest-events', {
               '<th class="mdl-data-table__cell--non-numeric">Data</th>' +
             '</tr>' +
           '</thead>' +
-          '<event-row v-for="event in events" v-bind:data="event"></event-row>' +
+          '<event-row v-for="event in events" :data="event"></event-row>' +
         '</table>' +
       '</div>' +
     '</div>'

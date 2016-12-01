@@ -21,8 +21,8 @@ module.exports = Vue.component('programme-buttons-list', {
         '</div>' +
         '<div v-for="programme of programmes">' +
           '<programme-button ' +
-            'v-bind:programme="programme" ' +
-            'v-bind:active-programme-id="activeProgrammeId" ' +
+            ':programme="programme" ' +
+            ':active-programme-id="activeProgrammeId" ' +
             'v-on:selected="programmeRequested(programme)">' +
           '</programme-button>' +
         '</div>' +

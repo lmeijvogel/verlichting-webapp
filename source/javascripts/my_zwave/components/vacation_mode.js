@@ -53,7 +53,7 @@ module.exports = Vue.component('vacation-mode', {
   },
   template: '' +
     '<div :class="defaultClasses">' +
-      '<div class="mdl-card__title" v-bind:class="titleClasses">' +
+      '<div class="mdl-card__title" :class="titleClasses">' +
         '<h3 class="mdl-card__title-text" v-html="title"></h3>' +
       '</div>' +
       '<div class="mdl-card__supporting-text">' +
