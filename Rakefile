@@ -17,6 +17,7 @@ desc "Build the production version"
 task :dist => %w[fingerprinted_js fingerprinted_css dist/index.html]
 
 # TODO: This clears the work directory as well
+desc "Build the production version and deploy to the server."
 task :deploy => %w[clean dist] do
   StaticFilesUploader.new('./deploy.yml').call
 end
