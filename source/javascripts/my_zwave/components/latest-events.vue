@@ -22,7 +22,7 @@
 <script>
   var Vue = window.Vue;
 
-  require('./event_row.vue');
+  require('./event-row.vue');
 
   module.exports = Vue.component('latest-events', {
     props: ['events'],

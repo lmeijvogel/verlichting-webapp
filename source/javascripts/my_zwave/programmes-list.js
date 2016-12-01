@@ -2,7 +2,7 @@ var foreach = require('lodash.foreach');
 var keys = require('lodash.keys');
 var map = require('lodash.map');
 
-var getJSON = require('./get_json');
+var getJSON = require('./get-json');
 var post = require('./post');
 
 module.exports = function () {

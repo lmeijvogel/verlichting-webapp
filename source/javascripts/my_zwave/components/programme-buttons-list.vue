@@ -21,7 +21,7 @@
 <script>
   var Vue = window.Vue;
 
-  require('./programme_button.vue');
+  require('./programme-button.vue');
 
   module.exports = Vue.component('programme-buttons-list', {
     props: ['programmes', 'activeProgrammeId'],

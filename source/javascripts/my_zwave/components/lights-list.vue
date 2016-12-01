@@ -16,9 +16,9 @@
 <script>
   var Vue = window.Vue;
 
-  var lightValueChip = require('./light_value_chip.vue');
-  var createLightValueDialog = require('../create_light_value_dialog');
-  var nodeValueTranslator = require('../node_value_translator')();
+  var lightValueChip = require('./light-value-chip.vue');
+  var createLightValueDialog = require('../create-light-value-dialog');
+  var nodeValueTranslator = require('../node-value-translator')();
 
   // Is this a smell?
   var post = require('../post');

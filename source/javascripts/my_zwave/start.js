@@ -1,14 +1,14 @@
 'use strict';
-var programmesList = require('./programmes_list');
-var loginDialog    = require('./login_dialog');
-var userFeedback   = require('./user_feedback');
+var programmesList = require('./programmes-list');
+var loginDialog    = require('./login-dialog');
+var userFeedback   = require('./user-feedback');
 
-var programmeButtonsListComponent = require('./components/programme_buttons_list.vue');
-var vacationModeComponent = require('./components/vacation_mode.vue');
-var lightsListComponent = require('./components/lights_list.vue');
-var latestEventsComponent = require('./components/latest_events.vue');
+var programmeButtonsListComponent = require('./components/programme-buttons-list.vue');
+var vacationModeComponent = require('./components/vacation-mode.vue');
+var lightsListComponent = require('./components/lights-list.vue');
+var latestEventsComponent = require('./components/latest-events.vue');
 
-var nodeValueTranslator = require('./node_value_translator')();
+var nodeValueTranslator = require('./node-value-translator')();
 
 var keys = require('lodash.keys');
 var map = require('lodash.map');
@@ -20,7 +20,7 @@ var post = require('./post');
 var Vue = window.Vue;
 
 RSVP.on('error', function (error) { console.error(error); });
-var getJSON = require('./get_json');
+var getJSON = require('./get-json');
 
 var programmesListInterface = programmesList();
 
