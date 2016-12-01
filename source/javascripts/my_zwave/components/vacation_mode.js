@@ -68,7 +68,7 @@ module.exports = Vue.component('vacation-mode', {
         '</div>' +
       '</div>' +
       '<div class="mdl-card__actions mdl-card__border">' +
-        '<button v-on:click="buttonClicked" class="vacation-mode__start-stop-button ' +
+        '<button @click="buttonClicked" class="vacation-mode__start-stop-button ' +
             'mdl-button mdl-js-button mdl-js-ripple-effect">' +
           '{{startStopButtonLabel}}' +
         '</button>' +

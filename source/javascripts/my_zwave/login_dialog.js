@@ -50,7 +50,7 @@ module.exports = new Vue({
     }
   },
   template: '' +
-    '<dialog v-on:keyup="tryLoginIfEnter" class="mdl-dialog login-dialog" tabindex="-1" role="dialog" ' +
+    '<dialog @keyup="tryLoginIfEnter" class="mdl-dialog login-dialog" tabindex="-1" role="dialog" ' +
         'aria-labelledby="myModalLabel" aria-hidden="true">' +
       '<div class="mdl-dialog__title">Please login</div>' +
       '<div class="mdl-dialog__content">' +
@@ -64,7 +64,7 @@ module.exports = new Vue({
         '</div>' +
       '</div>' +
       '<div class="mdl-dialog__actions">' +
-        '<button type="button" v-on:click="tryLogin" class="mdl-button mdl-js-button submit">Submit</button>' +
+        '<button type="button" @click="tryLogin" class="mdl-button mdl-js-button submit">Submit</button>' +
       '</div>' +
     '</dialog>'
 });

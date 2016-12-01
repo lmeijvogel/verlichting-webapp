@@ -11,13 +11,13 @@ module.exports = Vue.component('lights-list', {
   props: ['lights'],
   template: '' +
 '    <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">' +
-'      <div v-on:click="titleClicked" class="mdl-card__title">' +
+'      <div @click="titleClicked" class="mdl-card__title">' +
 '        <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>' +
 '      </div>' +
 '      <div id="lights" class="mdl-card__supporting-text">' +
 '        <div v-for="light of lights">' +
 '          <light-value-chip :name="light.name" :node-id="light.nodeId"' +
-                           ' :value="light.value" v-on:click="changeLightValue(light)"></light-value-chip>' +
+                           ' :value="light.value" @click="changeLightValue(light)"></light-value-chip>' +
 '      </div>' +
 '    </div>',
   methods: {

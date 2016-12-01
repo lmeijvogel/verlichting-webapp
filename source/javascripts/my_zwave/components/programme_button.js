@@ -1,7 +1,7 @@
 var Vue = window.Vue;
 
 module.exports = Vue.component('programme-button', {
-  template: '<div v-on:click="click" :class="[defaultClasses, activeClasses]">{{programme.name}}</div>',
+  template: '<div @click="click" :class="[defaultClasses, activeClasses]">{{programme.name}}</div>',
   data: function () {
     return {
       defaultClasses: 'selectProgrammeButton' +
