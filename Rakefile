@@ -48,9 +48,9 @@ file MATERIAL_JS_TMP => ["source/javascripts/material.min.js", "tmp/javascripts"
 end
 # For the fingerprinted files, no rule can be written since the
 # filename is only known when it is run and a hash is calculated
-task :fingerprinted_js => %w[fingerprinted_vue_js fingerprinted_myzwave_js fingerprinted_material_js]
+task :fingerprinted_js => %w[fingerprinted_vue_min_js fingerprinted_myzwave_js fingerprinted_material_js]
 
-task :fingerprinted_vue_js => ["tmp/javascripts/vue.js", "dist/javascripts"] do |task|
+task :fingerprinted_vue_min_js => ["source/javascripts/vue.min.js", "dist/javascripts"] do |task|
   copy_fingerprinted_file(task.source, to: "dist/javascripts")
 end
 

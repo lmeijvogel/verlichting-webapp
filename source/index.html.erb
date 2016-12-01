@@ -19,8 +19,10 @@
   <%# Inline the material script since it's not possible to set an SRI hash - getmdl.io doesn't set the correct CORS header %>
   <% material_js = is_production ? fingerprinted_file("tmp/javascripts/material.min.js") : 'material.min.js' %>
 
+  <% vue_js = is_production ? fingerprinted_file("source/javascripts/vue.min.js") : 'vue.js' %>
+
   <script defer src="/javascripts/<%= material_js %>"></script>
-  <script src="/javascripts/vue.js" type="text/javascript"></script>
+  <script src="/javascripts/<%= vue_js %>" type="text/javascript"></script>
 </head>
 <body role="document" class="index">
 
