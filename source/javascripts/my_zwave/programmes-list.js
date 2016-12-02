@@ -1,6 +1,3 @@
-var foreach = require('lodash.foreach');
-var keys = require('lodash.keys');
-
 var getJSON = require('./get-json');
 var post = require('./post');
 
