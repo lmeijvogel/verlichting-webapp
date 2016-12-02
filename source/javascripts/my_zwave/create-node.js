@@ -10,15 +10,15 @@ module.exports = function (data) {
   var changeHandler = function () { };
 
   switch (data.type) {
-    case 'dim':
-      node = createDimmableLight(data);
-      break;
-    case 'switch':
-      node = createSwitch(data);
-      break;
-    default:
-      throw("Unknown node type " + data.type + ", nodeId: " + data.node_id);
-      break;
+  case 'dim':
+    node = createDimmableLight(data);
+    break;
+  case 'switch':
+    node = createSwitch(data);
+    break;
+  default:
+    throw 'Unknown node type ' + data.type + ', nodeId: ' + data.node_id;
+    break;
   }
 
   updateFromServer(data);
@@ -97,4 +97,4 @@ module.exports = function (data) {
     updateFromServer: updateFromServer,
     onChange: onChange
   };
-}
+};
