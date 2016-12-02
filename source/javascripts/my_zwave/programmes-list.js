@@ -1,6 +1,5 @@
 var foreach = require('lodash.foreach');
 var keys = require('lodash.keys');
-var map = require('lodash.map');
 
 var getJSON = require('./get-json');
 var post = require('./post');
@@ -10,10 +9,10 @@ module.exports = function () {
     return getJSON('/my_zwave/available_programmes').then(function (json) {
       var programmes = json.availableProgrammes;
 
-      return map(programmes, function (name, id) {
+      return Object.keys(programmes).map(function (id) {
         return {
           id: id,
-          name: name
+          name: programmes[id]
         };
       });
     });

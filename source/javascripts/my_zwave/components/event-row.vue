@@ -10,7 +10,6 @@
 <script>
   var Vue = window.Vue;
 
-  var map = require('lodash.map');
   var times = require('lodash.times');
 
   var months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
@@ -24,7 +23,7 @@
   function pad(str) {
     var numberOfZeroes = 2 - str.toString().length;
 
-    var zeroes = map(times(numberOfZeroes), function () {
+    var zeroes = times(numberOfZeroes).map(function () {
       return '0';
     });
 

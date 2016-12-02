@@ -11,7 +11,6 @@ var latestEventsComponent = require('./components/latest-events.vue');
 var nodeValueTranslator = require('./node-value-translator')();
 
 var keys = require('lodash.keys');
-var map = require('lodash.map');
 var foreach = require('lodash.foreach');
 var RSVP = require('rsvp');
 
@@ -80,7 +79,7 @@ var App = new Vue({
       getJSON('/my_zwave/current_lights').then(function (data) {
         var lights;
 
-        lights = map(keys(data.lights), function (name) {
+        lights = keys(data.lights).map(function (name) {
           var row = data.lights[name];
           var light = {nodeId: row.node_id, name: name, type: row.type};
 
