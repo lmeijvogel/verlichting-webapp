@@ -1,4 +1,4 @@
-var Vue = window.Vue;
+var Vue = require('vue');
 
 var post = require('./post');
 

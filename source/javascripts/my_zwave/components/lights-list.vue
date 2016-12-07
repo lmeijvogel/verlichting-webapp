@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  var Vue = window.Vue;
+  var Vue = require('vue');
 
   var lightValueChip = require('./light-value-chip.vue');
   var createLightValueDialog = require('../create-light-value-dialog');

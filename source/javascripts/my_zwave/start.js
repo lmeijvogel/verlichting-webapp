@@ -1,4 +1,6 @@
 'use strict';
+var Vue = require('vue');
+
 var programmesList = require('./programmes-list');
 var loginDialog    = require('./login-dialog');
 var userFeedback   = require('./user-feedback');
@@ -14,7 +16,7 @@ var RSVP = require('rsvp');
 
 var post = require('./post');
 
-var Vue = window.Vue;
+var Vue = require('vue');
 
 RSVP.on('error', function (error) { console.error(error); });
 var getJSON = require('./get-json');

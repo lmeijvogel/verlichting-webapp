@@ -19,7 +19,7 @@
 </template>
 
 <script>
-  var Vue = window.Vue;
+  var Vue = require('vue');
 
   require('./programme-button.vue');
 

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-  var Vue = window.Vue;
+  var Vue = require('vue');
 
   module.exports = Vue.component('light-value-chip', {
     props: ['name', 'value', 'nodeId'],

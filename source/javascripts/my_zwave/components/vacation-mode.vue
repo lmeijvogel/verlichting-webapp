@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  var Vue = window.Vue;
+  var Vue = require('vue');
 
   module.exports = Vue.component('vacation-mode', {
     props: ['state'],

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  var Vue = window.Vue;
+  var Vue = require('vue');
 
   require('./event-row.vue');
 

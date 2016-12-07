@@ -8,7 +8,7 @@
 </template>
 
 <script>
-  var Vue = window.Vue;
+  var Vue = require('vue');
 
   var months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun',
                 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
