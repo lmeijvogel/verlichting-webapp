@@ -14,7 +14,11 @@ desc "Build the development version"
 task :work => %w[css_work work/index.html work/javascripts/material.min.js work/javascripts/my_zwave.js]
 
 desc "Build the production version"
-task :dist => %w[fingerprinted_js fingerprinted_css dist/index.html]
+task :dist => %w[set_production_vars fingerprinted_js fingerprinted_css dist/index.html]
+
+task :set_production_vars do
+  $env = "production"
+end
 
 # TODO: This clears the work directory as well
 desc "Build the production version and deploy to the server."
@@ -35,7 +39,10 @@ directory "dist/javascripts"
 directory "tmp/javascripts"
 
 file MY_ZWAVE_JS_TMP => [JS_SOURCE_FILES, "tmp/javascripts"].flatten do |task|
-  `node_modules/.bin/webpack --config webpack.config.js source/javascripts/my_zwave/start.js #{task.name}`
+  config = $env == 'production' ? 'webpack.production.config.js' : 'webpack.config.js'
+
+  puts "CONFIG: #{config}"
+  `node_modules/.bin/webpack --config #{config} source/javascripts/my_zwave/start.js #{task.name}`
 end
 
 file MATERIAL_JS_TMP => ["source/javascripts/material.min.js", "tmp/javascripts"].flatten do |task|
