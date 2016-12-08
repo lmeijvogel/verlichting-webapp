@@ -43,7 +43,9 @@
   </div>
 </div>
 
-<div id="login-dialog"></div>
+<div id="login-dialog">
+  <login-dialog :visible="visible" @login-succeeded="loginSucceeded" @login-failed="loginFailed"></login-dialog>
+</div>
 
 <!-- Light value dialog -->
 <dialog class="mdl-dialog light-value-dialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

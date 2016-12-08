@@ -2,7 +2,7 @@
 var Vue = require('vue');
 
 var programmesList = require('./programmes-list');
-var loginDialog    = require('./login-dialog');
+var loginDialog    = require('./login-dialog-container');
 var userFeedback   = require('./user-feedback');
 
 var programmeButtonsListComponent = require('./components/programme-buttons-list.vue');
