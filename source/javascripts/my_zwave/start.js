@@ -12,13 +12,10 @@ var latestEventsComponent = require('./components/latest-events.vue');
 
 var nodeValueTranslator = require('./node-value-translator')();
 
-var RSVP = require('rsvp');
-
 var post = require('./post');
 
 var Vue = require('vue');
 
-RSVP.on('error', function (error) { console.error(error); });
 var getJSON = require('./get-json');
 
 var programmesListInterface = programmesList();

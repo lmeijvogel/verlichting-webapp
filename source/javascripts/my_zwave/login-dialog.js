@@ -28,6 +28,7 @@ module.exports = new Vue({
           message = 'Could not log in for unknown reasons';
         }
 
+        console.error(e);
         self.$emit('login-failed', message);
       });
     },

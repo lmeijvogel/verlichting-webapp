@@ -43,6 +43,9 @@ module.exports = function (data) {
 
       changeHandler(value);
       return value;
+    })
+    .catch(function (e) {
+      console.error(e);
     });
   }
 

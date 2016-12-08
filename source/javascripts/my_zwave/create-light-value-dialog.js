@@ -1,5 +1,3 @@
-var RSVP = require('rsvp');
-
 module.exports = function (dialog, type) {
   var submitEventHandler = function ()   { console.log('No event handler set for submitting the dialog'); };
   var cancelEventHandler = function ()   { console.log('No event handler set for cancelling the dialog'); };
@@ -67,7 +65,7 @@ module.exports = function (dialog, type) {
 
     changeEventHandler = onChange;
 
-    return new RSVP.Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) {
       submitEventHandler = function () {
         dialog.close();
 

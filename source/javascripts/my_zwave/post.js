@@ -1,7 +1,5 @@
-var RSVP = require('rsvp');
-
 module.exports = function (url, data) {
-  return new RSVP.Promise(function (resolve, reject) {
+  return new Promise(function (resolve, reject) {
     var request = new window.XMLHttpRequest();
 
     request.open('POST', url, true);
