@@ -9,7 +9,6 @@
   <title>Verlichting</title>
 
   <% material_css = is_production ? fingerprinted_file("source/stylesheets/material.indigo-pink.min.css") : 'material.indigo-pink.min.css' %>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="/stylesheets/<%= material_css %>">
 
   <% all = is_production ? fingerprinted_file("source/stylesheets/all.css") : 'all.css' %>
