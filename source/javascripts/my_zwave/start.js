@@ -109,7 +109,10 @@ function start() {
       });
     });
 
-    showData();
+    App.$http.get('/my_zwave/current_programme')
+      .then(function (data) {
+        App.activeProgrammeId = data.programme;
+      });
   }).catch(function (jqXHR) {
     loginDialog.$on('login-succeeded', function () {
       start();
@@ -121,13 +124,6 @@ function start() {
 
     loginDialog.visible = true;
   });
-
-  function showData() {
-    getJSON('/my_zwave/current_programme')
-      .then(function (data) {
-        App.activeProgrammeId = data.programme;
-      });
-  }
 }
 
 start();
