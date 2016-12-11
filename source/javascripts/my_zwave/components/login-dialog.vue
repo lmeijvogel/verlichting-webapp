@@ -20,7 +20,6 @@
 
 <script>
   var Vue = require('vue');
-  var post = require('../post');
 
   module.exports = Vue.component('login-dialog', {
     props: ['visible'],
@@ -33,7 +32,7 @@
     },
     methods: {
       tryLogin: function () {
-        var request = post('/my_zwave/login/create', {username: this.username, password: this.password});
+        var request = this.$http.post('/my_zwave/login/create', {username: this.username, password: this.password});
         var self = this;
 
         request.then(function () {

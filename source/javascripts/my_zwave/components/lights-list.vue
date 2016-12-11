@@ -20,9 +20,6 @@
   var createLightValueDialog = require('../create-light-value-dialog');
   var nodeValueTranslator = require('../node-value-translator')();
 
-  // Is this a smell?
-  var post = require('../post');
-
   module.exports = Vue.component('lights-list', {
     props: ['lights'],
     methods: {
@@ -51,9 +48,9 @@
             var valueAsParam = nodeValueTranslator.toServer(newValue, light);
 
             if (light.type == 'dim') {
-              request = post('/my_zwave/light/' + light.nodeId + '/level/' + valueAsParam);
+              request = this.$http.post('/my_zwave/light/' + light.nodeId + '/level/' + valueAsParam);
             } else {
-              request = post('/my_zwave/light/' + light.nodeId + '/switch/' + valueAsParam);
+              request = this.$http.post('/my_zwave/light/' + light.nodeId + '/switch/' + valueAsParam);
             }
 
             request.then(function () {

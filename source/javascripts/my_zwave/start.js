@@ -1,5 +1,8 @@
 'use strict';
 var Vue = require('vue');
+var VueResource = require('vue-resource');
+
+Vue.use(VueResource);
 
 var programmesList = require('./programmes-list');
 var loginDialog    = require('./login-dialog-container');
@@ -12,11 +15,7 @@ var latestEventsComponent = require('./components/latest-events.vue');
 
 var nodeValueTranslator = require('./node-value-translator')();
 
-var post = require('./post');
-
 var Vue = require('vue');
-
-var getJSON = require('./get-json');
 
 var programmesListInterface = programmesList();
 
@@ -45,7 +44,7 @@ var App = new Vue({
         'end_time': offTime
       };
 
-      post('/my_zwave/vacation_mode', newState)
+      this.$http.post('/my_zwave/vacation_mode', newState)
       .then(function () {
         App.vacationModeState = newState;
 
@@ -57,7 +56,7 @@ var App = new Vue({
     },
 
     vacationModeStopRequested: function () {
-      post('/my_zwave/vacation_mode', {
+      this.$http.post('/my_zwave/vacation_mode', {
         state: 'off'
       })
       .then(function () {
@@ -73,17 +72,18 @@ var App = new Vue({
       this.loadLights();
     },
     loadLights: function () {
-      getJSON('/my_zwave/current_lights').then(function (data) {
-        var lights;
-
-        lights = Object.keys(data.lights).map(function (name) {
-          var row = data.lights[name];
+      this.$http.get('/my_zwave/current_lights').then(function (response) {
+        return response.json();
+      }).then(function (json) {
+        var lights = Object.keys(json.lights).map(function (name) {
+          var row = json.lights[name];
           var light = {nodeId: row.node_id, name: name, type: row.type};
 
           light.value = nodeValueTranslator.fromServer(row.value, light);
 
           return light;
         });
+
         App.lights = lights;
       });
     }
@@ -98,19 +98,25 @@ function start() {
   }).then(function () {
     App.loadLights();
 
-    getJSON('/my_zwave/vacation_mode')
-      .then(function (data) {
+    App.$http.get('/my_zwave/vacation_mode')
+      .then(function (response) {
+        return response.json();
+      }).then(function (data) {
         App.vacationModeState = data;
       });
 
-    getJSON('/my_zwave/latest_events').then(function (data) {
+    App.$http.get('/my_zwave/latest_events').then(function (response) {
+      return response.json();
+    }).then(function (data) {
       App.latestEvents = data.map(function (row) {
         return JSON.parse(row);
       });
     });
 
     App.$http.get('/my_zwave/current_programme')
-      .then(function (data) {
+      .then(function (response) {
+        return response.json();
+      }).then(function (data) {
         App.activeProgrammeId = data.programme;
       });
   }).catch(function (jqXHR) {
