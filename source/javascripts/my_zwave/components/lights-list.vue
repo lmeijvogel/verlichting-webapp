@@ -1,7 +1,7 @@
 <template>
   <div class="mdl-card mdl-shadow--2dp mdl-cell--12-col mdl-cell--4-col-desktop light-values-table">
     <div @click="titleClicked" class="mdl-card__title">
-      <h3 class="mdl-card__title-text js-reload-lights">Lichten</h3>
+      <h3 class="mdl-card__title-text">Lichten</h3>
     </div>
     <div id="lights" class="mdl-card__supporting-text">
     <div v-for="light of lights">
@@ -21,9 +21,32 @@
   var nodeValueTranslator = require('../node-value-translator')();
 
   module.exports = Vue.component('lights-list', {
-    props: ['lights'],
+    data: function () {
+      return {
+        lights: null
+      };
+    },
+    mounted: function () {
+      this.loadLights();
+    },
     methods: {
+      loadLights: function () {
+        this.$http.get('/my_zwave/current_lights').then(function (response) {
+          return response.json();
+        }).then(function (json) {
+          this.lights = Object.keys(json.lights).map(function (name) {
+            var row = json.lights[name];
+            var light = {nodeId: row.node_id, name: name, type: row.type};
+
+            light.value = nodeValueTranslator.fromServer(row.value, light);
+
+            return light;
+          });
+        });
+      },
       changeLightValue: function (light) {
+        var self = this;
+
         // Initialize these dialogs only once
         this.valueDialogElement = this.valueDialogElement || document.querySelector('.light-value-dialog');
         this.switchDialogElement = this.switchDialogElement || document.querySelector('.light-switch-dialog');
@@ -48,22 +71,24 @@
             var valueAsParam = nodeValueTranslator.toServer(newValue, light);
 
             if (light.type == 'dim') {
-              request = this.$http.post('/my_zwave/light/' + light.nodeId + '/level/' + valueAsParam);
+              request = self.$http.post('/my_zwave/light/' + light.nodeId + '/level/' + valueAsParam);
             } else {
-              request = this.$http.post('/my_zwave/light/' + light.nodeId + '/switch/' + valueAsParam);
+              request = self.$http.post('/my_zwave/light/' + light.nodeId + '/switch/' + valueAsParam);
             }
 
             request.then(function () {
               light.value = newValue;
             });
           })
-          .catch(function () {
+          .catch(function (e) {
+            console.error("Error saving light value:");
+            console.error(e);
             light.value = oldValue;
           });
       },
 
       titleClicked: function () {
-        this.$emit('reload-requested');
+        this.loadLights();
       }
     }
   });

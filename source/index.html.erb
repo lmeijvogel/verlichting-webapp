@@ -34,7 +34,7 @@
     <vacation-mode :state="vacationModeState"
                    v-on:start="vacationModeStartRequested"
                    v-on:stop="vacationModeStopRequested"></vacation-mode>
-    <lights-list v-on:reload-requested="reloadLights" :lights="lights"></lights-list>
+    <lights-list></lights-list>
 
     <latest-events :events="latestEvents"></latest-events>
   </div>

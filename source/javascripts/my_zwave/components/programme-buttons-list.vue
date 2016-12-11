@@ -64,7 +64,7 @@
           this.programmes = Object.keys(json.availableProgrammes).map(function (id) {
             return {
               id: id,
-              name: programmes[id]
+              name: json.availableProgrammes[id]
             };
           });
         });
