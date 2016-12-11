@@ -24,13 +24,62 @@
   require('./programme-button.vue');
 
   module.exports = Vue.component('programme-buttons-list', {
-    props: ['programmes', 'activeProgrammeId'],
+    data: function () {
+      return {
+        programmes: null,
+        activeProgrammeId: null
+      };
+    },
     computed: {
       loaded: function () { return this.programmes !== undefined; }
     },
+    mounted: function () {
+      this.loadProgrammes().then(function () {
+        this.loadCurrentProgramme();
+      });
+    },
     methods: {
       programmeRequested: function (programme) {
-        this.$emit('programme-requested', programme);
+        this.selectProgramme(programme.id).then(function () {
+          this.activeProgrammeId = programme.id;
+        }).catch(function (error) {
+          var errorMessage;
+
+          if (error && error.responseText) {
+            errorMessage = error.responseText;
+          } else {
+            errorMessage = 'Kon programma niet selecteren.';
+          }
+
+          // TODO: Check whether this is the correct 'this' due to possibly changing
+          // value of 'this' inside this promise handler.
+          this.$emit('error', errorMessage);
+        });
+      },
+
+      loadProgrammes: function () {
+        return this.$http.get('/my_zwave/available_programmes').then(function (response) {
+          return response.json();
+        }).then(function (json) {
+          this.programmes = Object.keys(json.availableProgrammes).map(function (id) {
+            return {
+              id: id,
+              name: programmes[id]
+            };
+          });
+        });
+      },
+
+      loadCurrentProgramme: function () {
+        this.$http.get('/my_zwave/current_programme')
+          .then(function (response) {
+            return response.json();
+          }).then(function (data) {
+            this.activeProgrammeId = data.programme;
+          });
+      },
+      selectProgramme: function (programmeName) {
+        return this.$http.post('/my_zwave/programme/' + programmeName + '/start');
       }
     },
   });

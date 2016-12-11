@@ -4,7 +4,6 @@ var VueResource = require('vue-resource');
 
 Vue.use(VueResource);
 
-var programmesList = require('./programmes-list');
 var loginDialog    = require('./login-dialog-container');
 var userFeedback   = require('./user-feedback');
 
@@ -17,26 +16,10 @@ var nodeValueTranslator = require('./node-value-translator')();
 
 var Vue = require('vue');
 
-var programmesListInterface = programmesList();
-
 var App = new Vue({
   el: '#app',
-  props: ['programmes', 'activeProgrammeId', 'lights', 'vacationModeState', 'latestEvents'],
+  props: ['lights', 'vacationModeState', 'latestEvents'],
   methods: {
-    programmeRequested: function (programme) {
-      var self = this;
-
-      programmesListInterface.selectProgramme(programme.id).then(function () {
-        self.activeProgrammeId = programme.id;
-      }).catch(function (error) {
-        if (error && error.responseText) {
-          feedback.addMessage(error.responseText);
-        } else {
-          feedback.addMessage('Kon programma niet selecteren.');
-        }
-      });
-    },
-
     vacationModeStartRequested: function (onTime, offTime) {
       var newState = {
         state: 'on',
@@ -93,43 +76,40 @@ var App = new Vue({
 var feedback = userFeedback(document.querySelector('.js-snackbar'));
 
 function start() {
-  programmesListInterface.getProgrammes().then(function (programmes) {
-    App.programmes = programmes;
-  }).then(function () {
-    App.loadLights();
+  App.loadLights();
 
-    App.$http.get('/my_zwave/vacation_mode')
-      .then(function (response) {
-        return response.json();
-      }).then(function (data) {
-        App.vacationModeState = data;
-      });
-
-    App.$http.get('/my_zwave/latest_events').then(function (response) {
+  App.$http.get('/my_zwave/vacation_mode')
+    .then(function (response) {
       return response.json();
     }).then(function (data) {
-      App.latestEvents = data.map(function (row) {
-        return JSON.parse(row);
-      });
+      App.vacationModeState = data;
     });
 
-    App.$http.get('/my_zwave/current_programme')
-      .then(function (response) {
-        return response.json();
-      }).then(function (data) {
-        App.activeProgrammeId = data.programme;
-      });
-  }).catch(function (jqXHR) {
-    loginDialog.$on('login-succeeded', function () {
-      start();
+  App.$http.get('/my_zwave/latest_events').then(function (response) {
+    return response.json();
+  }).then(function (data) {
+    App.latestEvents = data.map(function (row) {
+      return JSON.parse(row);
     });
-
-    loginDialog.$on('login-failed', function (message) {
-      feedback.addMessage(message);
-    });
-
-    loginDialog.visible = true;
   });
+
+  App.$http.get('/my_zwave/current_programme')
+    .then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      App.activeProgrammeId = data.programme;
+    });
+  //}).catch(function (jqXHR) {
+    //loginDialog.$on('login-succeeded', function () {
+      //start();
+    //});
+
+    //loginDialog.$on('login-failed', function (message) {
+      //feedback.addMessage(message);
+    //});
+
+    //loginDialog.visible = true;
+  //});
 }
 
 start();

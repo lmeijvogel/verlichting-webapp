@@ -29,10 +29,7 @@
   </div>
 
   <div class="mdl-grid">
-    <programme-buttons-list
-      :programmes="programmes"
-      :active-programme-id="activeProgrammeId"
-      v-on:programme-requested="programmeRequested"></programme-buttons-list>
+    <programme-buttons-list></programme-buttons-list>
 
     <vacation-mode :state="vacationModeState"
                    v-on:start="vacationModeStartRequested"
