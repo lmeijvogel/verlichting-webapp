@@ -51,6 +51,10 @@ var App = new Vue({
         feedback.addMessage('Could not stop vacation mode');
       });
     },
+
+    showError: function (message) {
+      feedback.addMessage(message);
+    }
   }
 });
 
