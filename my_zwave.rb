@@ -63,6 +63,7 @@ class MyZWave < Sinatra::Base
 
     light_values = keys.inject({}) do |acc, key|
       node_id  = Integer(redis.hget(key, "node_id"))
+      display_name = redis.hget(key, "display_name");
       value_37 = redis.hget(key, "class_37")
       value_38 = redis.hget(key, "class_38")
 
@@ -73,6 +74,7 @@ class MyZWave < Sinatra::Base
       end
 
       acc[key][:node_id] = node_id
+      acc[key][:display_name] = display_name;
 
       acc
     end

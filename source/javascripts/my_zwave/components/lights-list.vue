@@ -6,6 +6,7 @@
     <div id="lights" class="mdl-card__supporting-text">
     <div v-for="light of lights">
       <light-value-chip :name="light.name"
+                        :display-name="light.displayName"
                         :node-id="light.nodeId"
                         :value="light.value"
                         @click="changeLightValue(light)"></light-value-chip>
@@ -36,7 +37,7 @@
         }).then(function (json) {
           this.lights = Object.keys(json.lights).map(function (name) {
             var row = json.lights[name];
-            var light = {nodeId: row.node_id, name: name, type: row.type};
+            var light = {nodeId: row.node_id, name: name, displayName: row.display_name, type: row.type};
 
             light.value = nodeValueTranslator.fromServer(row.value, light);
 

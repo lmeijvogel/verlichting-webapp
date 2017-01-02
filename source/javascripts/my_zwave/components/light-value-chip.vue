@@ -9,7 +9,8 @@
   var Vue = require('vue');
 
   module.exports = Vue.component('light-value-chip', {
-    props: ['name', 'value', 'nodeId'],
+    props: ['name', 'displayName', 'value', 'nodeId'],
+
     data: function () {
       return {
         defaultClasses: 'mdl-chip mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop light-button'
@@ -37,9 +38,6 @@
         } else {
           return defaultClasses;
         }
-      },
-      displayName: function () {
-        return this.name.substr(5);
       },
 
       displayValue: function () {
