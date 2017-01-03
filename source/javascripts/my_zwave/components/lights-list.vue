@@ -65,7 +65,7 @@
         var valueForDialog = nodeValueTranslator.fromServer(light.value, light); // Should be done at light load time
         var oldValue = light.value;
 
-        dialog.show(light.name, valueForDialog, function (value) { light.value = value; })
+        dialog.show(light.displayName, valueForDialog, function (value) { light.value = value; })
           .then(function (newValue) {
             var request;
 
