@@ -81,9 +81,7 @@
               light.value = newValue;
             });
           })
-          .catch(function (e) {
-            console.error("Error saving light value:");
-            console.error(e);
+          .catch(function () {
             light.value = oldValue;
           });
       },
