@@ -81,18 +81,17 @@ function start() {
       return response.json();
     }).then(function (data) {
       App.activeProgrammeId = data.programme;
+    }).catch(function (jqXHR) {
+      loginDialog.$on('login-succeeded', function () {
+        start();
+      });
+
+      loginDialog.$on('login-failed', function (message) {
+        feedback.addMessage(message);
+      });
+
+      loginDialog.visible = true;
     });
-  //}).catch(function (jqXHR) {
-    //loginDialog.$on('login-succeeded', function () {
-      //start();
-    //});
-
-    //loginDialog.$on('login-failed', function (message) {
-      //feedback.addMessage(message);
-    //});
-
-    //loginDialog.visible = true;
-  //});
 }
 
 start();
