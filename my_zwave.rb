@@ -21,9 +21,22 @@ class MyZWave < Sinatra::Base
   end
 
   post '/light/:node_id/level/:level' do
-    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{Integer(params[:level])}")
+    level = Integer(params[:level])
+    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{level}")
 
-    "Recipients: #{recipient_count}"
+    if recipient_count > 0
+      {
+        success: true,
+        level: level,
+        recipients: recipient_count
+      }.to_json
+    else
+      status 503
+      {
+        success: false,
+        recipients: recipient_count
+      }.to_json
+    end
   end
 
   post '/light/:node_id/switch/:state' do
@@ -31,7 +44,19 @@ class MyZWave < Sinatra::Base
 
     recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{params[:state]}")
 
-    "Recipients: #{recipient_count}"
+    if recipient_count > 0
+      {
+        success: true,
+        state: params[:state] == "on",
+        recipients: recipient_count
+      }.to_json
+    else
+      status 503
+      {
+        success: false,
+        recipients: recipient_count
+      }.to_json
+    end
   end
 
   post '/programme/:name/start' do
@@ -39,10 +64,17 @@ class MyZWave < Sinatra::Base
     recipient_count = redis.publish( "MyZWave", "programme #{sanitized_name}" )
 
     if recipient_count > 0
-      "OK: #{recipient_count} recipients"
+      {
+        success: true,
+        programme: sanitized_name,
+        recipients: recipient_count
+      }.to_json
     else
       status 503
-      "No listening services"
+      {
+        success: false,
+        recipients: recipient_count
+      }.to_json
     end
   end
 
@@ -61,22 +93,25 @@ class MyZWave < Sinatra::Base
   get '/current_lights' do
     keys = redis.keys("node_*")
 
-    light_values = keys.inject({}) do |acc, key|
+    light_values = keys.map do |key|
       node_id  = Integer(redis.hget(key, "node_id"))
       display_name = redis.hget(key, "display_name");
       value_37 = redis.hget(key, "class_37")
       value_38 = redis.hget(key, "class_38")
 
+      result = {}
       if value_37.nil?
-        acc[key] = {type: "dim", value: value_38}
+        result = {activation_type: "dim", value: value_38.to_i}
       else
-        acc[key] = {type: "switch", value: value_37}
+        state = value_37 == "true"
+        result = {activation_type: "switch", state: state}
       end
 
-      acc[key][:node_id] = node_id
-      acc[key][:display_name] = display_name;
+      result[:node_id] = node_id
+      result[:display_name] = display_name;
+      result[:name] = key.gsub(/node_/, '')
 
-      acc
+      result
     end
 
     {lights: light_values}.to_json
@@ -109,7 +144,7 @@ class MyZWave < Sinatra::Base
     end
 
     if recipient_count > 0
-      "OK: #{recipient_count} recipients"
+      payload.to_json
     else
       status 503
       "No listening services"
@@ -157,6 +192,12 @@ class MyZWave < Sinatra::Base
     redis.get("zwave_switch_enabled")
   end
 
+  get "/login/show" do
+    {
+      loggedIn: session.has_key?(:username)
+    }.to_json
+  end
+
   post "/login/create" do
     data = JSON.parse(request.body.read)
 
@@ -177,7 +218,9 @@ class MyZWave < Sinatra::Base
         session.clear
         session[:username] = username
 
-        "OK"
+        {
+          loggedIn: session.has_key?(:username)
+        }.to_json
       else
         status 401
         "Invalid username or password"
