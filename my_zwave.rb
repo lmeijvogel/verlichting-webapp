@@ -155,27 +155,6 @@ class MyZWave < Sinatra::Base
     redis.lrange("zwave_recent_events", 0, -1).to_json
   end
 
-  post '/scheduled_tasks/new' do
-    sanitized_name = params[:name].match(/[a-z]+/)[0]
-
-    datetime = DateTime.parse(params[:datetime])
-
-    job = AtQueue.new.add(datetime, "ruby #{ENV['ZWAVE_COMMAND_EXECUTABLE_PATH']} programme #{sanitized_name}")
-    job.to_json
-  end
-
-  get '/scheduled_tasks/list' do
-    AtQueue.new.jobs_for(/zwave.rb (.*)/).to_json
-  end
-
-  post '/schedule/:id/destroy' do
-    id = Integer(params[:id])
-
-    AtQueue.new.destroy(id)
-
-    "OK"
-  end
-
   post '/disable_switch' do
     recipient_count = redis.publish("MyZWave", "disableSwitch")
 
