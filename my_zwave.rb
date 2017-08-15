@@ -14,15 +14,31 @@ class MyZWave < Sinatra::Base
     use Rack::Session::Cookie, :expire_after => one_year, :secret => secret, :secure => secure, :httponly => true
 
     register Sinatra::Reloader if development?
+
+    @@live = true
   end
 
   before do
     check_login_or_redirect unless request.path =~ %r[^#{request.script_name}/login]
   end
 
+  get '/live' do
+    {
+      state: @@live
+    }.to_json
+  end
+
+  post '/live/:state' do
+    @@live = params[:state].to_s == 'true'
+
+    {
+      state: @@live
+    }.to_json
+  end
+
   post '/light/:node_id/level/:level' do
     level = Integer(params[:level])
-    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{level}")
+    recipient_count = publish("MyZWave", "dim #{Integer(params[:node_id])} #{level}")
 
     if recipient_count > 0
       {
@@ -42,7 +58,7 @@ class MyZWave < Sinatra::Base
   post '/light/:node_id/switch/:state' do
     raise "Invalid state" unless %w[on off].include?(params[:state])
 
-    recipient_count = redis.publish("MyZWave", "set #{params[:node_id]} #{params[:state]}")
+    recipient_count = publish("MyZWave", "switch #{Integer(params[:node_id])} #{params[:state]}")
 
     if recipient_count > 0
       {
@@ -61,7 +77,7 @@ class MyZWave < Sinatra::Base
 
   post '/programme/:name/start' do
     sanitized_name = params[:name].match(/[a-z_]+/)[0]
-    recipient_count = redis.publish( "MyZWave", "programme #{sanitized_name}" )
+    recipient_count = publish( "MyZWave", "programme #{sanitized_name}" )
 
     if recipient_count > 0
       {
@@ -88,6 +104,26 @@ class MyZWave < Sinatra::Base
     result = {programme: redis.get('zwave_programme')}
 
     result.to_json
+  end
+
+  get '/main_switch' do
+    result = {state: redis.get('zwave_switch_enabled')};
+
+    result.to_json
+  end
+
+  post '/main_switch/:state' do
+    unless %[on off].include?(params[:state])
+      status 400
+      {error: "Invalid switch state"}.to_json
+    end
+
+    turnOn = params[:state] == "on"
+    command = turnOn ? "enableSwitch" : "disableSwitch"
+
+    recipient_count = publish( "MyZWave", "#{command}" )
+
+    {state: turnOn, recipient_count: recipient_count}.to_json
   end
 
   get '/current_lights' do
@@ -138,9 +174,9 @@ class MyZWave < Sinatra::Base
         return "Invalid start or end time"
       end
 
-      recipient_count = redis.publish( "MyZWave", "vacationMode on start:#{start_time} end:#{end_time}" )
+      recipient_count = publish( "MyZWave", "vacationMode on start:#{start_time} end:#{end_time}" )
     else
-      recipient_count = redis.publish( "MyZWave", "vacationMode off" )
+      recipient_count = publish( "MyZWave", "vacationMode off" )
     end
 
     if recipient_count > 0
@@ -212,6 +248,14 @@ class MyZWave < Sinatra::Base
 
   def redis
     @@redis ||= Redis.new
+  end
+
+  def publish(*args)
+    if @@live
+      redis.publish(*args)
+    else
+      99
+    end
   end
 
   def check_login_or_redirect
