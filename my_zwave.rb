@@ -192,22 +192,6 @@ class MyZWave < Sinatra::Base
     redis.lrange("zwave_recent_events", 0, -1).to_json
   end
 
-  post '/disable_switch' do
-    recipient_count = redis.publish("MyZWave", "disableSwitch")
-
-    "Recipients: #{recipient_count}"
-  end
-
-  post '/enable_switch' do
-    recipient_count = redis.publish("MyZWave", "enableSwitch")
-
-    "Recipients: #{recipient_count}"
-  end
-
-  get '/switch_enabled' do
-    redis.get("zwave_switch_enabled")
-  end
-
   get "/login/show" do
     {
       loggedIn: session.has_key?(:username)
