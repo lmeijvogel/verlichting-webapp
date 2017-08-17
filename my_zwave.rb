@@ -107,7 +107,9 @@ class MyZWave < Sinatra::Base
   end
 
   get '/main_switch' do
-    result = {state: redis.get('zwave_switch_enabled')};
+    state = redis.get('zwave_switch_enabled') == "true"
+
+    result = {state: state}
 
     result.to_json
   end
