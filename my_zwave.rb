@@ -113,12 +113,13 @@ class MyZWave < Sinatra::Base
   end
 
   post '/main_switch/:state' do
-    unless %[on off].include?(params[:state])
+    unless %[true false].include?(params[:state])
       status 400
       {error: "Invalid switch state"}.to_json
+      return
     end
 
-    turnOn = params[:state] == "on"
+    turnOn = params[:state] == "true"
     command = turnOn ? "enableSwitch" : "disableSwitch"
 
     recipient_count = publish( "MyZWave", "#{command}" )
