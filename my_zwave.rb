@@ -77,33 +77,34 @@ class MyZWave < Sinatra::Base
 
   post '/programme/:name/start' do
     sanitized_name = params[:name].match(/[a-z_]+/)[0]
-    recipient_count = publish( "MyZWave", "programme #{sanitized_name}" )
+    result = rest_interface.post("/programmes/#{sanitized_name}/start")
 
-    if recipient_count > 0
+    if result.success?
       {
         success: true,
-        programme: sanitized_name,
-        recipients: recipient_count
+        programme: sanitized_name
       }.to_json
     else
       status 503
       {
-        success: false,
-        recipients: recipient_count
+        success: false
       }.to_json
     end
   end
 
   get '/available_programmes' do
-    result = {availableProgrammes: redis.hgetall('zwave_available_programmes')}
+    programmes = JSON.parse(rest_interface.get('/programmes').body)["programmes"]
 
-    result.to_json
+    result = programmes.inject({}) do |acc, (name, data)|
+      acc[name] = data["displayName"]
+      acc
+    end
+
+    {availableProgrammes: result}.to_json
   end
 
   get '/current_programme' do
-    result = {programme: redis.get('zwave_programme')}
-
-    result.to_json
+    rest_interface.get('/programmes/current').body
   end
 
   get '/main_switch' do
