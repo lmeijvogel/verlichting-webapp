@@ -253,14 +253,6 @@ class MyZWave < Sinatra::Base
     @@redis ||= Redis.new
   end
 
-  def publish(*args)
-    if @@live
-      redis.publish(*args)
-    else
-      99
-    end
-  end
-
   def check_login_or_redirect
     if session.has_key?(:username)
       redis_key = "password_#{session[:username]}"
