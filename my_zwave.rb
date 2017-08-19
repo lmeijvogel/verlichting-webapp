@@ -140,15 +140,18 @@ class MyZWave < Sinatra::Base
         display_name: data["displayName"]
       }
 
-      extra_data = if data["values"].key?("37")
-                 value = data["values"]["37"]["value"]
+      puts "Handling: #{name.inspect} => #{data.inspect}"
+      extra_data = if data.dig("values", "37")
+                     value = data["values"]["37"]["value"]
 
-                 {activation_type: "switch", state: value == "true"}
-               elsif data["values"].key?("38")
-                 value = data["values"]["38"]["value"]
+                     {activation_type: "switch", state: value == "true"}
+                   elsif data.dig("values", "38")
+                     value = data["values"]["38"]["value"]
 
-                 {activation_type: "dim", value: value.to_i}
-               end
+                     {activation_type: "dim", value: value.to_i}
+                   else
+                     {}
+                   end
 
       result.merge(extra_data)
     end
