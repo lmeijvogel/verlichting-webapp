@@ -161,9 +161,19 @@ class MyZWave < Sinatra::Base
   end
 
   get '/vacation_mode' do
-    result = redis.hgetall("zwave_vacation_mode")
+    response = JSON.parse(rest_interface.get('/vacation_mode').body)
 
-    result.to_json
+    if response["state"]
+      {
+        state: "on",
+        start_time: response["meanStartTime"],
+        end_time: response["meanEndTime"]
+      }
+    else
+      {
+        state: "off"
+      }
+    end.to_json
   end
 
   post '/vacation_mode' do
@@ -181,16 +191,18 @@ class MyZWave < Sinatra::Base
         return "Invalid start or end time"
       end
 
-      recipient_count = publish( "MyZWave", "vacationMode on start:#{start_time} end:#{end_time}" )
+      uri = "/vacation_mode/on/#{start_time}/#{end_time}"
     else
-      recipient_count = publish( "MyZWave", "vacationMode off" )
+      uri = "/vacation_mode/off"
     end
 
-    if recipient_count > 0
+    response = rest_interface.post(uri)
+
+    if response.success?
       payload.to_json
     else
-      status 503
-      "No listening services"
+      status 500
+      return {error: "Error sending request to ZWave"}
     end
   end
 
