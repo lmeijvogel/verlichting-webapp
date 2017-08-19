@@ -36,20 +36,20 @@ class MyZWave < Sinatra::Base
   end
 
   post '/light/:node_id/level/:level' do
+    node_id = Integer(params[:node_id])
     level = Integer(params[:level])
-    recipient_count = publish("MyZWave", "dim #{Integer(params[:node_id])} #{level}")
 
-    if recipient_count > 0
+    response = rest_interface.post("/nodes/#{node_id}/dim/#{level}")
+
+    if response.success?
       {
         success: true,
-        level: level,
-        recipients: recipient_count
+        level: level
       }.to_json
     else
       status 503
       {
-        success: false,
-        recipients: recipient_count
+        success: false
       }.to_json
     end
   end
@@ -57,19 +57,20 @@ class MyZWave < Sinatra::Base
   post '/light/:node_id/switch/:state' do
     raise "Invalid state" unless %w[on off].include?(params[:state])
 
-    recipient_count = publish("MyZWave", "switch #{Integer(params[:node_id])} #{params[:state]}")
+    node_id = Integer(params[:node_id])
+    state = params[:state]
 
-    if recipient_count > 0
+    response = rest_interface.post("/nodes/#{node_id}/switch/#{state}")
+
+    if response.success?
       {
         success: true,
-        state: params[:state] == "on",
-        recipients: recipient_count
+        state: params[:state] == "on"
       }.to_json
     else
       status 503
       {
-        success: false,
-        recipients: recipient_count
+        success: false
       }.to_json
     end
   end
@@ -129,27 +130,26 @@ class MyZWave < Sinatra::Base
   end
 
   get '/current_lights' do
-    keys = redis.keys("node_*")
+    api_result = JSON.parse(rest_interface.get('/nodes').body)
 
-    light_values = keys.map do |key|
-      node_id  = Integer(redis.hget(key, "node_id"))
-      display_name = redis.hget(key, "display_name");
-      value_37 = redis.hget(key, "class_37")
-      value_38 = redis.hget(key, "class_38")
+    light_values = api_result["lights"].map do |name, data|
+      result = {
+        node_id: data["id"],
+        name: name,
+        display_name: data["displayName"]
+      }
 
-      result = {}
-      if value_37.nil?
-        result = {activation_type: "dim", value: value_38.to_i}
-      else
-        state = value_37 == "true"
-        result = {activation_type: "switch", state: state}
-      end
+      extra_data = if data["values"].key?("37")
+                 value = data["values"]["37"]["value"]
 
-      result[:node_id] = node_id
-      result[:display_name] = display_name;
-      result[:name] = key.gsub(/node_/, '')
+                 {activation_type: "switch", state: value == "true"}
+               elsif data["values"].key?("38")
+                 value = data["values"]["38"]["value"]
 
-      result
+                 {activation_type: "dim", value: value.to_i}
+               end
+
+      result.merge(extra_data)
     end
 
     {lights: light_values}.to_json
