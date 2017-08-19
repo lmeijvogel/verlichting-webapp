@@ -10,6 +10,7 @@ gem "redis"
 gem 'bcrypt'
 gem 'dotenv'
 gem 'highline'
+gem 'httparty'
 
 group 'development' do
   gem 'byebug'

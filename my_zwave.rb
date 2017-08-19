@@ -3,6 +3,7 @@ require 'bcrypt'
 require File.join(File.dirname(__FILE__), 'at_queue')
 require 'json'
 require 'sinatra/reloader'
+require_relative 'rest_interface'
 
 class MyZWave < Sinatra::Base
   configure do
@@ -14,8 +15,6 @@ class MyZWave < Sinatra::Base
     use Rack::Session::Cookie, :expire_after => one_year, :secret => secret, :secure => secure, :httponly => true
 
     register Sinatra::Reloader if development?
-
-    @@live = true
   end
 
   before do
@@ -24,15 +23,15 @@ class MyZWave < Sinatra::Base
 
   get '/live' do
     {
-      state: @@live
+      state: rest_interface.live?
     }.to_json
   end
 
   post '/live/:state' do
-    @@live = params[:state].to_s == 'true'
+    rest_interface.live = params[:state].to_s == 'true'
 
     {
-      state: @@live
+      state: rest_interface.live?
     }.to_json
   end
 
@@ -278,5 +277,9 @@ class MyZWave < Sinatra::Base
 
   def contains_only_alpha?(key)
     key.downcase =~ %r|\A[a-z]+\z|
+  end
+
+  def rest_interface
+    @@rest_interface ||= RestInterface.new
   end
 end
