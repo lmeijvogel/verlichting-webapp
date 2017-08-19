@@ -3,6 +3,7 @@ GEM
   specs:
     backports (3.6.8)
     bcrypt (3.1.7)
+    byebug (9.0.6)
     coderay (1.1.1)
     daemons (1.1.9)
     dotenv (2.0.0)
@@ -84,6 +85,7 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt
+  byebug
   dotenv
   foreman
   guard
@@ -98,4 +100,4 @@ DEPENDENCIES
   thin
 
 BUNDLED WITH
-   1.12.5
+   1.15.3
