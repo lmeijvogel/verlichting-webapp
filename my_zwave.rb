@@ -108,11 +108,9 @@ class MyZWave < Sinatra::Base
   end
 
   get '/main_switch' do
-    state = redis.get('zwave_switch_enabled') == "true"
+    response = rest_interface.get('/main_switch/enabled')
 
-    result = {state: state}
-
-    result.to_json
+    response.body
   end
 
   post '/main_switch/:state' do
@@ -122,12 +120,15 @@ class MyZWave < Sinatra::Base
       return
     end
 
-    turnOn = params[:state] == "true"
-    command = turnOn ? "enableSwitch" : "disableSwitch"
+    state = params[:state] == 'true' ? 'on' : 'off'
+    response = rest_interface.post("/main_switch/enabled/#{state}")
 
-    recipient_count = publish( "MyZWave", "#{command}" )
-
-    {state: turnOn, recipient_count: recipient_count}.to_json
+    if response.success?
+      { state: params[:state] == 'true' }.to_json
+    else
+      status 400
+      {error: "Could not change main switch state"}
+    end
   end
 
   get '/current_lights' do
