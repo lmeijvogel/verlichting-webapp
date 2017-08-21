@@ -1,6 +1,5 @@
 require 'redis'
 require 'bcrypt'
-require File.join(File.dirname(__FILE__), 'at_queue')
 require 'json'
 require 'sinatra/reloader'
 require_relative 'rest_interface'
