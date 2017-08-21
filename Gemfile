@@ -15,8 +15,4 @@ gem 'httparty'
 group 'development' do
   gem 'byebug'
   gem 'foreman'
-  gem 'sshkit'
-  gem 'guard'
-  gem 'guard-shell'
-  gem 'guard-rake'
 end
