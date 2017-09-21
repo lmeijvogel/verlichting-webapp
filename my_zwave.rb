@@ -209,6 +209,19 @@ class MyZWave < Sinatra::Base
     redis.lrange("zwave_recent_events", 0, -1).to_json
   end
 
+  post '/heal_network' do
+    uri = '/debug/heal_network'
+
+    response = rest_interface.post(uri)
+
+    if response.success?
+      {state: 'command sent'}.to_json
+    else
+      status 500
+      return {error: "Error sending request to ZWave"}
+    end
+  end
+
   get "/login/show" do
     {
       loggedIn: session.has_key?(:username)
