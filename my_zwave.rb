@@ -206,7 +206,9 @@ class MyZWave < Sinatra::Base
   end
 
   get '/latest_events' do
-    redis.lrange("zwave_recent_events", 0, -1).to_json
+    redis.lrange("zwave_recent_events", 0, -1).map do |line|
+      JSON.parse(line)
+    end.to_json
   end
 
   post '/heal_network' do
