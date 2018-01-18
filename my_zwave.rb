@@ -94,8 +94,8 @@ class MyZWave < Sinatra::Base
   get '/available_programmes' do
     programmes = JSON.parse(rest_interface.get('/programmes').body)["programmes"]
 
-    result = programmes.inject({}) do |acc, (name, data)|
-      acc[name] = data["displayName"]
+    result = programmes.inject({}) do |acc, programme|
+      acc[programme.name] = programme["displayName"]
       acc
     end
 
