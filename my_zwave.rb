@@ -287,8 +287,7 @@ class MyZWave < Sinatra::Base
   end
 
   def request_has_valid_auth_token?
-    user = params["user"]
-    authorization_key = params["authorization_key"]
+    user, authorization_key = authentication_from_request
 
     return false unless user && authorization_key
     return false unless contains_only_alpha?(user)
@@ -296,6 +295,32 @@ class MyZWave < Sinatra::Base
     stored_key = redis.get("auth_key_#{user}")
 
     return BCrypt::Password.new(stored_key) == authorization_key
+  end
+
+  def authentication_from_request
+    # First try params (necessary for the Tasker automation
+    if params.has_key?("user") && params.has_key?("authorization_key")
+      return params.values_at("user", "authorization_key")
+    end
+
+    # Then try HTTP basic authentication
+    if request.env.has_key?("HTTP_AUTHORIZATION")
+      auth_string = request.env["HTTP_AUTHORIZATION"]
+
+      puts "Auth string: #{auth_string}"
+      if (match = auth_string.match(/^Basic (.*)$/))
+        puts match
+        base64 = match[1]
+
+        user, authorization_key = Base64.decode64(base64).strip.split(":")
+
+        puts user,authorization_key
+
+        return [user, authorization_key]
+      end
+    end
+
+    return nil
   end
 
   def contains_only_alpha?(key)
