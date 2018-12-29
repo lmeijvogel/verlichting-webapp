@@ -8,6 +8,11 @@ cli = HighLine.new
 
 user = cli.ask("Username?")
 
+unless user =~ /\A[A-Za-z0-9]*\z/
+  puts "Username can only contain letters and digits"
+  exit 1
+end
+
 auth_key = SecureRandom.hex
 
 puts "Adding user '#{user}'"
