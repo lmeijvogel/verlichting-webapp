@@ -15,9 +15,21 @@ end
 
 auth_key = SecureRandom.hex
 
-puts "Adding user '#{user}'"
-puts "Authorization_key: #{auth_key}"
-puts "Include it in an HTTP request in the Authorization header. (https only!)"
+puts <<~SUCCESS_MESSAGE
+  Adding user '#{user}'
+  Authorization_key: #{auth_key}
+
+  It can be included in a request in two ways:
+  - As request params:
+    For GET requests: https://<location>?user=#{user}&authorization_key=#{auth_key} (Not recommended)
+    For POST requests: Add `user=#{user}\\nauthorization_key=#{auth_key}` as data in the request body.
+  - As HTTP Basic header (recommended):
+    `curl --user #{user}:#{auth_key} https://<location>`
+    `curl -H "Authorization: Basic $(echo #{user}:#{auth_key} | base64 -)"  https://<location>`
+
+  Please only send it over the wire for https requests
+
+  SUCCESS_MESSAGE
 
 begin
   hashed_key = BCrypt::Password.create(auth_key)
