@@ -140,7 +140,6 @@ class MyZWave < Sinatra::Base
         display_name: data["displayName"]
       }
 
-      puts "Handling: #{name.inspect} => #{data.inspect}"
       extra_data = if data.dig("values", "37")
                      value = data["values"]["37"]["value"]
 
@@ -289,17 +288,42 @@ class MyZWave < Sinatra::Base
   def request_has_valid_auth_token?
     user, authorization_key = authentication_from_request
 
+    redis_auth_key = "auth_key_#{user}"
+
     return false unless user && authorization_key
-    return false unless contains_only_alpha?(user)
 
-    stored_key = redis.get("auth_key_#{user}")
+    unless contains_only_alpha?(user)
+      puts "WARNING: Authentication failure: Username contains non-alpha chars."
+      return false
+    end
 
-    return BCrypt::Password.new(stored_key) == authorization_key
+    stored_key = redis.get(redis_auth_key)
+
+    unless stored_key
+      puts "WARNING: Authentication failure: User does not exist in Redis: #{user}"
+
+      return false
+    end
+
+    key_matches = BCrypt::Password.new(stored_key) == authorization_key
+
+    if key_matches
+      puts "Authentication key matches stored key"
+    else
+      puts "WARNING: Authentication failure: Authentication key does not match stored key!"
+    end
+
+    key_matches
+  rescue BCrypt::Errors::InvalidHash
+    puts "ERROR: Invalid hash stored in Redis for user #{user}: #{stored_key.inspect}"
+
+    false
   end
 
   def authentication_from_request
     # First try params (necessary for the Tasker automation
     if params.has_key?("user") && params.has_key?("authorization_key")
+      puts "Authentication data found in request params"
       return params.values_at("user", "authorization_key")
     end
 
@@ -307,18 +331,18 @@ class MyZWave < Sinatra::Base
     if request.env.has_key?("HTTP_AUTHORIZATION")
       auth_string = request.env["HTTP_AUTHORIZATION"]
 
-      puts "Auth string: #{auth_string}"
       if (match = auth_string.match(/^Basic (.*)$/))
-        puts match
         base64 = match[1]
 
         user, authorization_key = Base64.decode64(base64).strip.split(":")
 
-        puts user,authorization_key
+        puts "Authentication data found in request header HTTP_AUTHORIZATION"
 
         return [user, authorization_key]
       end
     end
+
+    puts "No authentication token found in request"
 
     return nil
   end
